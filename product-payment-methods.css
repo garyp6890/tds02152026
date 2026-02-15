@@ -1,0 +1,17 @@
+.\#product-payment-methods {
+  --product-payment-methods-margin-top: var(--glob-size-4);
+  --product-payment-methods-item-display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--glob-size-2);
+  margin-top: var(--product-payment-methods-margin-top);
+}
+.\#product-payment-methods-item {
+  display: var(--product-payment-methods-item-display);
+}
+.\#product-payment-methods-item > svg {
+  height: 2.2rem;
+  width: auto;
+}

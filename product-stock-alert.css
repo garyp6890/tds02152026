@@ -1,0 +1,60 @@
+.\#product-stock-alert {
+  --product-stock-alert-color: var(--color-g-text);
+  --product-stock-alert-text-weight: var(--glob-body-weight);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--glob-size-2) + 3px);
+}
+.\#product-stock-alert.\@center {
+  justify-content: center;
+}
+.\#product-stock-alert.\@text-weight\:bold {
+  --product-stock-alert-text-weight: var(--glob-body-bold-weight);
+}
+.\#product-stock-alert.\@type\:success {
+  --product-stock-alert-color: var(--color-g-success);
+}
+.\#product-stock-alert.\@type\:warning {
+  --product-stock-alert-color: var(--color-g-warning);
+}
+.\#product-stock-alert.\@type\:danger {
+  --product-stock-alert-color: var(--color-g-danger);
+}
+.\#product-stock-alert-text {
+  font-weight: var(--product-stock-alert-text-weight);
+}
+.\#product-stock-alert-icon {
+  position: relative;
+  padding: 5px;
+  background: var(--product-stock-alert-color);
+  border-radius: 50%;
+}
+.\#product-stock-alert-icon:after {
+  color: var(--product-stock-alert-color);
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  opacity: 0.4;
+  background-color: currentColor;
+  animation: pulse2 1.5s infinite alternate;
+}
+.\#product-stock-alert-icon .\#icon {
+  --size: 0.8rem;
+}
+.\#product-stock-alert-icon .\#icon {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  color: white;
+}
+@keyframes pulse2 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.3);
+  }
+}

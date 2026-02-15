@@ -1,0 +1,43 @@
+.\#scroll-to-top-button-trigger {
+  width: 0;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+.\#scroll-to-top-button-button {
+  transition: var(--transition-base);
+  width: 3.8rem;
+  height: 3.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.64;
+  color: var(--color-g-fg);
+  background-color: var(--color-g-text);
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  transform: translateY(8rem);
+  z-index: 99;
+  cursor: pointer;
+  border-radius: var(--glob-border-radius-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#scroll-to-top-button-button {
+    transition: 0s;
+  }
+}
+.\#scroll-to-top-button-button:hover {
+  opacity: 1;
+}
+.\#scroll-to-top-button-button .\#icon {
+  --size: 2rem;
+}
+body.glob--border-radius-rounded .\#scroll-to-top-button-button {
+  border-radius: var(--glob-border-radius-circle);
+}
+
+.\#scroll-to-top-button-button.\!active {
+  transform: translateY(0);
+}

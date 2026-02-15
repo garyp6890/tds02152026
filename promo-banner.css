@@ -1,0 +1,69 @@
+.\#promo-banner {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  border-radius: var(--glob-border-radius-base);
+  --desktop-text-align: space-between;
+}
+.\#promo-banner.\@full {
+  border-radius: 0;
+}
+.\#promo-banner.\@full .\#promo-banner-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+.\#promo-banner:not(.\@full) {
+  padding-left: var(--container-spacer);
+  padding-right: var(--container-spacer);
+}
+.\#promo-banner-media {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.\#promo-banner-body {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 3;
+  padding-top: min(3vh, 3rem);
+  padding-bottom: min(3vh, 3rem);
+}
+@media (min-width: 992px) {
+  .\#promo-banner-body {
+    gap: min(2.25vw, 2.25rem);
+    justify-content: var(--desktop-text-align);
+  }
+}
+@media (max-width: 991px) {
+  .\#promo-banner-body {
+    gap: min(2vh, 2rem);
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+}
+.\#promo-banner-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--glob-size-1);
+}
+.\#promo-banner-text {
+  margin-bottom: 0;
+  font-size: 1.3225rem;
+  opacity: 0.8;
+  overflow-wrap: break-word;
+}
+.\#promo-banner-button {
+  position: relative;
+  z-index: 23;
+  flex-shrink: 0;
+}
+.\#promo-banner .\#hero {
+  --hero-gap: var(--glob-size-1);
+}
+.\#promo-banner .\#countdown-timer {
+  --countdown-timer-titles-size: 0.6rem;
+}

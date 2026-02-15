@@ -1,0 +1,13 @@
+.\#social-profiles {
+  --icon-size: 1.5rem;
+  --gap: 1rem;
+  gap: var(--gap);
+  display: flex;
+  flex-wrap: wrap;
+}
+.\#social-profiles-item {
+  color: inherit;
+}
+.\#social-profiles-item-icon .\#icon {
+  --size: var(--icon-size);
+}

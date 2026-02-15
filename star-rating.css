@@ -1,0 +1,54 @@
+.\#star-rating {
+  --star-rating-size: 1rem;
+  --star-rating-main-color: var(--color-g-star-rating);
+  --star-rating-empty-color: var(--color-g-text-alpha-20);
+  --star-rating-stars-gap: calc(var(--star-rating-size) * 0.05);
+  --star-rating-half-clip: 50%;
+  --star-rating-gap: calc(var(--star-rating-size) * 0.6);
+  --star-rating-counter-font-size: calc(var(--star-rating-size) * 0.7);
+  --star-rating-counter-opacity: 0.8;
+  display: flex;
+  align-items: center;
+  gap: var(--star-rating-gap);
+}
+.\#star-rating.\@count-brackets .\#star-rating-counter-value:before {
+  content: "(";
+}
+.\#star-rating.\@count-brackets .\#star-rating-counter-value:after {
+  content: ")";
+}
+.\#star-rating-stars {
+  gap: var(--star-rating-stars-gap);
+  display: flex;
+}
+.\#star-rating-stars svg {
+  width: var(--star-rating-size);
+  height: var(--star-rating-size);
+  display: flex;
+  fill: currentColor;
+}
+.\#star-rating-item.\@state\:full {
+  color: var(--star-rating-main-color);
+}
+.\#star-rating-item.\@state\:empty {
+  color: var(--star-rating-empty-color);
+}
+.\#star-rating-item.\@state\:half {
+  position: relative;
+}
+.\#star-rating-item-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  color: var(--star-rating-main-color);
+  clip-path: inset(0 var(--star-rating-half-clip) 0 0);
+}
+.\#star-rating-item-base {
+  color: var(--star-rating-empty-color);
+}
+.\#star-rating-counter {
+  font-size: var(--star-rating-counter-font-size);
+  line-height: 1;
+  opacity: var(--star-rating-counter-opacity);
+}

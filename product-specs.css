@@ -1,0 +1,71 @@
+.\#product-specs {
+  --product-specs-item-display: flex;
+  border: 1px solid var(--color-g-border);
+  border-radius: var(--glob-border-radius-base);
+  background-color: var(--color-g-fg);
+  width: min(100%, 800px);
+  margin-inline: auto;
+  height: fit-content;
+}
+.\#product-specs-item {
+  display: var(--product-specs-item-display);
+}
+.\#product-specs-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-g-border);
+}
+.\#product-specs-item-name, .\#product-specs-item-value {
+  flex-basis: 50%;
+  flex-shrink: 0;
+  padding: var(--glob-size-3) var(--glob-size-4);
+}
+.\#product-specs-item-value {
+  font-weight: var(--glob-body-bold-weight);
+  word-break: break-word;
+}
+.\#product-specs-item-name {
+  opacity: 0.8;
+  border-right: 1px solid var(--color-g-border);
+}
+.\#product-specs-item.\!excess {
+  --product-specs-item-display: none;
+}
+.\#product-specs-link {
+  --product-specs-icon-rotate: 0deg;
+  --product-specs-expand-display: initial;
+  --product-specs-collapse-display: none;
+  margin-block: var(--glob-size-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--glob-button-family);
+  font-size: var(--glob-button-size);
+  font-weight: var(--glob-button-weight);
+  text-transform: var(--glob-button-transform);
+  letter-spacing: var(--glob-button-letter-spacing, normal);
+  gap: var(--glob-size-2);
+}
+.\#product-specs-link .\#icon {
+  --size: 1.15rem;
+  transition: var(--transition-base);
+  transform: rotate(var(--product-specs-icon-rotate));
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#product-specs-link .\#icon {
+    transition: 0s;
+  }
+}
+.\#product-specs-link-collapse {
+  display: var(--product-specs-collapse-display);
+}
+.\#product-specs-link-expand {
+  display: var(--product-specs-expand-display);
+}
+.\#product-specs-checkbox:checked ~ .\#product-specs-item.\!excess {
+  --product-specs-item-display: flex;
+}
+.\#product-specs-checkbox:checked ~ .\#product-specs-link {
+  --product-specs-icon-rotate: 180deg;
+  --product-specs-expand-display: none;
+  --product-specs-collapse-display: initial;
+}

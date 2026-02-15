@@ -1,0 +1,57 @@
+.\#product-options-swatch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.\#product-options-swatch-item {
+  display: block;
+}
+.\#product-options-swatch-item:focus-within {
+  outline: 5px auto -webkit-focus-ring-color;
+}
+.\#product-options-swatch-item-input:checked + .\#product-options-swatch-item-body {
+  border-color: var(--color-g-accent);
+}
+.\#product-options-swatch-item-input.\!unavailable + .\#product-options-swatch-item-body {
+  opacity: 0.3;
+  position: relative;
+  overflow: hidden;
+  background: #e6e6e6;
+}
+.\#product-options-swatch-item-input.\!sold-out + .\#product-options-swatch-item-body {
+  position: relative;
+  overflow: hidden;
+}
+.\#product-options-swatch-item-input.\!sold-out + .\#product-options-swatch-item-body:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: var(--color-g-border);
+  transform: rotate(-45deg);
+  top: calc(50% - 1px);
+  left: 0;
+  z-index: 1;
+}
+.\#product-options-swatch-item-body {
+  display: block;
+  border-radius: var(--glob-border-radius-base);
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  border: 0.12rem solid var(--color-g-border);
+  transition: var(--transition-base);
+  width: 3rem;
+  height: 3rem;
+  box-shadow: inset 0 0 0 0.25rem var(--color-g-fg);
+}
+body.glob--border-radius-rounded .\#product-options-swatch-item-body {
+  border-radius: var(--glob-border-radius-circle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .\#product-options-swatch-item-body {
+    transition: 0s;
+  }
+}

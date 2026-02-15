@@ -1,0 +1,90 @@
+.\#rte table, .\#rte-block table {
+  height: auto !important;
+  background-color: var(--color-g-fg);
+  border-spacing: 0;
+  border: 1px solid var(--color-g-border);
+  border-radius: var(--glob-border-radius-base);
+}
+.\#rte table td, .\#rte-block table td {
+  padding: var(--glob-size-3) var(--glob-size-4);
+}
+.\#rte table td:not(:last-child), .\#rte-block table td:not(:last-child) {
+  border-right: 1px solid var(--color-g-border);
+}
+.\#rte table tr:not(:last-child) td, .\#rte-block table tr:not(:last-child) td {
+  border-bottom: 1px solid var(--color-g-border);
+}
+
+.\#rte-block img, .\#rte-block video, .\#rte-block iframe {
+  max-width: 100%;
+}
+.\#rte-block > p {
+  margin-bottom: 0.5em;
+}
+.\#rte-block > p:last-child {
+  margin-bottom: 0;
+}
+.\#rte-block.\@upcase {
+  text-transform: uppercase;
+}
+.\#rte-block a {
+  color: inherit;
+}
+.\#rte-block ul, .\#rte-block ol {
+  padding: revert;
+  margin: revert;
+}
+
+.\#rte {
+  --font-size: 1rem;
+  font-size: var(--font-size);
+}
+.\#rte h6, .\#rte h5, .\#rte h4, .\#rte h3, .\#rte h2, .\#rte h1 {
+  margin-bottom: 0.5em;
+}
+.\#rte ul, .\#rte ol {
+  padding: revert;
+  margin: revert;
+}
+.\#rte p {
+  margin-bottom: 1em;
+}
+.\#rte a {
+  color: inherit;
+}
+.\#rte img, .\#rte video, .\#rte iframe {
+  max-width: 100%;
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#rte blockquote {
+  font-style: italic;
+  font-size: 1.15em;
+  margin-bottom: 1rem;
+}
+.\#rte.\@text-align\:left {
+  text-align: left;
+}
+.\#rte.\@text-align\:center {
+  text-align: center;
+}
+.\#rte.\@text-align\:right {
+  text-align: right;
+}
+.\#rte h1 {
+  font-size: 2.0113571875em;
+}
+.\#rte h2 {
+  font-size: 1.74900625em;
+}
+.\#rte h3 {
+  font-size: 1.520875em;
+}
+.\#rte h4 {
+  font-size: 1.3225em;
+}
+.\#rte h5 {
+  font-size: 1.15em;
+}
+.\#rte h6 {
+  font-size: 0.8695652174em;
+}

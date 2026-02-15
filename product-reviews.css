@@ -1,0 +1,16 @@
+.\#product-reviews {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.\#product-reviews-stars {
+  display: flex;
+}
+.\#product-reviews-stars .\#icon {
+  color: var(--color-g-star-rating);
+  --size: 1.2rem;
+}
+.\#product-reviews-count {
+  font-size: 1.1rem;
+  font-weight: var(--glob-body-bold-weight);
+}

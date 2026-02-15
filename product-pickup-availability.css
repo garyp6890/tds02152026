@@ -1,0 +1,32 @@
+.\#product-pickup-availability {
+  display: flex;
+  gap: 1rem;
+}
+.\#product-pickup-availability-icon .\#icon {
+  --size: 2.7rem;
+}
+.\#product-pickup-availability-status {
+  font-size: 1.15rem;
+  font-weight: normal;
+  margin-bottom: 0;
+}
+.\#product-pickup-availability-status > span {
+  font-weight: var(--glob-body-bold-weight);
+}
+.\#product-pickup-availability-time {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+.\#product-pickup-availability-popup-link {
+  display: block;
+  margin-top: var(--glob-size-2);
+  cursor: pointer;
+  font-family: var(--glob-button-family);
+  font-size: var(--glob-button-size);
+  font-weight: var(--glob-button-weight);
+  text-transform: var(--glob-button-transform);
+  letter-spacing: var(--glob-button-letter-spacing, normal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

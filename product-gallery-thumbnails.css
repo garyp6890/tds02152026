@@ -1,0 +1,71 @@
+.\#product-gallery-thumbnails {
+  --product-gallery-thumbnails-thumnail-size: 50px;
+  display: grid;
+  gap: var(--glob-size-3);
+}
+.\#product-gallery-thumbnails-wrapper {
+  position: relative;
+  --sticky-offset: calc(var(--header-height, 0px) + var(--navbar-height, 0px));
+  max-height: calc(100vh - 5rem - var(--header-height, 0px) - var(--navbar-height, 0px));
+  overflow: hidden;
+  padding: 2px;
+}
+@media (min-width: 992px) {
+  .\#product-gallery-thumbnails-wrapper {
+    position: sticky;
+    top: calc(1rem + var(--sticky-offset));
+  }
+}
+.\#product-gallery-thumbnails.\@position\:left {
+  width: fit-content;
+  height: 100%;
+  grid-auto-columns: var(--product-gallery-thumbnails-thumnail-size);
+  grid-auto-flow: column;
+  grid-template-rows: repeat(auto-fit, var(--product-gallery-thumbnails-thumnail-size));
+  position: absolute;
+}
+.\#product-gallery-thumbnails.\@position\:scrollable {
+  transform: translate3d(0, var(--offset-scroll-y, 0), 0);
+  transition: var(--transition-base);
+  position: absolute;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#product-gallery-thumbnails.\@position\:scrollable {
+    transition: 0s;
+  }
+}
+.\#product-gallery-thumbnails.\@position\:bottom {
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, var(--product-gallery-thumbnails-thumnail-size));
+}
+.\#product-gallery-thumbnails .\#media {
+  width: var(--product-gallery-thumbnails-thumnail-size);
+}
+.\#product-gallery-thumbnails-thumbnail-input:checked + .\#product-gallery-thumbnails-thumbnail-image {
+  border-color: var(--color-g-accent);
+  box-shadow: 0 0 0 2px var(--color-g-accent-a20);
+}
+.\#product-gallery-thumbnails-thumbnail-label {
+  position: relative;
+}
+.\#product-gallery-thumbnails-thumbnail-icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  z-index: 2;
+  pointer-events: none;
+  color: var(--color-g-fg);
+  background-color: var(--color-g-text-alpha-50);
+  backdrop-filter: blur(10px);
+  padding: 5px;
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#product-gallery-thumbnails-thumbnail-icon .\#icon {
+  --size: 1rem;
+}
+.\#product-gallery-thumbnails-thumbnail-image {
+  cursor: pointer;
+  border-radius: var(--glob-border-radius-inner);
+  overflow: hidden;
+  border: 1px solid var(--color-g-border);
+}

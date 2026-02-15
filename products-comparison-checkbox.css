@@ -1,0 +1,89 @@
+.\#products-comparison-checkbox {
+  --products-comparison-checkbox-display: block;
+  font-size: 0.9rem;
+  display: var(--products-comparison-checkbox-display);
+}
+body:not:has(products-comparison) {
+  --products-comparison-checkbox-display: none;
+}
+
+.\#products-comparison-checkbox.\@display\:product-card {
+  position: relative;
+  margin-top: var(--glob-size-5);
+  display: block;
+  width: 100%;
+  z-index: 21;
+}
+@media (max-width: 991px) {
+  .\#products-comparison-checkbox.\@display\:product-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    margin: 0;
+  }
+}
+body.glob--layout-align-center .\#products-comparison-checkbox.\@display\:product-card .\#products-comparison-checkbox-label {
+  left: -3px;
+  justify-content: center;
+}
+
+.\#products-comparison-checkbox.\@display\:product-meta {
+  font-size: 1.05rem;
+}
+@media (max-width: 991px) {
+  .\#products-comparison-checkbox.\@display\:product-meta .\#products-comparison-checkbox-label::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 44px;
+  }
+}
+.\#products-comparison-checkbox-label {
+  font-size: 0.8695652174rem;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  gap: 0.45em;
+}
+.\#products-comparison-checkbox-label:focus-within .\#products-comparison-checkbox-icon {
+  outline: 1px solid var(--color-g-accent);
+}
+.\#products-comparison-checkbox-input:checked + .\#products-comparison-checkbox-icon {
+  background: var(--color-g-accent);
+  border-color: var(--color-g-accent);
+}
+.\#products-comparison-checkbox-input:checked + .\#products-comparison-checkbox-icon .\#icon {
+  opacity: 1;
+}
+.\#products-comparison-checkbox-input:checked + .\#products-comparison-checkbox-icon + .\#products-comparison-checkbox-title {
+  font-weight: var(--glob-body-bold-weight);
+}
+.\#products-comparison-checkbox-input:disabled ~ * {
+  opacity: 0.46;
+  cursor: not-allowed;
+}
+.\#products-comparison-checkbox-title {
+  line-height: 1;
+}
+.\#products-comparison-checkbox-icon {
+  display: flex;
+  padding: 0.18em;
+  border: 1px solid var(--color-g-text);
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#products-comparison-checkbox-icon .\#icon {
+  --size: 0.65em;
+  color: var(--color-g-accent-front);
+  opacity: 0;
+}
+body.glob--border-radius-rounded .\#products-comparison-checkbox-icon {
+  border-radius: 0.35rem;
+}

@@ -1,0 +1,37 @@
+.\#video-popup {
+  position: relative;
+}
+.\#video-popup-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 7;
+  transition: var(--transition-base);
+  opacity: 0.8;
+}
+.\#video-popup-icon .\#icon {
+  --size: var(--icon-size, 3rem);
+  color: var(--icon-color, var(--color-g-fg));
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#video-popup-icon {
+    transition: 0s;
+  }
+}
+.\#video-popup-trigger {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+.\#video-popup-trigger:hover .\#video-popup-icon {
+  opacity: 1;
+}
+.\#video-popup-modal {
+  max-width: 85%;
+  margin-inline: auto;
+}
+.\#video-popup-modal-inner {
+  border-radius: var(--glob-border-radius-base);
+  overflow: hidden;
+}

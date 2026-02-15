@@ -1,0 +1,15 @@
+.\#product-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--glob-size-2);
+}
+.\#product-title .\#heading {
+  line-height: 1.2;
+}
+.\#product-title-badges {
+  display: flex;
+  gap: var(--glob-size-2);
+}
+.\#product-title-badges .\#badge {
+  font-size: var(--product-title-badge-size);
+}

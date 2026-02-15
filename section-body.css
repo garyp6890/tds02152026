@@ -1,0 +1,126 @@
+.\#section-body {
+  --section-body-default-bg-color: transparent;
+  --section-body-bg-color: var(--section-body-force-bg-color, var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--section-body-default-bg-color))));
+  --section-body-text-color: var(--color-scheme-text, inherit);
+  --section-body-spacing: var(--glob-size-13);
+  --section-body-header-spacing: var(--glob-size-5);
+  --section-body-content-width: 100%;
+  position: relative;
+}
+@media (min-width: 992px) {
+  .\#section-body .\#section-body-content, .\#section-body .\#section-body-header-inner {
+    width: var(--section-body-content-width);
+    margin-inline: auto;
+  }
+}
+.\#section-body .\#bg-pattern {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.\#section-body.\@with-pattern {
+  --section-body-default-bg-color: var(--color-g-bg-gradient, var(--color-g-bg));
+}
+.\#section-body.\@paint\:full {
+  background: var(--section-body-bg-color);
+  color: var(--section-body-text-color);
+}
+.\#section-body.\@paint\:content .\#section-body-content {
+  background: var(--section-body-bg-color);
+  color: var(--section-body-text-color);
+}
+.\#section-body.\@paint\:content .\#section-body-header .\#hero {
+  --hero-text-color: var(--color-g-text);
+}
+body.glob--spacing-sm .\#section-body {
+  --section-body-spacing: var(--glob-size-10);
+  --section-body-header-spacing: var(--glob-size-4);
+}
+
+body.glob--spacing-lg .\#section-body {
+  --section-body-spacing: var(--glob-size-15);
+  --section-body-header-spacing: var(--glob-size-7);
+}
+
+.\#section-body.\@spaced {
+  margin-block: var(--section-body-spacing);
+}
+.\#section-body.\@padded {
+  padding-block: var(--section-body-spacing);
+}
+.\#section-body.\@shadow {
+  box-shadow: var(--color-scheme-box-shadow);
+}
+body.glob--theme-dark-mode .\#section-body:not(.\@with-pattern) {
+  --section-body-bg-color: var(--section-body-dark-mode-force-bg-color, var(--section-body-force-bg-color, var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--section-body-default-bg-color)))));
+}
+body.glob--theme-dark-mode .\#section-body:not(.\@with-pattern).\@section-color-mode\:main.\@spaced {
+  margin-block: 0;
+  padding-block: var(--section-body-spacing);
+}
+body.glob--theme-dark-mode .\#section-body:not(.\@with-pattern).\@section-color-mode\:dark.\@padded {
+  padding-block: 0;
+  margin-block: var(--section-body-spacing);
+}
+
+.\#section-body-header {
+  margin-block: var(--section-body-header-spacing);
+}
+.\#section-body-header .\#hero {
+  --hero-gap: var(--glob-size-3);
+}
+.\#section-body-wrapper {
+  position: relative;
+}
+.\#section-body-wrapper.\@curved {
+  overflow: hidden;
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+}
+.\#section-body-wrapper.\@curved\:left {
+  overflow: hidden;
+}
+@media (min-width: 992px) {
+  .\#section-body-wrapper.\@curved\:left {
+    border-radius: var(--border-radius-base) 0 0 var(--border-radius-base);
+  }
+}
+@media (max-width: 991px) {
+  .\#section-body-wrapper.\@curved\:left {
+    border-radius: var(--glob-border-radius-base);
+  }
+}
+.\#section-body-wrapper.\@curved\:right {
+  overflow: hidden;
+}
+@media (min-width: 992px) {
+  .\#section-body-wrapper.\@curved\:right {
+    border-radius: 0 var(--border-radius-base) var(--border-radius-base) 0;
+  }
+}
+@media (max-width: 991px) {
+  .\#section-body-wrapper.\@curved\:right {
+    border-radius: var(--glob-border-radius-base);
+  }
+}
+.\#section-body-button {
+  z-index: 10;
+  position: relative;
+  margin-top: var(--glob-gutter);
+}
+.\#section-body-button.\@align\:center {
+  display: flex;
+  justify-content: center;
+}
+@media (min-width: 992px) {
+  .\#section-body-header-inner.\@align-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .\#section-body-header-inner.\@align-button .\#section-body-button {
+    margin: 0;
+  }
+}

@@ -1,0 +1,74 @@
+.shadow-1 {
+  box-shadow: var(--color-g-text-alpha-10) 0 1rem 2rem -1.5rem, var(--color-g-text-alpha-30) 0 0.5rem 2rem -1rem;
+}
+
+@media (max-width: 991px) {
+  .mobile-shadow-1 {
+    box-shadow: var(--color-g-text-alpha-10) 0 1rem 2rem -1.5rem, var(--color-g-text-alpha-30) 0 0.5rem 2rem -1rem;
+  }
+}
+.shadow-2, .shadow-hover-child-2-3, .shadow-hover-2-3 {
+  box-shadow: var(--color-g-text-alpha-10) 0 3.125rem 6.25rem -1.25rem, var(--color-g-text-alpha-30) 0 1.875rem 3.75rem -1.875rem;
+}
+
+@media (max-width: 991px) {
+  .mobile-shadow-2 {
+    box-shadow: var(--color-g-text-alpha-10) 0 3.125rem 6.25rem -1.25rem, var(--color-g-text-alpha-30) 0 1.875rem 3.75rem -1.875rem;
+  }
+}
+.shadow-3 {
+  box-shadow: var(--color-g-text-alpha-30) 0 3.125rem 6.25rem -1rem, var(--color-g-text-alpha-40) 0 1.875rem 2.75rem -1rem;
+}
+
+@media (max-width: 991px) {
+  .mobile-shadow-3 {
+    box-shadow: var(--color-g-text-alpha-30) 0 3.125rem 6.25rem -1rem, var(--color-g-text-alpha-40) 0 1.875rem 2.75rem -1rem;
+  }
+}
+.shadow-4 {
+  box-shadow: var(--color-g-text-alpha-60) 0 2rem 5rem 0.5rem, var(--color-g-text-alpha-80) 0 1.875rem 3.75rem -1.875rem;
+}
+
+@media (max-width: 991px) {
+  .mobile-shadow-4 {
+    box-shadow: var(--color-g-text-alpha-60) 0 2rem 5rem 0.5rem, var(--color-g-text-alpha-80) 0 1.875rem 3.75rem -1.875rem;
+  }
+}
+.shadow-2, .shadow-hover-child-2-3, .shadow-hover-2-3 {
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.shadow-hover-2-3 {
+  transition: var(--transition-base);
+  transition-property: transform, box-shadow;
+  backface-visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shadow-hover-2-3 {
+    transition: 0s;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .shadow-hover-2-3:hover {
+    box-shadow: var(--color-g-text-alpha-30) 0 3.125rem 6.25rem -1rem, var(--color-g-text-alpha-40) 0 1.875rem 2.75rem -1rem;
+    transform: translateY(-10px);
+  }
+}
+
+.shadow-hover-child-2-3 {
+  transition: var(--transition-base);
+  transition-property: transform, box-shadow;
+  backface-visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shadow-hover-child-2-3 {
+    transition: 0s;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shadow-hover-parent:hover .shadow-hover-child-2-3 {
+    transform: translateY(-10px);
+    box-shadow: var(--color-g-text-alpha-30) 0 3.125rem 6.25rem -1rem, var(--color-g-text-alpha-40) 0 1.875rem 2.75rem -1rem;
+  }
+}

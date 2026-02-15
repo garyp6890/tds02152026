@@ -1,0 +1,14 @@
+.\#product-variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--glob-size-4);
+}
+.\#product-variant-selector-item-heading {
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  margin-bottom: var(--glob-size-2);
+}

@@ -1,0 +1,98 @@
+.\#testimonial-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--glob-size-3);
+}
+@media (max-width: 991px) {
+  @supports (-webkit-touch-callout: none) {
+    .\#testimonial-card {
+      position: relative;
+    }
+    .\#testimonial-card:before {
+      content: "";
+      z-index: 22;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+  }
+}
+body:not(.glob--card-view-none) .\#testimonial-card {
+  box-shadow: var(--color-scheme-box-shadow);
+  background-color: var(--color-g-fg);
+  color: var(--color-g-text);
+  border-radius: var(--glob-border-radius-base);
+  padding: var(--glob-size-5);
+}
+
+body.glob--layout-align-center .\#testimonial-card {
+  text-align: center;
+}
+
+body:not(.glob--layout-align-center) .\#testimonial-card-author {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-3);
+  margin-bottom: var(--glob-size-2);
+}
+
+.\#testimonial-card-author-image {
+  border-radius: var(--glob-border-radius-circle);
+  width: 50px;
+  overflow: hidden;
+}
+body.glob--layout-align-center .\#testimonial-card-author-image {
+  margin-bottom: var(--glob-size-2);
+}
+
+body.glob--layout-align-center .\#testimonial-card-author-image {
+  margin-inline: auto;
+}
+
+.\#testimonial-card-author-name {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+.\#testimonial-card-heading {
+  font-size: 0.9rem;
+}
+.\#testimonial-card-stars {
+  display: flex;
+  align-items: center;
+}
+body.glob--layout-align-center .\#testimonial-card-stars {
+  justify-content: center;
+}
+
+.\#testimonial-card-product {
+  position: relative;
+  margin-top: auto;
+  padding-top: var(--glob-size-3);
+  border-top: 1px solid var(--color-g-text-alpha-10);
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-4);
+}
+body.glob--layout-align-center .\#testimonial-card-product {
+  justify-content: center;
+}
+
+.\#testimonial-card-product-media {
+  width: 4rem;
+  flex-shrink: 0;
+}
+.\#testimonial-card-product-title {
+  text-align: left;
+  font-family: var(--glob-product-card-title-family);
+  font-size: var(--glob-product-card-title-size);
+  font-weight: var(--glob-product-card-title-weight);
+  text-transform: var(--glob-product-card-title-transform);
+  letter-spacing: var(--glob-product-card-title-letter-spacing, normal);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

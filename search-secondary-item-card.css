@@ -1,0 +1,26 @@
+.\#search-secondary-item-card {
+  display: flex;
+  align-items: center;
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-base);
+  padding: 1.25rem;
+  box-shadow: rgba(50, 50, 93, 0.1) 0 50px 100px -20px, rgba(0, 0, 0, 0.15) 0 30px 60px -30px;
+  gap: 1.5rem;
+  position: relative;
+}
+.\#search-secondary-item-card-media {
+  width: 4.8rem;
+}
+.\#search-secondary-item-card-title {
+  margin-bottom: 0;
+}
+.\#search-secondary-item-card-meta {
+  font-size: 0.8695652174rem;
+  opacity: 0.8;
+  margin-bottom: 0.3rem;
+}
+.\#search-secondary-item-card-excerpt {
+  margin-top: 0.3rem;
+  font-size: 0.8695652174rem;
+  opacity: 0.8;
+}

@@ -1,0 +1,15 @@
+.\#splash-msg {
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-base);
+  width: min(min(100%, 90vw), 450px);
+  margin: min(8vh, 8rem) auto;
+  padding: min(8vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--color-scheme-box-shadow);
+}
+.\#splash-msg-footer {
+  margin-top: 2rem;
+}

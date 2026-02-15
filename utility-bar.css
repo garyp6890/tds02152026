@@ -1,0 +1,69 @@
+.\#utility-bar {
+  display: block;
+  background: var(--utility-bar-bg-color);
+  color: var(--utility-bar-text-color);
+  font-size: 0.9rem;
+}
+.\#utility-bar .\#utility-bar-link, .\#utility-bar .\#utility-bar-menu-link, .\#utility-bar .\#utility-bar-contact-link {
+  text-decoration: none;
+  color: inherit;
+}
+@media (max-width: 991px) {
+  .\#utility-bar {
+    overflow-x: auto;
+    justify-content: space-between;
+  }
+}
+.\#utility-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-5);
+  padding-block: var(--glob-size-2);
+}
+.\#utility-bar-text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.\#utility-bar-text-icon .\#icon {
+  --size: 1rem;
+}
+.\#utility-bar-contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.\#utility-bar-contact-icon .\#icon {
+  --size: 1rem;
+}
+.\#utility-bar-item {
+  flex-shrink: 0;
+}
+.\#utility-bar-item.right {
+  order: 1;
+}
+@media (min-width: 992px) {
+  .\#utility-bar-item.right {
+    margin-left: auto;
+  }
+}
+.\#utility-bar-item.right ~ .\#utility-bar-item.right {
+  margin-left: 0;
+}
+.\#utility-bar-menu {
+  display: flex;
+  gap: var(--glob-size-5);
+}
+.\#utility-bar-social-profiles .\#social-profiles {
+  --icon-size: 1.25em;
+  --gap: .75rem;
+}
+.\#utility-bar-localization-button {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-1);
+}
+.\#utility-bar-localization-button-caret .\#icon {
+  --size: 1rem;
+}

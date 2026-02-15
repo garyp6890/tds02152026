@@ -1,0 +1,159 @@
+.\#slideshow-inline-blaze {
+  display: block;
+  position: relative;
+}
+@media (min-width: 992px) {
+  .\#slideshow-inline-blaze.\@clipped {
+    overflow-x: clip;
+  }
+}
+.\#slideshow-inline-blaze-overlay {
+  position: absolute;
+  top: calc(var(--section-body-spacing) * -1);
+  left: 0;
+  width: 100%;
+  height: calc(100% + var(--section-body-spacing) * 2);
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+}
+@media (max-width: 991px) {
+  .\#slideshow-inline-blaze-overlay {
+    opacity: 0;
+  }
+}
+.\#slideshow-inline-blaze-overlay > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+.\#slideshow-inline-blaze-overlay-center {
+  --width: calc(var(--container-width) - var(--container-spacer) * 2);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--width);
+  width: 100%;
+}
+.\#slideshow-inline-blaze-overlay-side-left, .\#slideshow-inline-blaze-overlay-side-right {
+  pointer-events: auto;
+}
+.\#slideshow-inline-blaze-overlay-side-left {
+  background: linear-gradient(to left, rgba(255, 0, 0, 0), var(--color-g-bg) 30%);
+}
+.\#slideshow-inline-blaze-overlay-side-right {
+  background: linear-gradient(to right, rgba(255, 0, 0, 0), var(--color-g-bg) 60%);
+}
+.\#slideshow-inline-blaze:hover .\#slideshow-inline-blaze-next,
+.\#slideshow-inline-blaze:hover .\#slideshow-inline-blaze-prev {
+  opacity: 1;
+}
+.\#slideshow-inline-blaze-slider {
+  --slides-to-show: var(--slides-per-view) !important;
+  --slide-gap: var(--slides-gap) !important;
+}
+@media (max-width: 991px) {
+  .\#slideshow-inline-blaze-slider {
+    --slides-to-show: var(--slides-per-view-mobile) !important;
+    --slide-gap: var(--slides-gap) !important;
+  }
+}
+.\#slideshow-inline-blaze-slider.start .\#slideshow-inline-blaze-prev {
+  opacity: 0;
+  pointer-events: none;
+}
+.\#slideshow-inline-blaze-slider.end .\#slideshow-inline-blaze-next {
+  opacity: 0;
+  pointer-events: none;
+}
+.\#slideshow-inline-blaze-track-container {
+  overflow: visible !important;
+}
+.\#slideshow-inline-blaze-next, .\#slideshow-inline-blaze-prev {
+  opacity: 0;
+  transition: var(--transition-base);
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9;
+  display: block;
+  border: none;
+  color: var(--color-g-text);
+  background-color: var(--color-g-fg);
+  border: 1px solid var(--color-g-border);
+  padding: var(--glob-size-2);
+  border-radius: var(--glob-border-radius-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#slideshow-inline-blaze-next, .\#slideshow-inline-blaze-prev {
+    transition: 0s;
+  }
+}
+@media (max-width: 991px) {
+  .\#slideshow-inline-blaze-next, .\#slideshow-inline-blaze-prev {
+    display: none;
+  }
+}
+body.glob--border-radius-rounded .\#slideshow-inline-blaze-next, body.glob--border-radius-rounded .\#slideshow-inline-blaze-prev {
+  border-radius: var(--glob-border-radius-circle);
+}
+
+.\#slideshow-inline-blaze-next .\#icon, .\#slideshow-inline-blaze-prev .\#icon {
+  --size: 1.5rem;
+}
+.\#slideshow-inline-blaze-prev {
+  left: calc(var(--glob-size-4) * -1);
+}
+.\#slideshow-inline-blaze-next {
+  right: calc(var(--glob-size-4) * -1);
+}
+.\#slideshow-inline-blaze-pagination {
+  margin-top: var(--glob-gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.\#slideshow-inline-blaze-pagination.\@center {
+  justify-content: center;
+}
+.\#slideshow-inline-blaze-pagination:empty {
+  display: none;
+}
+.\#slideshow-inline-blaze-pagination > button {
+  border: none;
+  padding: 0;
+  background: var(--color-g-text);
+  text-indent: -9999px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--glob-border-radius-inner);
+  opacity: 0.64;
+  transition: var(--transition-base);
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#slideshow-inline-blaze-pagination > button {
+    transition: 0s;
+  }
+}
+.\#slideshow-inline-blaze-pagination > button.active {
+  width: 20px;
+  opacity: 1;
+}
+@media (max-width: 991px) {
+  .\#slideshow-inline-blaze-wrapper {
+    overflow-x: clip;
+  }
+}
+.\#slideshow-inline-blaze.\@offset-display\:none .blaze-track > * {
+  transition: var(--transition-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#slideshow-inline-blaze.\@offset-display\:none .blaze-track > * {
+    transition: 0s;
+  }
+}
+@media (min-width: 992px) {
+  .\#slideshow-inline-blaze.\@offset-display\:none .blaze-track > *:not(.blaze-active) {
+    opacity: 0;
+  }
+}

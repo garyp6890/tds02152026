@@ -1,0 +1,47 @@
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg) translateZ(0);
+  }
+  100% {
+    transform: rotate(360deg) translateZ(0);
+  }
+}
+.\#spinner {
+  --size: 1rem;
+  --color: var(--color-g-text);
+  font-size: var(--size);
+  display: block;
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  position: relative;
+}
+.\#spinner.\@size\:xs {
+  --size: 0.2rem;
+}
+.\#spinner.\@size\:sm {
+  --size: 0.6rem;
+}
+.\#spinner.\@size\:lg {
+  --size: 1.4rem;
+}
+.\#spinner > div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1em solid;
+  border-radius: 50%;
+  animation: spinner 1.2s infinite;
+  border-color: var(--color) transparent transparent transparent;
+}
+.\#spinner > div:nth-child(1) {
+  animation-delay: -0.3s;
+}
+.\#spinner > div:nth-child(2) {
+  animation-delay: -0.2s;
+}
+.\#spinner > div:nth-child(3) {
+  animation-delay: -0.1s;
+}
