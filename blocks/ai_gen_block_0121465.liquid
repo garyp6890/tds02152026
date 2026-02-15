@@ -1,0 +1,463 @@
+{% doc %}
+  @prompt
+    I want to make a new section for a warranty registration. 4. Warranty Register
+    
+    Section: Rich Text
+    
+    Heading: Register Your Apex
+    
+    Body: Simple copy + embed (form provider or Shopify custom form).
+    
+    Optional: add background image of warranty card / ApexBand., It needs to be compatible with mobile. I dont need to form just a visual section., change font to topography, can we remove the area for the  embedded form
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-warranty-register-{{ ai_gen_id }} {
+    position: relative;
+    padding: 80px 20px;
+    background-color: {{ block.settings.background_color }};
+    {% if block.settings.background_image %}
+      background-image: url('{{ block.settings.background_image | image_url: width: 1920}}');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    {% endif %}
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    font-weight: {{ settings.type_heading_font.weight }};
+  }
+
+  .ai-warranty-register-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, {{ block.settings.overlay_opacity | divided_by: 100.0 }});
+    pointer-events: none;
+  }
+
+  .ai-warranty-register-container-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    width: 100%;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-warranty-register-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 24px;
+    line-height: 1.2;font-weight: 700;
+    font-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    font-style: {{ settings.type_heading_font.style }};
+  }
+
+  .ai-warranty-register-body-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    margin: 0 0 32px;
+    font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    font-weight: {{ settings.type_body_font.weight }};
+    font-style: {{ settings.type_body_font.style }};
+  }
+
+  .ai-warranty-register-body-{{ ai_gen_id }} p {
+    margin: 0 0 16px;
+  }
+
+  .ai-warranty-register-body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-warranty-register-cta-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 24px;font-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+  }
+
+  .ai-warranty-register-cta-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    color: {{ block.settings.button_text_color }};
+    transform: translateY(-2px);box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-warranty-register-features-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .ai-warranty-register-feature-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 24px;
+    background-color: {{ block.settings.feature_background_color }};
+    border-radius: {{ block.settings.feature_border_radius }}px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .ai-warranty-register-feature-icon-{{ ai_gen_id }} {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    color: {{ block.settings.feature_icon_color }};
+  }
+
+  .ai-warranty-register-feature-title-{{ ai_gen_id }} {
+    color: {{ block.settings.feature_title_color }};
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    font-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+  }
+
+  .ai-warranty-register-feature-text-{{ ai_gen_id }} {
+    color: {{ block.settings.feature_text_color }};
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-warranty-register-{{ ai_gen_id }} {
+      padding: 60px 16px;
+      min-height: 400px;
+    }
+
+    .ai-warranty-register-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.75 }}px;
+      margin-bottom: 20px;
+    }
+
+    .ai-warranty-register-body-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | minus: 1 }}px;
+      margin-bottom: 24px;
+    }
+
+    .ai-warranty-register-cta-button-{{ ai_gen_id }} {
+      padding: 14px 28px;
+      font-size: 15px;
+      margin-top: 20px;
+    }
+
+    .ai-warranty-register-features-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .ai-warranty-register-feature-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ai-warranty-register-{{ ai_gen_id }} {
+      padding: 40px 12px;
+    }
+
+    .ai-warranty-register-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.65 }}px;
+    }
+
+    .ai-warranty-register-cta-button-{{ ai_gen_id }} {
+      padding: 12px 24px;
+      font-size: 14px;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+{% endstyle %}<div class="ai-warranty-register-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.background_image and block.settings.overlay_opacity > 0 %}
+    <div class="ai-warranty-register-overlay-{{ ai_gen_id }}"></div>
+  {% endif %}
+
+  <div class="ai-warranty-register-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-warranty-register-heading-{{ ai_gen_id }}">
+        {{ block.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {% if block.settings.body_text != blank %}
+      <div class="ai-warranty-register-body-{{ ai_gen_id }}">
+        {{ block.settings.body_text }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_cta_button and block.settings.button_text != blank %}
+      <a 
+        href="{{ block.settings.button_link | default: '#' }}" 
+        class="ai-warranty-register-cta-button-{{ ai_gen_id }}">
+        {{ block.settings.button_text }}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    {% endif %}
+
+    {% if block.settings.show_features %}
+      <div class="ai-warranty-register-features-{{ ai_gen_id }}">
+        <div class="ai-warranty-register-feature-{{ ai_gen_id }}">
+          <div class="ai-warranty-register-feature-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="ai-warranty-register-feature-title-{{ ai_gen_id }}">Protected Coverage</h3>
+          <p class="ai-warranty-register-feature-text-{{ ai_gen_id }}">Comprehensive warranty protection for your ApexBand device</p>
+        </div>
+
+        <div class="ai-warranty-register-feature-{{ ai_gen_id }}">
+          <div class="ai-warranty-register-feature-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="ai-warranty-register-feature-title-{{ ai_gen_id }}">Quick Registration</h3>
+          <p class="ai-warranty-register-feature-text-{{ ai_gen_id }}">Simple and fast warranty registration process</p>
+        </div>
+
+        <div class="ai-warranty-register-feature-{{ ai_gen_id }}">
+          <div class="ai-warranty-register-feature-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z" />
+            </svg>
+          </div>
+          <h3 class="ai-warranty-register-feature-title-{{ ai_gen_id }}">24/7 Support</h3>
+          <p class="ai-warranty-register-feature-text-{{ ai_gen_id }}">Round-the-clock customer support and assistance</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Warranty registration",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Register Your Apex"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>Register your ApexBand to activate your warranty coverage and ensure you receive important product updates and support.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Call to action button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_button",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Start Registration"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Features section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show warranty features",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "default": 30,
+      "info": "Only applies when background image is set"
+    },
+    {
+      "type": "header",
+      "content": "Text styling"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#212529"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#495057"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Body text size",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Button styling"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#0d6efd"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover color",
+      "default": "#0b5ed7"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Features styling"
+    },
+    {
+      "type": "color",
+      "id": "feature_background_color",
+      "label": "Feature background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "feature_icon_color",
+      "label": "Feature icon color",
+      "default": "#0d6efd"
+    },
+    {
+      "type": "color",
+      "id": "feature_title_color",
+      "label": "Feature title color",
+      "default": "#212529"
+    },
+    {
+      "type": "color",
+      "id": "feature_text_color",
+      "label": "Feature text color",
+      "default": "#6c757d"
+    },
+    {
+      "type": "range",
+      "id": "feature_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Feature border radius",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Warranty registration"
+    }
+  ]
+}
+{% endschema %}

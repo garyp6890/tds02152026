@@ -1,0 +1,115 @@
+{%- assign cn = '#gift-card' -%}
+
+<body class="{{ cn }}-container">
+  <header class="{{ cn }}-header">
+    {% if section.settings.logo != blank %}
+        {%- assign image_res = section.settings.logo_width | append: 'x' -%}
+        <img class="{{ cn }}-logo" src="{{ section.settings.logo | img_url: image_res, scale: 2 }}" alt="{{ shop.name }}">
+    {% else %}
+        <h3 class="{{ cn }}-shop-name">{{ shop.name }}</h3>
+    {% endif %}
+    <h1 class="{{ cn }}-title heading-font">{{ 'gift_cards.issued.subtext' | t }}</h1>
+    <div class="{{ cn }}-price">
+      <p class="{{ cn }}-price-value">{{ gift_card.initial_value | money }}</p>
+      {%- if gift_card.enabled == false or gift_card.expired -%}
+        <p class="{{ cn }}-expired">{{ 'gift_cards.issued.expired' | t }}</p>
+      {%- endif -%}
+    </div>
+    
+    {%- if gift_card.message != nil -%}
+      <div class="{{ cn }}-recipient-message">
+        {{ gift_card.message }}
+      </div>
+    {%- endif -%}
+
+    {%- assign gift_card_balance = gift_card.balance | money -%}
+    {%- if gift_card.balance != gift_card.initial_value -%}
+      <p class="{{ cn }}-balance">{{ 'gift_cards.issued.remaining_html' | t: balance: gift_card_balance }}</p>
+    {%- endif -%}
+  </header>
+
+  <main class="{{ cn }}">
+    <div class="{{ cn }}-img-wrapper">
+      <img src="{{ 'gift-card/card.svg' | shopify_asset_url }}" alt="" class="gift-card__image" height="{{ 570 | divided_by: 1.5 }}" width="570" loading="lazy">
+      <div class="{{ cn }}-img-caption">
+        <div class="{{ cn }}-code-number">{{ gift_card.code | format_code }}</div>
+      </div>
+    </div>
+    <div class="{{ cn }}-qr-code-wrapper">
+      <div class="{{ cn }}-qr-code" data-qr-code data-identifier="{{ gift_card.qr_identifier }}"></div>
+    </div>
+    <div class="{{ cn }}-info">
+      {%- if gift_card.pass_url -%}
+        <a href="{{ gift_card.pass_url }}" class="{{ cn }}-apple-wallet">
+          <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}" loading="lazy">
+        </a>
+      {%- endif -%}
+      <div class="{{ cn }}-buttons no-print">
+        {% capture shop_button_atts %}
+          target="_blank"
+          rel="noopener"
+          aria-describedby="a11y-new-window-message"
+        {% endcapture %}
+        {% render 'button',
+          link: shop.url,
+          t_text: 'gift_cards.issued.shop_link',
+          atts: shop_button_atts
+        %}
+        
+        {% capture print_button_atts %}
+          onclick="window.print();"
+        {% endcapture %}
+        {% render 'button',
+          t_text: 'gift_cards.issued.print_gift_card',
+          atts: print_button_atts,
+          display_style: 'link'
+        %}
+      </div>
+    </div>
+  </main>
+
+  <div hidden>
+    <span id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</span>
+  </div>
+</body>
+</html>
+
+<script>
+var string = { qrImageAlt: {{ 'gift_cards.issued.qr_image_alt' | t | json }} };
+document.addEventListener('DOMContentLoaded', function() {
+ new QRCode( document.querySelector('[data-qr-code]'), {
+  text: document.querySelector('[data-qr-code]').dataset.identifier,
+  width: 120,
+  height: 120,
+  imageAltText: string.qrImageAlt
+  });
+});
+</script>
+
+
+
+
+{% schema %}
+{
+  "name": "Logo",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image",
+        "info": "t:g.media.resolution_recommendations.third_of_screen"
+    },
+    {
+        "type": "range",
+        "id": "logo_width",
+        "min": 20,
+        "max": 250,
+        "step": 10,
+        "default": 100,
+        "unit": "t:sections.header.settings.logo_width.unit",
+        "label": "Logo width"
+    }
+  ]
+}
+{% endschema %}

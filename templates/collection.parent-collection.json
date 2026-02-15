@@ -1,0 +1,1 @@
+{"sections":{"header":{"type":"s_collection-header","settings":{"bg_image":"{{ collection.image }}","show_collection_description":true}},"main":{"type":"s_child-collections","settings":{}}},"order":["header","main"]}

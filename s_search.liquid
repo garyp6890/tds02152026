@@ -1,0 +1,420 @@
+{%- liquid 
+    assign NS = 'collection'
+    assign cn = '#' | append: NS
+    assign form_id = 'searchFiltersForm' | append: section.id
+    assign sidebar_form_id = 'searchFiltersFormSidebar' | append: section.id
+    assign product_columns = section.settings.columns
+    assign product_columns_mobile = 2
+    assign product_per_page = product_columns | times: section.settings.rows
+    
+    assign filters_enabled = false 
+    assign filters_block = section.blocks | where: 'type', 'filters' | first
+    if filters_block
+        assign filters_enabled = true 
+        assign show_sidebar = true
+        if section.settings.sidebar_as_drawer
+            assign show_sidebar = false
+        endif
+        assign drawer_id = 'collectionFiltersModal-' | append: section.id
+        assign sidebar_width = filters_block.settings.sidebar_width
+        assign collapse_filters = filters_block.settings.collapse_filters
+    endif
+
+    assign secondary_items_id = 'secondaryItems-' | append: section.id
+
+    if section.settings.fallback_collection != blank
+        assign fallback_collection_products = section.settings.fallback_collection.products
+        if section.settings.show_only_products_in_stock
+            assign fallback_collection_products = fallback_collection_products | where: 'available'
+        endif
+        assign products_limit = product_per_page
+    endif
+
+    if search.performed
+        assign no_result_heading = 'templates.search.no_results_title' | t: terms: search.terms
+    else
+        assign no_result_heading = 'general.search.info' | t
+    endif
+    assign no_result_subheading = 'templates.search.no_results_recommend' | t
+
+    if search.types.size == 1 and search.types[0] == 'product'
+        assign products_search = true
+    endif
+
+    if search.results_count > 0 or search.filters.size > 0
+        assign valid_search = true
+    endif
+
+    assign clear_url = routes.search | append: '?type=product' | append: '&q=' | append: search.terms
+    if search.sort_by != blank
+        assign clear_url = clear_url | append: '&sort_by=' | append: search.sort_by
+    endif
+
+    if section.settings.show_sort_dropdown
+        assign show_sort = true 
+        assign sort_by = search.sort_by | default: search.default_sort_by
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- if show_sidebar -%}
+    {%- capture product_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) * {{ 100 | minus: sidebar_width | divided_by: 100.0 }})/{{ product_columns }}{%- endcapture -%}
+{%- else -%}    
+    {%- capture product_image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px)/{{ product_columns }}{%- endcapture -%}
+{%- endif -%}
+
+{%- capture product_image_srcsize_mobile -%}90vw/{{ product_columns_mobile }}{%- endcapture -%}
+
+{%- capture No_products_msg -%}
+    {% render 'splash-msg',
+        t_heading: 'sections.collection_template.empty',
+        t_subheading: 'sections.collection_template.use_fewer_filters',
+        button_t_label: 'products.facets.clear_all', 
+        button_link: clear_url
+    %} 
+{%- endcapture -%}
+
+{%- if fallback_collection_products.size > 0 and search.results_count == 0 -%}
+    {%- capture Fallback_collection_grid -%}
+                    <div class="{{ cn }}-fallback">
+                {% render 'hero',
+                    heading: no_result_heading,
+                    subheading: no_result_subheading,
+                    align: 'center',
+                    outer_gap: true,
+                %}
+
+                {% render 'collection-products',
+                    product_image_srcsize_desktop: product_image_srcsize_desktop,
+                    product_image_srcsize_mobile: product_image_srcsize_mobile,
+                    products: fallback_collection_products,
+                    fallback_msg: No_products_msg,
+                    columns: product_columns,
+                    mobile_columns: product_columns_mobile,
+                    limit: products_limit
+                %}
+            </div>
+    {%- endcapture -%}
+{%- endif -%}
+
+{% if filters_enabled %}
+    {% capture Drawer_sidebar %}
+        <div class="{{ cn }}-drawer">
+            {% render 'collection-sidebar',
+                form_id: form_id,
+                collection: search,
+                collapse_filters: collapse_filters,
+                show_sort: show_sort,
+                drawer: true
+            %}
+        </div>
+    {% endcapture %}
+
+    {% render 'modal',
+        id: drawer_id,
+        content: Drawer_sidebar,
+        animation: 'left',
+        height: '100%',
+        width: 'min(350px, 80%)'
+    %}
+{% endif %}
+
+{%- capture Toolbar_status -%}
+    {{ 'templates.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+{%- endcapture -%}
+
+{%- capture Toolbar -%}
+    {% render 'collection-toolbar',
+        status: Toolbar_status,
+        src: search,
+        filters_enabled: filters_enabled,
+        drawer_id: drawer_id,
+        desktop_filters: show_sidebar,
+        sort_form_id: form_id,
+        show_sort: show_sort
+    %}
+{%- endcapture -%}
+
+{% if filters_enabled and section.settings.show_active_filters %}
+    {%- capture Active_filters -%}
+        {% if section.settings.show_active_filters %}
+            {% render 'collection-active-filters', 
+                src: search, 
+                clear_url: clear_url 
+            %}
+        {% endif %}
+    {%- endcapture -%}
+{% endif %}
+
+{% capture Product_grid %}
+    {%- paginate search.results by product_per_page -%}
+        <collection-products section-id="{{ section.id }}" id="collection-products-{{ section.id }}">
+            {% if search.results.size <= 0 %}
+                {{ No_products_msg }}
+            {% else %}
+                <div class="#grid @type:columns" style="--columns: {{ product_columns }}; --columns-mobile: {{ product_columns_mobile }};" data-element="products-container">
+                    {% for result in search.results %}
+                        {% if result.object_type == 'product' %}
+                            {% render 'product-card', 
+                                product: result,
+                                image_srcsize_desktop: product_image_srcsize_desktop,
+                                image_srcsize_mobile: product_image_srcsize_mobile
+                            %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </collection-products>
+        {% comment %}
+        {% render 'collection-products',
+            product_image_srcsize_desktop: product_image_srcsize_desktop,
+            product_image_srcsize_mobile: product_image_srcsize_mobile,
+            products: search.results,
+            fallback_msg: No_products_msg,
+            columns: product_columns,
+            mobile_columns: product_columns_mobile
+        %}
+        {% endcomment %}
+        <script type="module" src="{{ 'collection-products.js' | asset_url }}"></script>
+        {% if section.settings.pagination_type == 'default' %}
+            {% render 'collection-pagination', paginate: paginate, anchor: '' %}
+        {% else %}
+            {% render 'collection-dynamic-pagination',
+                paginate: paginate,
+                type: section.settings.pagination_type,
+                form_id: form_id
+            %}
+        {% endif %}
+    {%- endpaginate -%}
+{% endcapture %}
+
+{%- capture Main -%}
+    {{ Active_filters }}
+    {{ Product_grid }}
+{%- endcapture -%}
+
+{%- capture Content -%}
+    {%- if search.performed and valid_search -%}        
+        {%- if products_search -%}
+            <collection-provider 
+                section-id="{{ section.id }}" 
+                collection-url="{{ routes.search_url }}"
+                {% if show_sort %}
+                    sort-by="{{ sort_by }}"
+                {% endif %}
+            >
+                <form id="{{ form_id }}" data-element="collection-form">
+                    <input type="hidden" name="type" value="product">
+                    <input type="hidden" name="q" value="{{ search.terms }}">
+                </form>
+                {% if filters_enabled and show_sidebar %}
+                    <form id="{{ sidebar_form_id }}" data-element="collection-form">
+                        <input type="hidden" name="type" value="product">
+                        <input type="hidden" name="q" value="{{ search.terms }}">
+                    </form>
+                {% endif %}
+                <div class="{{ cn }}-loader" data-element="loader">
+                    <div class="{{ cn }}-loader-msg">
+                        <div class="{{ cn }}-loader-msg-inner">
+                            {% render 'spinner', size: 'xs' %}
+                            <h5 class="{{ cn }}-loader-msg-title">{{ 'sections.collection_template.loading_products' | t }}</h5>
+                        </div>
+                    </div>
+                    <div class="{{ cn }}-inner">
+                        {{ Toolbar }}
+                        <div class="#container">
+                            {%- if filters_enabled and show_sidebar -%}
+                                <div class="#grid @type:template" style="--template: {{ section.settings.sidebar_width }}% 1fr; --template-mobile: none; --gap: calc(var(--glob-gutter) * 2); --gap-mobile: 0;">
+                                    <div class="mobile-hidden">
+                                        {% render 'collection-sidebar',
+                                            form_id: sidebar_form_id,
+                                            collection: search,
+                                            collapse_filters: collapse_filters,
+                                            show_sort: false
+                                        %}
+                                    </div>
+                                    <div>
+                                        {{ Main }}
+                                    </div>
+                                </div>
+                            {%- else -%}
+                                {{ Main }}
+                            {%- endif -%}
+                        </div>
+                    </div>
+                </div>
+            </collection-provider>
+            {% render 'load-css', file: 'search-secondary-results' %}
+            {% render 'load-css', file: 'search-secondary-item-card' %}
+            <div class="#container"> 
+                {% render 'search-secondary-results', type: 'article', target: secondary_items_id %}  
+                {% render 'search-secondary-results', type: 'page', target: secondary_items_id %}  
+            </div>
+        {%- else -%}
+            <div data-target="{{ secondary_items_id }}">
+                {%- for item in search.results -%}
+                    {% render 'search-secondary-item-card', item: item, type: search.types[0] %}
+                {%- endfor -%}
+            </div>                
+        {%- endif -%}
+    {%- else -%}
+        <div class="#container">
+        {%- if Fallback_collection_grid != blank -%}
+            {{ Fallback_collection_grid }}
+        {%-else-%}
+            {%- capture Splash_message -%}
+                {%- assign heading = 'general.search.search' | t -%}
+                {%- assign subheading = 'general.search.info' | t -%}
+                {%- if search.performed -%}
+                    {%- assign heading = no_result_heading -%}
+                    {%- assign subheading = 'templates.search.no_results_subtitle' | t -%}
+                {%- endif -%}
+                {% render 'splash-msg',
+                    heading: heading,
+                    subheading: subheading
+                %}
+            {%- endcapture -%}
+            {{ Splash_message }}
+        <div>
+        {%- endif -%}
+    {%- endif -%}
+    <script type="module" src="{{ 'collection-provider.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+
+{% render 'section-body',
+    content: Content
+%}
+
+{% schema %}
+    {
+        "name": "Search",
+        "tag": "section",
+        "settings": [
+            {
+                "type": "range",
+                "id": "columns",
+                "label": "Desktop columns",
+                "min": 2,
+                "step": 1,
+                "max": 6,
+                "default": 4
+            },
+            {
+                "type": "range",
+                "id": "rows",
+                "label": "Maximum rows",
+                "min": 2,
+                "step": 1,
+                "max": 6,
+                "default": 3
+            },
+            {
+                "type": "header",
+                "content": "t:g.collection_grid.fallback_collection"
+            },
+            {
+                "type": "collection",
+                "id": "fallback_collection",
+                "label": "t:g.common.label.collection"
+            },
+            {
+                "type": "select",
+                "id": "pagination_type",
+                "label": "Pagination type",
+                "options": [
+                    {
+                        "value": "default",
+                        "label": "Default"
+                    },
+                    {
+                        "value": "scroll",
+                        "label": "Infinite scroll"
+                    },
+                    {
+                        "value": "button",
+                        "label": "'View more' button"
+                    }
+                ],
+                "default": "default"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_sort_dropdown",
+                "label": "Show sort dropdown",
+                "default": true
+            },
+            {
+                "type": "checkbox",
+                "id": "show_active_filters",
+                "label": "Show active filters",
+                "default": true
+            },
+            {
+                "type": "header",
+                "content": "Sidebar"
+            },
+            {
+                "type": "checkbox",
+                "id": "sidebar_as_drawer",
+                "label": "Display sidebar within drawer on desktop",
+                "info": "Is always displayed within drawer on mobile"
+            },
+            {
+                "type": "range",
+                "id": "sidebar_width",
+                "label": "Desktop sidebar width",
+                "min": 20,
+                "step": 1,
+                "max": 30,
+                "unit": "%",
+                "default": 20,
+                "info": "Will be ignored if you selected the option above"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "filters",
+                "name": "Filters",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "checkbox",
+                        "id": "hide_out_of_stock_filter",
+                        "label": "Hide 'Out of stock' filter",
+                        "default": false
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "color_swatches",
+                        "label": "Enable theme built-in color swatches as filters [Learn more](https://support.milehighthemes.com/article/43-setting-up-color-swatches-as-product-variations)",
+                        "info": "Shopify visual filters will work by default independently of this option [Learn more](https://help.shopify.com/en/manual/online-store/search-and-discovery/filters#visual-filters)"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "collapse_filters",
+                        "label": "Collapse filters",
+                        "default": false
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "show_view_all",
+                        "label": "Limit visible filters",
+                        "default": true
+                    }
+                ]
+            },
+            {
+                "type": "@app"
+            }
+        ],
+        "default": {
+            "blocks": [
+                {
+                    "type": "filters"
+                }
+            ]
+        }
+    }
+{% endschema %}

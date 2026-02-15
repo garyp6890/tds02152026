@@ -1,0 +1,574 @@
+{
+  "sections": {
+    "1649081791eb3a0c3d": {
+      "type": "d_promo-banner",
+      "blocks": {
+        "10fdd41f-2315-41d6-9635-dd0c3a78ad9c": {
+          "type": "heading",
+          "settings": {
+            "heading": "Get an Extra $10 off",
+            "heading_scale": 100,
+            "subheading": ""
+          }
+        },
+        "30140831-cd15-4379-b55d-7ac5600dc0e5": {
+          "type": "timer",
+          "settings": {
+            "date": "04-03-2024",
+            "hide_on_complete": false
+          }
+        },
+        "29095ef3-e037-48ac-a925-11a52cbedbd1": {
+          "type": "button",
+          "settings": {
+            "mobile_hidden": false,
+            "label": "Use Code: GET10",
+            "link": "",
+            "tier": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "10fdd41f-2315-41d6-9635-dd0c3a78ad9c",
+        "30140831-cd15-4379-b55d-7ac5600dc0e5",
+        "29095ef3-e037-48ac-a925-11a52cbedbd1"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "accent2",
+        "section_layout": "full",
+        "desktop_text_align": "space-between",
+        "link": "",
+        "pattern": "pattern-bank-note_100",
+        "pattern_scale": 100,
+        "pattern_opacity": 65,
+        "pattern_animation": "none"
+      }
+    },
+    "main": {
+      "type": "s_product",
+      "blocks": {
+        "0d7827f3-b69a-47b8-9d61-a253d9d4cf0f": {
+          "type": "custom_image",
+          "settings": {
+            "heading": "",
+            "max_width": 22,
+            "prev_attach": true
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+            "heading_scale": 105,
+            "enable_text_truncation": false,
+            "max_lines": 3,
+            "badges_display": "before",
+            "show_low_stock": false,
+            "badges_scale": 100,
+            "prev_attach": true
+          }
+        },
+        "6869677d-4a02-4300-adfb-3e693d0b1235": {
+          "type": "share",
+          "settings": {
+            "meta_heading": "",
+            "use_colors": false,
+            "prev_attach": true
+          }
+        },
+        "17d79ac0-9468-4e01-9982-83445b2febda": {
+          "type": "rating",
+          "settings": {
+            "show_count": true,
+            "prev_attach": false
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "show_savings": false,
+            "text_scale": 200,
+            "bold_text": false,
+            "show_taxes": true,
+            "prev_attach": false
+          }
+        },
+        "a68e8d3b-8a31-48f2-9d39-c0737960dcdd": {
+          "type": "countdown",
+          "disabled": true,
+          "settings": {
+            "meta_heading": "Sale ends in:",
+            "text_scale": 175,
+            "use_sale_price_color": true,
+            "prev_attach": false
+          }
+        },
+        "7e37f69f-d0e7-4b32-801c-81c63db85c51": {
+          "type": "variant_selector",
+          "settings": {
+            "picker_type": "dropdown",
+            "show_variant_image": "colors",
+            "color_swatches": true,
+            "price_display": "diff",
+            "swatches_grid_columns": "auto",
+            "show_stock_alert": false,
+            "prev_attach": false
+          }
+        },
+        "c0cefcd5-acba-4005-bf0e-d50cda7faab2": {
+          "type": "product_options_list",
+          "disabled": true,
+          "settings": {
+            "show_sku": false,
+            "enable_sorting": true,
+            "enable_stock_sort": true,
+            "prev_attach": false
+          }
+        },
+        "stock_alert": {
+          "type": "stock_alert",
+          "disabled": true,
+          "settings": {
+            "actual_inventory": false,
+            "prev_attach": false
+          }
+        },
+        "buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "enable_stock_notifier": true,
+            "show_payment_methods": false,
+            "show_gift_card_recipient": false,
+            "prev_attach": true
+          }
+        },
+        "61f777c6-bb00-4f77-8d46-35b6bfd201ae": {
+          "type": "description",
+          "settings": {
+            "meta_heading": "",
+            "font_scale": 100,
+            "use_expand": true,
+            "prev_attach": false
+          }
+        }
+      },
+      "block_order": [
+        "0d7827f3-b69a-47b8-9d61-a253d9d4cf0f",
+        "title",
+        "6869677d-4a02-4300-adfb-3e693d0b1235",
+        "17d79ac0-9468-4e01-9982-83445b2febda",
+        "price",
+        "a68e8d3b-8a31-48f2-9d39-c0737960dcdd",
+        "7e37f69f-d0e7-4b32-801c-81c63db85c51",
+        "c0cefcd5-acba-4005-bf0e-d50cda7faab2",
+        "stock_alert",
+        "buttons",
+        "61f777c6-bb00-4f77-8d46-35b6bfd201ae"
+      ],
+      "settings": {
+        "layout": "wide",
+        "use_surface_color_for_bg": true,
+        "show_divider": false,
+        "use_images_set": false,
+        "gallery_type": "scrollable",
+        "gallery_position": "right",
+        "gallery_width": 64,
+        "enable_image_zoom": false,
+        "autoplay_video": false,
+        "image_expand": true,
+        "sticky_add_to_cart": false,
+        "sticky_add_to_cart_position": "bottom",
+        "enable_share_button": false,
+        "use_brand_colors": true,
+        "show_product_specs": false,
+        "product_specs": "<p>Brand: {{ product.vendor }}</p><p>Title: {{ product.title }}</p>",
+        "specs_use_expand": false,
+        "show_product_bundle": false,
+        "product_bundle_heading": "Buy together & save",
+        "product_bundle_variant_selector": false
+      }
+    },
+    "7377e721-23fa-4310-9ac7-ea44f762e2a1": {
+      "type": "d_promo-banner",
+      "blocks": {
+        "template--21020485714208__7377e721-23fa-4310-9ac7-ea44f762e2a1-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "70% Off",
+            "heading_scale": 100,
+            "subheading": "Limited Time Offer"
+          }
+        },
+        "template--21020485714208__7377e721-23fa-4310-9ac7-ea44f762e2a1-text-1": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p>Text</p>"
+          }
+        },
+        "ae12d0f0-6874-4efa-a65f-dd3ed799b281": {
+          "type": "timer",
+          "settings": {
+            "date": "06-25-2025",
+            "hide_on_complete": false
+          }
+        },
+        "template--21020485714208__7377e721-23fa-4310-9ac7-ea44f762e2a1-button-1": {
+          "type": "button",
+          "settings": {
+            "mobile_hidden": false,
+            "label": "Shop Outlet",
+            "link": "",
+            "tier": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21020485714208__7377e721-23fa-4310-9ac7-ea44f762e2a1-heading-1",
+        "template--21020485714208__7377e721-23fa-4310-9ac7-ea44f762e2a1-text-1",
+        "ae12d0f0-6874-4efa-a65f-dd3ed799b281",
+        "template--21020485714208__7377e721-23fa-4310-9ac7-ea44f762e2a1-button-1"
+      ],
+      "settings": {
+        "color_scheme": "invert",
+        "section_layout": "full",
+        "desktop_text_align": "space-between",
+        "pattern": "pattern-topography_600",
+        "pattern_scale": 100,
+        "pattern_opacity": 65,
+        "pattern_animation": "none"
+      }
+    },
+    "7b4dbb54-cd94-4717-87fc-d56da176845a": {
+      "type": "d_complementary-products",
+      "settings": {
+        "heading": "",
+        "subheading": "Frequently bought together"
+      }
+    },
+    "fe22920c-912b-456c-95da-1f88442bda15": {
+      "type": "d_hero-image",
+      "blocks": {
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Written thanks to you"
+          }
+        },
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our Story",
+            "heading_scale": 180
+          }
+        },
+        "cacc49bb-e44c-49b1-b4c5-a16277a9d46e": {
+          "type": "timer",
+          "disabled": true,
+          "settings": {
+            "date": "04-03-2024",
+            "hide_on_complete": false
+          }
+        },
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We travel with you to bring your goals closer and help you achieve what you want!</p>",
+            "enlarge_text": false
+          }
+        },
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-buttons-1": {
+          "type": "buttons",
+          "settings": {
+            "mobile_hidden": false,
+            "info": "",
+            "f_button_label": "About Us",
+            "f_button_tier": "secondary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-subheading-1",
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-heading-1",
+        "cacc49bb-e44c-49b1-b4c5-a16277a9d46e",
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-text-1",
+        "template--21020485714208__fe22920c-912b-456c-95da-1f88442bda15-buttons-1"
+      ],
+      "settings": {
+        "color_scheme": "scheme-27e1e1b8-7c17-4f87-a38d-34818dc4fad6",
+        "section_layout": "full",
+        "image_size": "650px",
+        "mobile_image_size": "450px",
+        "overlay": 5,
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_opacity": 65,
+        "pattern_animation": "none",
+        "use_box": false,
+        "text_position": "center-left",
+        "mobile_offset": false
+      }
+    },
+    "5b99b4eb-e072-4546-91ae-3c2215c665e4": {
+      "type": "d_product-collections",
+      "disabled": true,
+      "settings": {
+        "heading": "",
+        "subheading": "Continue Shopping",
+        "columns": 5
+      }
+    },
+    "bf68ff39-3604-4104-bb9e-9f41dfaedaca": {
+      "type": "d_product-description",
+      "disabled": true,
+      "settings": {
+        "heading": "Product information",
+        "subheading": "",
+        "content_width": 80,
+        "font_scale": 100,
+        "show_specs": false,
+        "specs": "<p>Brand: {{ product.vendor }}</p><p>Title: {{ product.title }}</p>",
+        "specs_position": "left"
+      }
+    },
+    "4db029ba-fac2-4c09-84ab-8e60f01e0543": {
+      "type": "d_stacked-images-with-text",
+      "blocks": {
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Taking care of you"
+          }
+        },
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Top Quality",
+            "heading_scale": 120
+          }
+        },
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Whether you’re planning a camping trip, an extended road trip, or a weekend getaway, having the right gear can make all the difference. Experience exceptional quality for your journey needs.</p>",
+            "enlarge_text": false
+          }
+        },
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-buttons-1": {
+          "type": "buttons",
+          "settings": {
+            "info": "",
+            "f_button_label": "",
+            "f_button_link": "",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-subheading-1",
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-heading-1",
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-text-1",
+        "template--21020485714208__4db029ba-fac2-4c09-84ab-8e60f01e0543-buttons-1"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "section_width": 100,
+        "blur_secondary_image": false,
+        "image_position": "left",
+        "text_position": "center-left",
+        "media_width": 50,
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "af0577b1-9c73-47e0-9521-62216e3cdd14": {
+      "type": "d_video-popup-with-text",
+      "blocks": {
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Subheading"
+          }
+        },
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Video popup with text heading",
+            "heading_scale": 120
+          }
+        },
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Give customers details about the hero image or content on the template.</p>",
+            "enlarge_text": false
+          }
+        },
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-buttons-1": {
+          "type": "buttons",
+          "settings": {
+            "info": "",
+            "f_button_label": "",
+            "f_button_link": "",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-subheading-1",
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-heading-1",
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-text-1",
+        "template--21020485714208__af0577b1-9c73-47e0-9521-62216e3cdd14-buttons-1"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "invert",
+        "section_layout": "full",
+        "embedded_video": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "autoplay": true,
+        "image_size": "450px",
+        "mobile_image_size": "origin",
+        "image_width": 50,
+        "image_position": "left",
+        "text_position": "center-center",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "35b86b5b-f69d-4b93-9e46-a4a8b66dcf42": {
+      "type": "d_background-video-with-text",
+      "blocks": {
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "adventure is here"
+          }
+        },
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Your Way",
+            "heading_scale": 195
+          }
+        },
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>All over the world, from the highest mountain to the majestic cliffs, there’s no shortage of amazing views to explore. So grab your camera and start exploring the world’s most beautiful places.</p>",
+            "enlarge_text": false
+          }
+        },
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-buttons-1": {
+          "type": "buttons",
+          "disabled": true,
+          "settings": {
+            "info": "",
+            "f_button_label": "Find More",
+            "f_button_link": "",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-subheading-1",
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-heading-1",
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-text-1",
+        "template--21020485714208__35b86b5b-f69d-4b93-9e46-a4a8b66dcf42-buttons-1"
+      ],
+      "settings": {
+        "color_scheme": "invert",
+        "section_layout": "full",
+        "embedded_video": "https://www.youtube.com/watch?v=Jqf9haCd6mM&ab_channel=DennisRethers",
+        "image_size": "650px",
+        "mobile_image_size": "origin",
+        "display_desktop_only": false,
+        "image_width": 60,
+        "image_position": "right",
+        "text_position": "center-left",
+        "pattern": "pattern-topography_600",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "754f7702-d82c-416d-89df-63c5feec689a": {
+      "type": "d_compare-products",
+      "blocks": {
+        "template--15265575993378__754f7702-d82c-416d-89df-63c5feec689a-price-1": {
+          "type": "price",
+          "settings": {
+            "enlarge": true
+          }
+        },
+        "template--15265575993378__754f7702-d82c-416d-89df-63c5feec689a-rating-1": {
+          "type": "rating",
+          "settings": {
+            "hide_no_match": true
+          }
+        },
+        "template--15265575993378__754f7702-d82c-416d-89df-63c5feec689a-vendor-1": {
+          "type": "vendor",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "template--15265575993378__754f7702-d82c-416d-89df-63c5feec689a-price-1",
+        "template--15265575993378__754f7702-d82c-416d-89df-63c5feec689a-rating-1",
+        "template--15265575993378__754f7702-d82c-416d-89df-63c5feec689a-vendor-1"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "Compare with similar items",
+        "subheading": "",
+        "compare_products": [
+          "4pcs-stainless-steel-cutlery-set-dinnerware-set-western-tableware-classic-dinner-set-knife-fork-spoon-flatware-restaurant-dining",
+          "1000-8000-grit-bamboo-base-angle-guideset-kitchen-knife-sharpener-sharpening-stone-whetstone-grinding-stone",
+          "1000ml-ceramic-noodle-bowl-spoon-bowl-mat-with-cover-instant-noodle-bowl-korean-soup-bowl-rice-bowl-cutlery-set-white",
+          "13-piece-granite-pots-set-biyogranit-black-gold-rich-murfak-cookware-set-luxury-cookware-set"
+        ],
+        "show_stripes": true,
+        "show_main_product_accent": true,
+        "enable_product_title_truncation": true,
+        "product_title_max_lines": 2
+      }
+    },
+    "16554757745dec0af9": {
+      "type": "d_product-recommendations",
+      "settings": {
+        "heading": "Recommended for You",
+        "subheading": "",
+        "slide_every": "row",
+        "slides_per_view": 4,
+        "products_limit": 7
+      }
+    }
+  },
+  "order": [
+    "1649081791eb3a0c3d",
+    "main",
+    "7377e721-23fa-4310-9ac7-ea44f762e2a1",
+    "7b4dbb54-cd94-4717-87fc-d56da176845a",
+    "fe22920c-912b-456c-95da-1f88442bda15",
+    "5b99b4eb-e072-4546-91ae-3c2215c665e4",
+    "bf68ff39-3604-4104-bb9e-9f41dfaedaca",
+    "4db029ba-fac2-4c09-84ab-8e60f01e0543",
+    "af0577b1-9c73-47e0-9521-62216e3cdd14",
+    "35b86b5b-f69d-4b93-9e46-a4a8b66dcf42",
+    "754f7702-d82c-416d-89df-63c5feec689a",
+    "16554757745dec0af9"
+  ]
+}

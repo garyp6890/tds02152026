@@ -1,0 +1,57 @@
+{% doc %}
+  @prompt
+    i need a black space so the back ground is seen an nothing else
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-blank-space-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.height_desktop }}px;
+    background: transparent;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-blank-space-{{ ai_gen_id }} {
+      height: {{ block.settings.height_mobile }}px;
+    }
+  }
+{% endstyle %}<div
+  class="ai-blank-space-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+></div>
+
+{% schema %}
+{
+  "name": "Blank space",
+  "settings": [
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "min": 20,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Height on desktop",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "min": 20,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Height on mobile",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blank space"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

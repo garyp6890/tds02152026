@@ -1,0 +1,153 @@
+{% render 'load-css', file: 'collection-card' %}
+
+{%- liquid
+    case section.settings.sort
+      when 'products_high' or 'products_low'
+        assign collections = collections | sort: 'all_products_count'
+      when 'date' or 'date_reversed'
+        assign collections = collections | sort: 'published_at'
+    endcase
+  
+    if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+      assign collections = collections | reverse
+    endif
+
+    assign paginate_items = section.settings.columns | times: 3
+-%}
+
+{%- capture Content -%}
+    
+        {%- if section.settings.collections_display == 'all' -%}
+            {%- liquid
+                case section.settings.sort
+                when 'products_high' or 'products_low'
+                    assign collections = collections | sort: 'all_products_count'
+                when 'date' or 'date_reversed'
+                    assign collections = collections | sort: 'published_at'
+                endcase
+            
+                if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+                assign collections = collections | reverse
+                endif
+            -%}
+            
+            {% paginate collections by paginate_items %}
+            <div class="#grid @type:columns" style="--columns: {{ section.settings.columns }}; --columns-mobile: 2; --gap: 2rem; --gap-mobile: 1rem;">
+                {% for collection in collections %}
+                    <div>
+                        {% render 'collection-card',
+                            collection: collection,
+                            text_position: section.settings.text_position,
+                        %}
+                    </div>            
+                {% endfor %}
+                </div>
+                {%- if paginate.pages > 1 -%}
+                    {% render 'pagination', paginate: paginate, anchor: '' %}
+                {%- endif -%} 
+            {% endpaginate %}
+        {%- else -%}
+        <div class="#grid @type:columns" style="--columns: {{ section.settings.columns }}; --columns-mobile: 2; --gap: 2rem; --gap-mobile: 1rem;">
+            {% for block in section.blocks %}
+                <div {{ block.shopify_attributes }}>
+                    {% render 'collection-card',
+                        image: block.settings.image,
+                        collection: block.settings.collection,
+                    %}
+                </div>            
+            {% endfor %}
+        </div>
+        {%- endif -%}
+    
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    spaced: true,
+    container: true
+%}
+
+
+
+{% schema %}
+{
+    "name": "Collection list",
+    "settings": [
+        {
+            "type": "radio",
+            "id": "collections_display",
+            "label": "Collections to show",
+            "options": [
+            {
+                "value": "all",
+                "label": "All"
+            },
+            {
+                "value": "selected",
+                "label": "Selected"
+            }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Desktop columns",
+            "min": 3,
+            "step": 1,
+            "max": 6,
+            "default": 5              
+        },
+        {
+          "type": "select",
+          "id": "sort",
+          "options": [
+            {
+              "value": "alphabetical",
+              "label": "t:sections.main-list-collections.settings.sort.options__1.label"
+            },
+            {
+              "value": "alphabetical_reversed",
+              "label": "t:sections.main-list-collections.settings.sort.options__2.label"
+            },
+            {
+              "value": "date_reversed",
+              "label": "t:sections.main-list-collections.settings.sort.options__3.label"
+            },
+            {
+              "value": "date",
+              "label": "t:sections.main-list-collections.settings.sort.options__4.label"
+            },
+            {
+              "value": "products_high",
+              "label": "t:sections.main-list-collections.settings.sort.options__5.label"
+            },
+            {
+              "value": "products_low",
+              "label": "t:sections.main-list-collections.settings.sort.options__6.label"
+            }
+          ],
+          "default": "alphabetical",
+          "label": "t:sections.main-list-collections.settings.sort.label",
+          "info": "Sorting only applies when 'All' is selected above."
+        }
+    ],
+    "blocks": [
+        {
+            "type": "collection",
+            "name": "Collection",
+            "settings": [
+                {
+                    "type": "collection",
+                    "id": "collection",
+                    "label": "Collection"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Custom image"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

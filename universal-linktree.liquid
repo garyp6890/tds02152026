@@ -1,0 +1,1503 @@
+{% assign font_family = section.settings.font_family | default: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' %}
+
+<div class="linktree-page" data-section-id="{{ section.id }}" 
+     style="
+       font-family: {{ font_family }};
+       {% if section.settings.hero_bg != blank and section.settings.main_bg != blank and section.settings.enable_fade %}
+         background: linear-gradient(180deg, 
+           rgba(0,0,0,{{ section.settings.hero_overlay_opacity | divided_by: 100.0 }}) 0%, 
+           rgba(0,0,0,{{ section.settings.main_overlay_opacity | divided_by: 100.0 }}) 100%),
+           url('{{ section.settings.hero_bg | image_url: width: 1200 }}'),
+           url('{{ section.settings.main_bg | image_url: width: 1200 }}');
+         background-size: cover, cover;
+         background-position: center top, center bottom;
+       {% elsif section.settings.hero_bg != blank %}
+         background: linear-gradient(rgba(0,0,0,{{ section.settings.hero_overlay_opacity | divided_by: 100.0 }}), rgba(0,0,0,{{ section.settings.hero_overlay_opacity | divided_by: 100.0 }})), url('{{ section.settings.hero_bg | image_url: width: 1200 }}');
+         background-size: cover;
+         background-position: center;
+       {% endif %}
+       {% if section.settings.enable_blur %}backdrop-filter: blur({{ section.settings.blur_intensity }}px);{% endif %}
+     ">
+  
+  <div class="linktree-container">
+    
+    {%- comment -%} Header / Hero {%- endcomment -%}
+    <div class="linktree-header">
+      {% if section.settings.logo_1 != blank or section.settings.logo_2 != blank %}
+        <div class="linktree-logos" style="{% if section.settings.force_equal_logo_size %}height: {{ section.settings.logo_height }}px;{% endif %}">
+          {% if section.settings.logo_1 != blank %}
+            <img src="{{ section.settings.logo_1 | image_url: width: 300 }}" 
+                 width="{{ section.settings.logo_1_width }}" 
+                 height="{{ section.settings.logo_height }}" 
+                 style="max-width: {{ section.settings.logo_1_width }}px; max-height: {{ section.settings.logo_height }}px; object-fit: contain;" 
+                 alt="Logo 1" 
+                 class="linktree-logo">
+          {% endif %}
+          {% if section.settings.logo_2 != blank %}
+            <img src="{{ section.settings.logo_2 | image_url: width: 300 }}" 
+                 width="{{ section.settings.logo_2_width }}" 
+                 height="{{ section.settings.logo_height }}" 
+                 style="max-width: {{ section.settings.logo_2_width }}px; max-height: {{ section.settings.logo_height }}px; object-fit: contain;" 
+                 alt="Logo 2" 
+                 class="linktree-logo">
+          {% endif %}
+        </div>
+      {% endif %}
+      
+      <div class="linktree-username-wrapper">
+        <h1 class="linktree-username" style="color: {{ section.settings.username_color }}; font-size: {{ section.settings.username_size }}px; font-weight: {{ section.settings.font_weight }};">
+          {{ section.settings.username }}
+        </h1>
+        {% if section.settings.enable_inline_share %}
+          <button class="share-btn-inline" onclick="shareLinktree()" style="color: {{ section.settings.share_icon_color }};">
+            {% if section.settings.share_icon != blank %}
+              <img src="{{ section.settings.share_icon | image_url: width: 50 }}" width="{{ section.settings.share_icon_size }}" height="{{ section.settings.share_icon_size }}" alt="Share">
+            {% else %}
+              <svg width="{{ section.settings.share_icon_size }}" height="{{ section.settings.share_icon_size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+            {% endif %}
+          </button>
+        {% endif %}
+      </div>
+      
+      {% if section.settings.tagline != blank %}
+        <p class="linktree-tagline" style="color: {{ section.settings.tagline_color }}; font-size: {{ section.settings.tagline_size }}px;">
+          {{ section.settings.tagline }}
+        </p>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Main Links and Sections {%- endcomment -%}
+    <div class="linktree-links" 
+         style="
+           {% if section.settings.main_bg != blank and section.settings.enable_fade == false %}
+             background: linear-gradient(rgba(0,0,0,{{ section.settings.main_overlay_opacity | divided_by: 100.0 }}), rgba(0,0,0,{{ section.settings.main_overlay_opacity | divided_by: 100.0 }})), url('{{ section.settings.main_bg | image_url: width: 1200 }}');
+             background-size: cover;
+             background-position: center;
+             border-radius: 12px;
+             padding: 2rem 1rem;
+           {% endif %}
+         ">
+      
+      {% for block in section.blocks %}
+        {% case block.type %}
+          
+          {% when "link" %}
+            <a href="{{ block.settings.url }}" 
+               class="linktree-btn linktree-btn--{{ block.settings.button_size }}" 
+               style="
+                 {% if block.settings.custom_button_bg != blank %}
+                   background-color: {{ block.settings.custom_button_bg }};
+                 {% else %}
+                   background-color: {{ section.settings.button_bg_color }};
+                 {% endif %}
+                 {% if block.settings.custom_button_text != blank %}
+                   color: {{ block.settings.custom_button_text }};
+                 {% else %}
+                   color: {{ section.settings.button_text_color }};
+                 {% endif %}
+                 {% if block.settings.button_size == 'featured' and block.settings.featured_bg != blank %}
+                   background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ block.settings.featured_bg | image_url: width: 600 }}');
+                 {% endif %}
+               "
+               target="_blank" 
+               rel="noopener" 
+               {{ block.shopify_attributes }}>
+              <span style="display: flex; align-items: center; gap: 0.75rem; width: 100%; justify-content: {{ block.settings.text_align }};">
+                {% if block.settings.icon != blank %}
+                <img src="{{ block.settings.icon | image_url: width: 32 }}" width="32" height="32" alt="" class="link-icon">
+                {% endif %}
+                <span>{{ block.settings.text }}</span>
+              </span>
+            </a>
+
+        {% when "dropdown_links" %}
+        <details class="collapsible-tile collapsible-links-tile" {{ block.shopify_attributes }}
+                 style="background-color: {{ block.settings.tile_bg_color }}; border-radius: 8px;" {% if block.settings.start_open %}open{% endif %}>
+          <summary class="collapsible-tile-header" 
+                   style="color: {{ block.settings.tile_text_color }}; font-size: {{ block.settings.title_size }}px;">
+            <span style="width: 100%; text-align: {{ block.settings.title_align }};">{{ block.settings.section_title }}</span>
+            <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="collapsible-tile-content collapsible-links-content">
+            {% for i in (1..10) %}
+              {% assign link_text_key = 'link_text_' | append: i %}
+              {% assign link_url_key = 'link_url_' | append: i %}
+              {% assign link_icon_key = 'link_icon_' | append: i %}
+              {% if block.settings[link_text_key] != blank %}
+                <a href="{{ block.settings[link_url_key] }}" 
+                   class="collapsible-link-item"
+                   style="background-color: {{ section.settings.button_bg_color }}; color: {{ section.settings.button_text_color }};"
+                   target="_blank" 
+                   rel="noopener">
+                  <span style="display: flex; align-items: center; gap: 0.5rem; width: 100%; justify-content: {{ block.settings.text_align }};">
+                    {% if block.settings[link_icon_key] != blank %}
+                      <img src="{{ block.settings[link_icon_key] | image_url: width: 24 }}" width="24" height="24" alt="" class="link-icon-small">
+                    {% endif %}
+                    <span>{{ block.settings[link_text_key] }}</span>
+                  </span>
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </details>
+
+        {% when "dropdown_video" %}
+        <details class="collapsible-tile collapsible-video-tile" {{ block.shopify_attributes }}
+                 style="background-color: {{ block.settings.tile_bg_color }}; border-radius: 8px;" {% if block.settings.start_open %}open{% endif %}>
+          <summary class="collapsible-tile-header" 
+                   style="color: {{ block.settings.tile_text_color }}; font-size: {{ block.settings.title_size }}px;">
+            <span style="width: 100%; text-align: {{ block.settings.title_align }};">{{ block.settings.video_title }}</span>
+            <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="collapsible-tile-content">
+            {% if block.settings.youtube_url != blank %}
+              {% assign video_id = block.settings.youtube_url | split: 'v=' | last | split: '&' | first %}
+              {% if video_id == blank %}
+                {% assign video_id = block.settings.youtube_url | split: 'youtu.be/' | last | split: '?' | first %}
+              {% endif %}
+              <div class="youtube-embed-wrapper">
+                <iframe src="https://www.youtube.com/embed/{{ video_id }}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    loading="lazy">
+                </iframe>
+              </div>
+            {% endif %}
+          </div>
+        </details>
+        
+        {% when "social_links" %}
+        <div class="social-links-bar" {{ block.shopify_attributes }} style="justify-content: {{ block.settings.alignment }};">
+          {% if block.settings.tiktok_url != blank %}
+          <a href="{{ block.settings.tiktok_url }}" target="_blank" rel="noopener" class="social-icon" style="color: {{ block.settings.icon_color }};">
+            <svg width="{{ block.settings.icon_size }}" height="{{ block.settings.icon_size }}" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            </svg>
+          </a>
+          {% endif %}
+          {% if block.settings.instagram_url != blank %}
+          <a href="{{ block.settings.instagram_url }}" target="_blank" rel="noopener" class="social-icon" style="color: {{ block.settings.icon_color }};">
+            <svg width="{{ block.settings.icon_size }}" height="{{ block.settings.icon_size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          {% endif %}
+          {% if block.settings.youtube_url != blank %}
+          <a href="{{ block.settings.youtube_url }}" target="_blank" rel="noopener" class="social-icon" style="color: {{ block.settings.icon_color }};">
+            <svg width="{{ block.settings.icon_size }}" height="{{ block.settings.icon_size }}" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+          {% endif %}
+          {% if block.settings.facebook_url != blank %}
+          <a href="{{ block.settings.facebook_url }}" target="_blank" rel="noopener" class="social-icon" style="color: {{ block.settings.icon_color }};">
+            <svg width="{{ block.settings.icon_size }}" height="{{ block.settings.icon_size }}" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
+          {% endif %}
+          {% if block.settings.twitter_url != blank %}
+          <a href="{{ block.settings.twitter_url }}" target="_blank" rel="noopener" class="social-icon" style="color: {{ block.settings.icon_color }};">
+            <svg width="{{ block.settings.icon_size }}" height="{{ block.settings.icon_size }}" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+            </svg>
+          </a>
+          {% endif %}
+        </div>
+        
+        {% when "share_button" %}
+        <button class="share-btn-block" onclick="shareLinktree()" {{ block.shopify_attributes }} style="background-color: {{ block.settings.button_bg }}; color: {{ block.settings.button_text_color }};">
+          {% if block.settings.button_icon != blank %}
+          <img src="{{ block.settings.button_icon | image_url: width: 24 }}" width="24" height="24" alt="">
+          {% else %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16 6 12 2 8 6"></polyline>
+            <line x1="12" y1="2" x2="12" y2="15"></line>
+          </svg>
+          {% endif %}
+          <span>{{ block.settings.button_label }}</span>
+        </button>
+        
+      {% when "product_carousel" %}
+        <div class="linktree-carousel carousel-nav-{{ block.settings.carousel_nav }}" {{ block.shopify_attributes }}
+             style="background-color: {{ block.settings.carousel_bg_color }};">
+          <h3 class="carousel-title" style="color: {{ section.settings.section_title_color }}; font-size: {{ section.settings.section_title_size }}px; text-align: {{ block.settings.title_align }};">{{ block.settings.carousel_title }}</h3>
+          <div class="carousel-wrapper">
+          {% if block.settings.carousel_nav == 'arrows' %}
+            <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this.parentElement, -1)" style="color: {{ block.settings.arrow_color }};">‹</button>
+          {% endif %}
+          <div class="carousel-container{% if block.settings.hide_scrollbar %} hide-scrollbar{% endif %}">
+            {% if block.settings.collection != blank %}
+            {% for product in collections[block.settings.collection].products limit: 8 %}
+              <div class="carousel-item">
+              <a href="{{ product.url }}" class="product-card">
+                {% if product.featured_image %}
+                <img src="{{ product.featured_image | image_url: width: 200 }}" width="200" height="200" alt="{{ product.title }}" loading="lazy">
+                {% endif %}
+                <h4>{{ product.title | truncate: 30 }}</h4>
+                <p class="price">{{ product.price | money }}</p>
+              </a>
+              </div>
+            {% endfor %}
+            {% endif %}
+          </div>
+          {% if block.settings.carousel_nav == 'arrows' %}
+            <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this.parentElement, 1)" style="color: {{ block.settings.arrow_color }};">›</button>
+          {% endif %}
+          </div>
+        </div>
+        
+      {% when "manual_products" %}
+      <div class="linktree-carousel carousel-nav-{{ block.settings.carousel_nav }}" {{ block.shopify_attributes }}
+           style="background-color: {{ block.settings.carousel_bg_color }};">
+        <h3 class="carousel-title" style="color: {{ section.settings.section_title_color }}; font-size: {{ section.settings.section_title_size }}px; text-align: {{ block.settings.title_align }};">{{ block.settings.carousel_title }}</h3>
+        <div class="carousel-wrapper">
+        {% if block.settings.carousel_nav == 'arrows' %}
+          <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this.parentElement, -1)" style="color: {{ block.settings.arrow_color }};">‹</button>
+        {% endif %}
+        <div class="carousel-container{% if block.settings.hide_scrollbar %} hide-scrollbar{% endif %}">
+          {% for i in (1..6) %}
+          {% assign product_key = 'product_' | append: i %}
+          {% if block.settings[product_key] != blank %}
+            {% assign product = all_products[block.settings[product_key]] %}
+            <div class="carousel-item">
+            <a href="{{ product.url }}" class="product-card">
+              {% if product.featured_image %}
+              <img src="{{ product.featured_image | image_url: width: 200 }}" width="200" height="200" alt="{{ product.title }}" loading="lazy">
+              {% endif %}
+              <h4>{{ product.title | truncate: 30 }}</h4>
+              <p class="price">{{ product.price | money }}</p>
+            </a>
+            </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% if block.settings.carousel_nav == 'arrows' %}
+          <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this.parentElement, 1)" style="color: {{ block.settings.arrow_color }};">›</button>
+        {% endif %}
+        </div>
+      </div>
+      
+      {% endcase %}
+    {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<div id="share-toast" class="share-toast">Link copied!</div>
+
+<style>
+  .linktree-page {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background-color: {{ section.settings.page_bg_color | default: '#1a1a1a' }};
+    color: {{ section.settings.text_color }};
+  }
+  .linktree-container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .linktree-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .linktree-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .linktree-logo {
+    height: auto; 
+  }
+  .linktree-username-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .linktree-username {
+    margin: 0;
+    line-height: 1.2;
+  }
+  .share-btn-inline {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+  }
+  .share-btn-inline:hover {
+    transform: scale(1.1);
+  }
+  .linktree-tagline {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+  }
+  .linktree-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .linktree-btn {
+    display: block;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    background-size: cover;
+    background-position: center;
+  }
+  .linktree-btn--small {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+  .linktree-btn--medium {
+    padding: 1rem 1.5rem;
+  }
+  .linktree-btn--large {
+    padding: 1.5rem 2rem;
+    font-size: 1.1rem;
+  }
+  .linktree-btn--featured {
+    padding: 3rem 2rem;
+    font-size: 1.3rem;
+    min-height: 150px;
+    position: relative;
+  }
+  .linktree-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .link-icon {
+    flex-shrink: 0;
+    border-radius: 4px;
+  }
+  .link-icon-small {
+    flex-shrink: 0;
+    border-radius: 4px;
+  }
+
+  /* Collapsible Tiles */
+  .collapsible-tile {
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .collapsible-tile-header {
+    list-style: none;
+    cursor: pointer;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .collapsible-tile-header::-webkit-details-marker {
+    display: none;
+  }
+  .collapsible-tile-header:hover {
+    opacity: 0.9;
+  }
+  .chevron-icon {
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+  .collapsible-tile[open] .chevron-icon {
+    transform: rotate(180deg);
+  }
+  .collapsible-tile-content {
+    padding: 1rem 1.5rem 1.5rem;
+    line-height: 1.6;
+  }
+
+  /* Collapsible Links Tile */
+  .collapsible-links-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 1rem;
+  }
+  .collapsible-link-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .collapsible-link-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* Video Embed in Collapsible */
+  .youtube-embed-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  .youtube-embed-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .social-links-bar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+  .social-icon {
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .social-icon:hover {
+    transform: scale(1.15);
+  }
+  .share-btn-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .share-btn-block:hover {
+    transform: translateY(-2px);
+  }
+  .share-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .share-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  .linktree-carousel {
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .carousel-title {
+    margin: 0 0 1rem;
+    font-weight: 700;
+  }
+  .carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .carousel-container {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-behavior: smooth;
+    flex: 1;
+  }
+  .carousel-container.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .carousel-container.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-item {
+    flex-shrink: 0;
+    width: 160px;
+  }
+  .product-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+  }
+  .product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  .product-card h4 {
+    font-size: 0.9rem;
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+  }
+  .product-card .price {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin: 0;
+  }
+  .carousel-arrow {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .carousel-arrow:hover {
+    background: rgba(255,255,255,0.2);
+  }
+  .carousel-nav-grid .carousel-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    overflow-x: visible;
+  }
+  @media (min-width: 768px) {
+    .linktree-page {
+      padding: 3rem 2rem;
+    }
+    .carousel-item {
+      width: 200px;
+    }
+    .product-card img {
+      height: 200px;
+    }
+  }
+</style>
+
+<script>
+  function scrollCarousel(wrapper, direction) {
+    const container = wrapper.querySelector('.carousel-container');
+    const scrollAmount = 220;
+    container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+  }
+
+  function shareLinktree() {
+    const url = window.location.href;
+    const title = document.title || 'Check out my links!';
+    
+    if (navigator.share) {
+      navigator.share({
+       title: title,
+       url: url
+      }).catch(() => fallbackCopy(url));
+    } else {
+      fallbackCopy(url);
+    }
+  }
+  
+  function fallbackCopy(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Link copied!');
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+        execCommandCopy(text);
+      });
+    } else {
+      execCommandCopy(text);
+    }
+  }
+
+  function execCommandCopy(text) {
+     const textarea = document.createElement('textarea');
+     textarea.value = text;
+     textarea.style.position = 'fixed'; 
+     document.body.appendChild(textarea);
+     textarea.focus();
+     textarea.select();
+     try {
+       document.execCommand('copy');
+       showToast('Link copied!');
+     } catch (err) {
+       console.error('Fallback copy failed: ', err);
+     }
+     document.body.removeChild(textarea);
+  }
+
+  function showToast(message) {
+      const toast = document.getElementById('share-toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Universal Linktree",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Profile Header"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_1",
+      "label": "Logo 1"
+    },
+    {
+      "type": "range",
+      "id": "logo_1_width",
+      "label": "Logo 1 Max Width",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "default": 120
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_2",
+      "label": "Logo 2"
+    },
+    {
+      "type": "range",
+      "id": "logo_2_width",
+      "label": "Logo 2 Max Width",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo Max Height",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "default": 120
+    },
+    {
+      "type": "checkbox",
+      "id": "force_equal_logo_size",
+      "label": "Force Equal Logo Sizes",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "username",
+      "label": "Username / Handle",
+      "default": "@Thatdtailguy"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline / Bio",
+      "default": "Follow me for auto detailing tips"
+    },
+    {
+      "type": "header",
+      "content": "Share Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_inline_share",
+      "label": "Show Share Icon",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "share_icon",
+      "label": "Custom Share Icon"
+    },
+    {
+      "type": "range",
+      "id": "share_icon_size",
+      "label": "Share Icon Size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "share_icon_color",
+      "label": "Share Icon Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "font_family",
+      "label": "Font Family",
+      "default": "-apple-system, BlinkMacSystemFont, sans-serif"
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font Weight",
+      "options": [
+       { "value": "300", "label": "Light" },
+       { "value": "400", "label": "Normal" },
+       { "value": "600", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "username_size",
+      "label": "Username Font Size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "username_color",
+      "label": "Username Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "tagline_size",
+      "label": "Tagline Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline Color",
+      "default": "#aaaaaa"
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "label": "Section Title Font Size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Section Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Backgrounds"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg",
+      "label": "Hero Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_bg",
+      "label": "Main Background"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_fade",
+      "label": "Enable Fade",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "hero_overlay_opacity",
+      "label": "Hero Overlay Opacity",
+      "min": 0,
+      "max": 90,
+      "step": 10,
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "main_overlay_opacity",
+      "label": "Main Overlay Opacity",
+      "min": 0,
+      "max": 90,
+      "step": 10,
+      "default": 50
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_blur",
+      "label": "Enable Blur",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "blur_intensity",
+      "label": "Blur Intensity",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "page_bg_color",
+      "label": "Page Background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link Button",
+      "settings": [
+       {
+         "type": "text",
+         "id": "text",
+         "label": "Button Text",
+         "default": "Click Here"
+       },
+       {
+         "type": "url",
+         "id": "url",
+         "label": "Link URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "icon",
+         "label": "Button Icon"
+       },
+       {
+         "type": "select",
+         "id": "button_size",
+         "label": "Button Size",
+         "options": [
+         { "value": "small", "label": "Small" },
+         { "value": "medium", "label": "Medium" },
+         { "value": "large", "label": "Large" },
+         { "value": "featured", "label": "Featured (Hero Tile)" }
+         ],
+         "default": "medium"
+       },
+       {
+         "type": "image_picker",
+         "id": "featured_bg",
+         "label": "Featured Background Image"
+       },
+       {
+         "type": "color",
+         "id": "custom_button_bg",
+         "label": "Custom Background Color"
+       },
+       {
+         "type": "color",
+         "id": "custom_button_text",
+         "label": "Custom Text Color"
+       },
+       {
+         "type": "select",
+         "id": "text_align",
+         "label": "Text Alignment",
+         "options": [
+         { "value": "flex-start", "label": "Left" },
+         { "value": "center", "label": "Center" }
+         ],
+         "default": "center"
+       }
+      ]
+    },
+    {
+      "type": "dropdown_links",
+      "name": "Dropdown Links",
+      "settings": [
+       {
+         "type": "text",
+         "id": "section_title",
+         "label": "Title",
+         "default": "Hot Items"
+       },
+       {
+         "type": "range",
+         "id": "title_size",
+         "label": "Title Size",
+         "min": 14,
+         "max": 24,
+         "step": 1,
+         "default": 16
+       },
+       {
+         "type": "color",
+         "id": "tile_bg_color",
+         "label": "Background",
+         "default": "#2a2a2a"
+       },
+       {
+         "type": "color",
+         "id": "tile_text_color",
+         "label": "Title Color",
+         "default": "#ffffff"
+       },
+       {
+         "type": "select",
+         "id": "title_align",
+         "label": "Title Alignment",
+         "options": [
+         { "value": "left", "label": "Left" },
+         { "value": "center", "label": "Center" }
+         ],
+         "default": "left"
+       },
+       {
+         "type": "select",
+         "id": "text_align",
+         "label": "Link Text Alignment",
+         "options": [
+         { "value": "flex-start", "label": "Left" },
+         { "value": "center", "label": "Center" }
+         ],
+         "default": "center"
+       },
+       {
+         "type": "checkbox",
+         "id": "start_open",
+         "label": "Start Expanded on Page Load",
+         "default": false
+       },
+       {
+         "type": "header",
+         "content": "Link 1"
+       },
+       {
+         "type": "text",
+         "id": "link_text_1",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_1",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_1",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 2"
+       },
+       {
+         "type": "text",
+         "id": "link_text_2",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_2",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_2",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 3"
+       },
+       {
+         "type": "text",
+         "id": "link_text_3",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_3",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_3",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 4"
+       },
+       {
+         "type": "text",
+         "id": "link_text_4",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_4",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_4",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 5"
+       },
+       {
+         "type": "text",
+         "id": "link_text_5",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_5",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_5",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 6"
+       },
+       {
+         "type": "text",
+         "id": "link_text_6",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_6",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_6",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 7"
+       },
+       {
+         "type": "text",
+         "id": "link_text_7",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_7",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_7",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 8"
+       },
+       {
+         "type": "text",
+         "id": "link_text_8",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_8",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_8",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 9"
+       },
+       {
+         "type": "text",
+         "id": "link_text_9",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_9",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_9",
+         "label": "Icon"
+       },
+       {
+         "type": "header",
+         "content": "Link 10"
+       },
+       {
+         "type": "text",
+         "id": "link_text_10",
+         "label": "Text"
+       },
+       {
+         "type": "url",
+         "id": "link_url_10",
+         "label": "URL"
+       },
+       {
+         "type": "image_picker",
+         "id": "link_icon_10",
+         "label": "Icon"
+       }
+      ]
+    },
+    {
+      "type": "dropdown_video",
+      "name": "Dropdown Video",
+      "settings": [
+       {
+         "type": "text",
+         "id": "video_title",
+         "label": "Title",
+         "default": "Watch Video"
+       },
+       {
+         "type": "url",
+         "id": "youtube_url",
+         "label": "YouTube URL"
+       },
+       {
+         "type": "range",
+         "id": "title_size",
+         "label": "Title Size",
+         "min": 14,
+         "max": 24,
+         "step": 1,
+         "default": 16
+       },
+       {
+         "type": "color",
+         "id": "tile_bg_color",
+         "label": "Background",
+         "default": "#2a2a2a"
+       },
+       {
+         "type": "color",
+         "id": "tile_text_color",
+         "label": "Title Color",
+         "default": "#ffffff"
+       },
+       {
+         "type": "select",
+         "id": "title_align",
+         "label": "Title Alignment",
+         "options": [
+         { "value": "left", "label": "Left" },
+         { "value": "center", "label": "Center" }
+         ],
+         "default": "left"
+       },
+       {
+         "type": "checkbox",
+         "id": "start_open",
+         "label": "Start Expanded on Page Load",
+         "default": false
+       }
+      ]
+    },
+    {
+      "type": "social_links",
+      "name": "Social Links",
+      "settings": [
+       {
+         "type": "url",
+         "id": "tiktok_url",
+         "label": "TikTok"
+       },
+       {
+         "type": "url",
+         "id": "instagram_url",
+         "label": "Instagram"
+       },
+       {
+         "type": "url",
+         "id": "youtube_url",
+         "label": "YouTube"
+       },
+       {
+         "type": "url",
+         "id": "facebook_url",
+         "label": "Facebook"
+       },
+       {
+         "type": "url",
+         "id": "twitter_url",
+         "label": "Twitter"
+       },
+       {
+         "type": "range",
+         "id": "icon_size",
+         "label": "Icon Size",
+         "min": 24,
+         "max": 48,
+         "step": 4,
+         "default": 32
+       },
+       {
+         "type": "color",
+         "id": "icon_color",
+         "label": "Icon Color",
+         "default": "#ffffff"
+       },
+       {
+         "type": "select",
+         "id": "alignment",
+         "label": "Alignment",
+         "options": [
+         { "value": "flex-start", "label": "Left" },
+         { "value": "center", "label": "Center" },
+         { "value": "flex-end", "label": "Right" }
+         ],
+         "default": "center"
+       }
+      ]
+    },
+    {
+      "type": "share_button",
+      "name": "Share Button",
+      "settings": [
+       {
+         "type": "text",
+         "id": "button_label",
+         "label": "Button Text",
+         "default": "Share"
+       },
+       {
+         "type": "image_picker",
+         "id": "button_icon",
+         "label": "Icon"
+       },
+       {
+         "type": "color",
+         "id": "button_bg",
+         "label": "Background",
+         "default": "#ffffff"
+       },
+       {
+         "type": "color",
+         "id": "button_text_color",
+         "label": "Text Color",
+         "default": "#000000"
+       }
+      ]
+    },
+    {
+      "type": "product_carousel",
+      "name": "Product Carousel",
+      "settings": [
+       {
+         "type": "text",
+         "id": "carousel_title",
+         "label": "Title",
+         "default": "Products"
+       },
+       {
+         "type": "collection",
+         "id": "collection",
+         "label": "Collection"
+       },
+       {
+         "type": "color",
+         "id": "carousel_bg_color",
+         "label": "Background Color",
+         "default": "rgba(255,255,255,0.05)"
+       },
+       {
+         "type": "select",
+         "id": "title_align",
+         "label": "Title Alignment",
+         "options": [
+         { "value": "left", "label": "Left" },
+         { "value": "center", "label": "Center" }
+         ],
+         "default": "left"
+       },
+       {
+         "type": "select",
+         "id": "carousel_nav",
+         "label": "Navigation",
+         "options": [
+         { "value": "scroll", "label": "Scroll" },
+         { "value": "arrows", "label": "Arrows" },
+         { "value": "grid", "label": "Grid" }
+         ],
+         "default": "scroll"
+       },
+       {
+         "type": "checkbox",
+         "id": "hide_scrollbar",
+         "label": "Hide Scrollbar",
+         "default": false
+       },
+       {
+         "type": "color",
+         "id": "arrow_color",
+         "label": "Arrow Color",
+         "default": "#ffffff"
+       }
+      ]
+    },
+    {
+      "type": "manual_products",
+      "name": "Manual Products",
+      "settings": [
+       {
+         "type": "text",
+         "id": "carousel_title",
+         "label": "Title",
+         "default": "Hot Items"
+       },
+       {
+         "type": "color",
+         "id": "carousel_bg_color",
+         "label": "Background Color",
+         "default": "rgba(255,255,255,0.05)"
+       },
+       {
+         "type": "select",
+         "id": "title_align",
+         "label": "Title Alignment",
+         "options": [
+         { "value": "left", "label": "Left" },
+         { "value": "center", "label": "Center" }
+         ],
+         "default": "left"
+       },
+       {
+         "type": "product",
+         "id": "product_1",
+         "label": "Product 1"
+       },
+       {
+         "type": "product",
+         "id": "product_2",
+         "label": "Product 2"
+       },
+       {
+         "type": "product",
+         "id": "product_3",
+         "label": "Product 3"
+       },
+       {
+         "type": "product",
+         "id": "product_4",
+         "label": "Product 4"
+       },
+       {
+         "type": "product",
+         "id": "product_5",
+         "label": "Product 5"
+       },
+       {
+         "type": "product",
+         "id": "product_6",
+         "label": "Product 6"
+       },
+       {
+         "type": "select",
+         "id": "carousel_nav",
+         "label": "Navigation",
+         "options": [
+         { "value": "scroll", "label": "Scroll" },
+         { "value": "arrows", "label": "Arrows" },
+         { "value": "grid", "label": "Grid" }
+         ],
+         "default": "scroll"
+       },
+       {
+         "type": "checkbox",
+         "id": "hide_scrollbar",
+         "label": "Hide Scrollbar",
+         "default": false
+       },
+       {
+         "type": "color",
+         "id": "arrow_color",
+         "label": "Arrow Color",
+         "default": "#ffffff"
+       }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Universal Linktree"
+    }
+  ]
+}
+{% endschema %}

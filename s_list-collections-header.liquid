@@ -1,0 +1,137 @@
+{% render 'page-header',
+    t_heading: 'sections.collection_list.title',
+    bg_image: section.settings.bg_image,
+    bg_image_size: section.settings.image_size,
+    bg_image_mobile_size: section.settings.mobile_image_size,
+    text: section.settings.custom_text,
+    text_content_width: section.settings.text_content_width,
+    bg_image_overlay: section.settings.bg_image_overlay,
+    text_position: section.settings.text_position,
+    color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+    "name": "Сollection list header",
+    "settings": [
+        {
+            "type": "paragraph",
+            "content": "You can change page title size in 'Typography' theme settings"
+        },
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "label": "Color scheme"
+        },
+        {
+            "type": "image_picker",
+            "id": "bg_image",
+            "label": "Background image",
+            "info": "t:g.media.resolution_recommendations.full_screen"
+        },
+        {
+            "type": "paragraph",
+            "content": "t:g.info.page_header_image_sizing"
+        },
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "t:g.media.image_size.label",
+            "options": [
+                {
+                    "value": "origin",
+                    "label": "Original"
+                },
+                {
+                    "value": "250px",
+                    "label": "250px"
+                },
+                {
+                    "value": "350px",
+                    "label": "350px"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                }
+            ],
+            "default": "250px"
+        },
+        {
+            "type": "select",
+            "id": "mobile_image_size",
+            "label": "t:g.media.image_size.mobile_label",
+            "options": [
+                {
+                    "value": "origin",
+                    "label": "Original"
+                },
+                {
+                    "value": "250px",
+                    "label": "250px"
+                },
+                {
+                    "value": "350px",
+                    "label": "350px"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                }
+            ],
+            "default": "250px"
+        },
+        {
+            "type": "range",
+            "id": "bg_image_overlay",
+            "min": 0,
+            "max": 90,
+            "step": 5,
+            "unit": "%",
+            "label": "Background image overlay opacity",
+            "default": 30,
+            "info": "Has no effect if text is placed outside of an image"
+        },
+        {
+            "type": "select",
+            "id": "text_position",
+            "label": "Text position",
+            "options": [
+                {
+                    "value": "inside",
+                    "label": "Inside of an image"
+                },
+                {
+                    "value": "outside",
+                    "label": "Outside of an image"
+                }
+            ],
+            "default": "inside",
+            "info": "Has no effect if there is no background image"
+        },
+        {
+            "type": "text",
+            "id": "custom_text",
+            "label": "Custom message"
+        },
+        {
+            "type": "range",
+            "id": "text_content_width",
+            "label": "Desktop text content width",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "default": 50,
+            "unit": "%"
+        }
+    ]
+}
+{% endschema %}

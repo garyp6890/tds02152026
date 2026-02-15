@@ -1,0 +1,500 @@
+{% doc %}
+  @prompt
+    A New Section that is visually appealing like the rest of the page with these included: Section: Image with Text Overlay or Icon Row
+    
+    Heading: Every Apex Comes with an ApexBand™
+    
+    Body: Explain band, prizes, discount code.
+    
+    Add band image + “How it works” link., there isnt a button on the section
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-apex-band-section-{{ ai_gen_id }} {
+    padding: 60px 20px;
+    background-color: {{ block.settings.background_color }};
+    {% if block.settings.background_gradient != blank %}
+      background: {{ block.settings.background_gradient }};
+    {% endif %}
+  }
+
+  .ai-apex-band-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .ai-apex-band-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .ai-apex-band-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight:700;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .ai-apex-band-body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-apex-band-features-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .ai-apex-band-feature-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-apex-band-feature-icon-{{ ai_gen_id }} {
+    width: 24px;
+    height: 24px;
+    color: {{ block.settings.accent_color }};
+    flex-shrink: 0;
+  }
+
+  .ai-apex-band-feature-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.feature_text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-apex-band-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-weight: 600;
+    font-size: {{ block.settings.button_text_size }}px;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    width: fit-content;
+    border: none;
+    cursor: pointer;
+  }
+
+  .ai-apex-band-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    transform: translateY(-2px);box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-apex-band-button-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-apex-band-button-{{ ai_gen_id }}:hover .ai-apex-band-button-icon-{{ ai_gen_id }} {
+    transform: translateX(2px);
+  }
+
+  .ai-apex-band-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-apex-band-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-apex-band-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-apex-band-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-apex-band-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+    opacity: 0.3;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-apex-band-section-{{ ai_gen_id }} {
+      padding: 40px 20px;
+    }
+
+    .ai-apex-band-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      text-align: center;
+    }
+
+    .ai-apex-band-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .ai-apex-band-body-{{ ai_gen_id }} {
+      font-size: {{ block.settings.body_size | times: 0.9 }}px;
+    }
+
+    .ai-apex-band-button-{{ ai_gen_id }} {
+      align-self: center;
+    }
+  }
+
+  {% if block.settings.layout == 'image_left' %}
+    .ai-apex-band-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media screen and (max-width: 768px) {
+      .ai-apex-band-container-{{ ai_gen_id }} {
+        grid-template-columns: 1fr;
+      }.ai-apex-band-image-wrapper-{{ ai_gen_id }} {
+        order: -1;
+      }
+    }
+  {% else %}
+    .ai-apex-band-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ai-apex-band-image-wrapper-{{ ai_gen_id }} {
+      order: -1;
+    }
+
+    @media screen and (max-width: 768px) {
+      .ai-apex-band-container-{{ ai_gen_id }} {
+        grid-template-columns: 1fr;
+      }
+      .ai-apex-band-image-wrapper-{{ ai_gen_id }} {
+        order:0;
+      }
+    }
+  {% endif %}
+{% endstyle %}<section class="ai-apex-band-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-apex-band-container-{{ ai_gen_id }}">
+    <div class="ai-apex-band-content-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-apex-band-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+
+      {% if block.settings.body_text != blank %}
+        <div class="ai-apex-band-body-{{ ai_gen_id }}">{{ block.settings.body_text }}</div>
+      {% endif %}
+
+      {% if block.settings.show_features %}
+        <div class="ai-apex-band-features-{{ ai_gen_id }}">
+          {% if block.settings.feature_1_text != blank %}
+            <div class="ai-apex-band-feature-{{ ai_gen_id }}">
+              <div class="ai-apex-band-feature-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+              </div>
+              <p class="ai-apex-band-feature-text-{{ ai_gen_id }}">{{ block.settings.feature_1_text }}</p>
+            </div>
+          {% endif %}
+
+          {% if block.settings.feature_2_text != blank %}
+            <div class="ai-apex-band-feature-{{ ai_gen_id }}">
+              <div class="ai-apex-band-feature-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+              </div>
+              <p class="ai-apex-band-feature-text-{{ ai_gen_id }}">{{ block.settings.feature_2_text }}</p>
+            </div>
+          {% endif %}
+
+          {% if block.settings.feature_3_text != blank %}
+            <div class="ai-apex-band-feature-{{ ai_gen_id }}">
+              <div class="ai-apex-band-feature-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+              </div>
+              <p class="ai-apex-band-feature-text-{{ ai_gen_id }}">{{ block.settings.feature_3_text }}</p>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.button_text != blank %}
+        {% if block.settings.button_url != blank %}
+          <a href="{{ block.settings.button_url }}" class="ai-apex-band-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}<div class="ai-apex-band-button-icon-{{ ai_gen_id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </div>
+          </a>
+        {% else %}
+          <button class="ai-apex-band-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+            <div class="ai-apex-band-button-icon-{{ ai_gen_id }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 17L17 7"/>
+                <path d="M7 7h10v10"/>
+              </svg>
+            </div>
+          </button>
+        {% endif %}
+      {% endif %}
+    </div><div class="ai-apex-band-image-wrapper-{{ ai_gen_id }}">
+      {% if block.settings.band_image %}
+        <img
+          src="{{ block.settings.band_image | image_url: width: 800}}"
+          alt="{{ block.settings.band_image.alt | escape }}"
+          class="ai-apex-band-image-{{ ai_gen_id }}"
+          loading="lazy"
+          width="{{ block.settings.band_image.width }}"
+          height="{{ block.settings.band_image.height }}"
+        >
+      {% else %}
+        <div class="ai-apex-band-image-placeholder-{{ ai_gen_id }}">
+          {{ 'product-apparel-1' | placeholder_svg_tag }}<div class="ai-apex-band-empty-state-{{ ai_gen_id }}">
+            Add your ApexBand™ image
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "ApexBand section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Every Apex Comes with an ApexBand™"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>The ApexBand™ is your gateway to exclusive rewards, special discounts, and member-only experiences. Each band comes with a unique code that unlocks premium benefits and connects you to our community of Apex enthusiasts.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show feature list",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feature_1_text",
+      "label": "Feature 1",
+      "default": "Exclusive member discounts and early access"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_text",
+      "label": "Feature 2",
+      "default": "Limited edition prizes and giveaways"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_text",
+      "label": "Feature 3",
+      "default": "Unique discount codes for future purchases"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "How it works"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "band_image",
+      "label": "ApexBand image"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "image_left",
+          "label": "Left"
+        },
+        {
+          "value": "image_right",
+          "label": "Right"
+        }
+      ],
+      "default": "image_right"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#007acc"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Body text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "feature_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Feature text size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "ApexBand section"
+    }
+  ]
+}
+{% endschema %}

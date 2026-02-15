@@ -1,0 +1,42 @@
+{%- capture Content -%}
+    {%- assign size_unit = section.settings.font_scale | times: 1.0 -%}
+    {%- assign size_unit = size_unit | divided_by: 100 -%}
+    <div class="#rte" style="--font-size: {{ size_unit }}rem;">
+        {{ page.content }}
+    </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    spaced: true,
+    content_width: section.settings.content_width,
+    container: true
+%}
+
+{% schema %}
+{
+    "name": "Page",
+    "settings": [
+        {
+            "type": "range",
+            "id": "content_width",
+            "label": "Desktop content width",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "default": 80,
+            "unit": "%"
+        },
+        {
+            "type": "range",
+            "id": "font_scale",
+            "min": 100,
+            "max": 150,
+            "default": 100,
+            "step": 5,
+            "unit": "%",
+            "label": "Text scale"
+        }
+    ]
+}
+{% endschema %}

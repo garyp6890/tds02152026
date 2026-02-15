@@ -1,0 +1,672 @@
+{% liquid
+    assign NS = 'product-quick-view'
+    assign cn = '#' | append: NS
+    assign section_id = section.id 
+    assign variant = product.selected_or_first_available_variant
+    assign product_form_id = 'productForm' | append: section_id
+
+    assign variant_image_index = 0 
+    assign total_images = 0
+    assign variants_media_id = product.variants | map: 'featured_media' | map: 'id' | uniq
+    assign has_3d_model = product.media | where: "media_type", "model" | first
+
+    if has_3d_model
+        render 'load-css', file: 'model-viewer-ui'
+    endif
+%}
+
+{% capture Slides %}
+    {% comment %}
+    {% unless product.featured_image.attached_to_variant? %}
+        {% assign total_images = total_images | plus: 1 %}
+        <div class="{{ cn }}-media" data-element="media">
+            {% render 'media',
+                image: product.featured_media,
+                image_res: 600
+            %}
+        </div> 
+    {% endunless %}
+    {% for media in product.media %}
+        {% if variants_media_id contains media.id %}
+            {% assign total_images = total_images | plus: 1 %}
+            {% if media.position == variant.featured_media.position %}
+                {% assign variant_image_index = total_images %}
+            {% endif %}
+            <div class="{{ cn }}-media" data-element="media" data-position="{{ media.position }}">
+                {% render 'media',
+                    image: media,
+                    image_res: 600
+                %}
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% endcomment %}
+    {% for media in product.media %}
+        {% if media.position == variant.featured_media.position %}
+            {% assign variant_image_index = forloop.index0 %}
+        {% endif %}
+        <div class="{{ cn }}-media" data-element="media" data-position="{{ media.position }}">
+            {% case media.media_type %}
+                {% when 'image' %}
+                    {% render 'media',
+                        image: media,
+                        image_res: 600
+                    %}
+                {% when 'video', 'external_video' %}
+                    {%- render 'video-player', video: media, height: '100%', loop: true -%}
+                {% when 'model' %}
+                    <div class="{{ cn }}-media-model">
+                        {{ media | model_viewer_tag: ar-modes: "webxr scene-viewer quick-look", ar: 'true', camera-controls: 'true' }}
+                    </div>
+            {% endcase %}
+        </div>
+    {% endfor %}
+{% endcapture %}
+
+{% if request.design_mode %}
+    <style>
+        .quick-view-demo {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: gray;
+        }
+        .quick-view-demo products-comparison-checkbox {
+            display: block !important;
+        }
+    </style>
+{% endif %}
+
+{%# this tag will only render within edior template %}
+<div class="quick-view-demo">
+    <div id="ProductQuickView">
+        {% render 'load-css', file: NS %}
+        {%# preload variant styles for better UI %}
+        {% render 'load-css', file: 'product-options-radio' %}
+        {% render 'load-css', file: 'product-variant-selector' %}
+        {% render 'load-css', file: 'product-options-swatch' %}
+        {% render 'load-css', file: 'slideshow-blaze' %}
+        <product-variant-provider
+            id="{{ section_id }}-variant-provider"
+            product-url="{{ product.url }}?view=quick-view" 
+            section-id="{{ section_id }}"
+            {% if request.design_mode %} no-cache {% endif %}
+            initial-variant-id="{{ variant.id }}" 
+            initial-options-state="{{ variant.options | map: "id" | join: ',' }}"
+            initial-image-position="{{ variant.featured_media.position }}"
+            {% unless settings.enable_variant_smart_selector -%} allow-unavailable-variants {%- endunless %}
+        >
+            {% if product.selected_or_first_available_variant == null and settings.enable_variant_smart_selector %}
+                <script type="application/json" data-available-options-json>
+                {
+                {%- assign first_match = false -%}
+                {%- for product_option in product.options_with_values -%}
+                    {%- for product_option_value in product_option.values -%}
+                        {%- if product_option_value.selected == false and product_option_value.variant.id -%}
+                            {%- unless first_match -%}
+                                {%- assign first_match = true -%}
+                            {%- else -%}
+                                ,
+                            {%- endunless -%}
+                            "{{- product_option.position | minus: 1 -}}": {
+                                "optionValueId": "{{- product_option_value.id -}}",
+                                "variantId": "{{- product_option_value.variant.id -}}",
+                                "imagePosition": "{{- product_option_value.variant.featured_media.position -}}"
+                            }
+                            {%- break -%}
+                        {%- endif -%}
+                    {%- endfor -%}
+                {%- endfor -%}
+                }
+                </script>
+            {%- endif -%}
+            <{{ NS }} section-id="{{ section_id }}" class="{{ cn }} {% if section.settings.use_image_crop %}@crop-images{% endif %}" style="--{{ NS }}-gallery-width: {{ section.settings.gallery_width }}%;">
+                <modal-close class="{{ cn }}-close" section-id="{{ section.id }}">
+                    {% render 'icon', name: 'x' %}
+                </modal-close>
+                <div class="{{ cn }}-inner">
+                    <div class="{{ cn }}-gallery">
+                        {%- comment -%}
+                            {% if section.settings.show_wishlist_button %}
+                                <div class="{{ cn }}-wishlist">
+                                    {% render 'wishlist-toggle', product_url: product.url, sync: true %}
+                                </div>
+                            {% endif %}
+                        {%- endcomment -%}
+                        {% render 'slideshow-blaze',
+                            slides: Slides,
+                            initial_index: variant_image_index,
+                            swipe_on_desktop: false,
+                            show_navigation: true
+                        %}
+                    </div>
+                    <div class="{{ cn }}-info" data-element="product-meta">
+                        {{ variants_media }}
+                        {% for block in section.blocks %}
+                                {% capture Block_content %}
+                                    {% case block.type %}
+                                        {% when 'compare_checkbox' %}
+                                            {% render 'load-css', file: 'products-comparison-checkbox', lazy: true %}
+                                            <div class="{{ cn }}-compare-checkbox">
+                                                {%- render 'products-comparison-checkbox',
+                                                    product: product,
+                                                    label: block.settings.label,
+                                                    display: 'product-meta'
+                                                -%}
+                                            </div>
+                                        {% when 'countdown' %}
+                                            {% render 'product-countdown',
+                                                product: product,
+                                                scale: block.settings.text_scale,
+                                                use_sale_price_color: block.settings.use_sale_price_color
+                                            %}
+                                        {% when 'title' %}
+                                            {% render 'product-title',
+                                                title_scale: block.settings.heading_scale,
+                                                show_wishlist_button: block.settings.show_wishlist_button,
+                                                truncate_text: block.settings.enable_text_truncation,
+                                                truncate_lines: block.settings.max_lines,
+                                                product: product,
+                                                with_link: true,
+                                                badges_display: block.settings.badges_display,
+                                                badges_scale: block.settings.badges_scale
+                                            %}
+                                        {% when 'price' %}
+                                            {% render 'load-css', file: 'product-price' %}
+                                            <product-variant-listener section-id="{{ section_id }}" emptyable id="b-{{ block.id }}">
+                                                {%- if variant -%}
+                                                    {% render 'product-price',
+                                                        product: product,
+                                                        show_taxes: block.settings.show_taxes,
+                                                        text_scale: block.settings.text_scale,
+                                                        show_savings: block.settings.show_savings,
+                                                        show_titles: block.settings.show_titles,
+                                                        variant: variant,
+                                                        bold_text: block.settings.bold_text,
+                                                        load_styles: false
+                                                    %}
+                                                {%- endif -%}
+                                            </product-variant-listener>
+                                        {% when 'variant_selector' %}
+                                            {%- unless product.has_only_default_variant -%}
+                                                {% render 'product-variant-selector', 
+                                                    picker_type: 'swatch',
+                                                    color_swatches: block.settings.color_swatches,
+                                                    buttons_columns: block.settings.swatches_grid_columns,
+                                                    price_display: block.settings.price_display,
+                                                    product_form_id: product_form_id,
+                                                    show_variant_image: block.settings.show_variant_image,
+                                                    show_stock_alert: block.settings.show_stock_alert,
+                                                    variant: variant,
+                                                    section_id: section_id,
+                                                    block_id: block.id
+                                                %}
+                                            {%- endunless -%}  
+                                        {% when 'buy_buttons' %}
+                                            {%- render 'product-form', 
+                                                variant: variant, 
+                                                product_form_id: product_form_id,
+                                                id: block.id,
+                                                use_stock_notifier: false,
+                                                show_dynamic_checkout: block.settings.show_dynamic_checkout,
+                                                quick_view: true,
+                                                show_wishlist_button: block.settings.show_wishlist_button,
+                                                section_id: section_id
+                                            -%}
+                                        {% when 'stock_alert' %}
+                                            {%- if block.settings.show_stock_alert -%}
+                                                {%- assign stock_threshold = settings.stock_threshold -%}
+                                            {%- endif -%}
+                                            {% render 'load-css', file: 'product-stock-alert' %}
+                                            <product-variant-listener section-id="{{ section_id }}" id="b-{{ block.id }}">
+                                                {%- if variant -%}
+                                                    {%- render 'product-stock-alert',
+                                                        id: block.id,
+                                                        product: product,
+                                                        stock_threshold: stock_threshold
+                                                    -%}
+                                                {%- endif -%}
+                                            </product-variant-listener>
+                                        {% when 'description' %}
+                                            {% if product.description != blank %}
+                                                {%- capture description -%}
+                                                    {%- assign size_unit = block.settings.font_scale | times: 1.0 -%}
+                                                    {%- assign size_unit = size_unit | divided_by: 100 -%}
+                                                    <div class="#rte" style="--font-size: {{ size_unit }}rem;">
+                                                        {{ product.description }}
+                                                    </div>
+                                                {%- endcapture -%}
+                                                {%- if block.settings.use_expand and product.description.size > 170 -%}
+                                                    {% render 'product-description-expand', description: description %}
+                                                {%- else -%}
+                                                {{ description }}
+                                                {%- endif -%}
+                                            {% endif %}
+                                        {% when 'quantity_selector' %}
+                                            {%- render 'product-qty-selector', 
+                                                id: block.id, 
+                                                product_form_id: product_form_id,
+                                                type: block.settings.input_type,
+                                                variant: variant
+                                            -%}
+                                        {% when 'rating' %}
+                                            {% if block.settings.show_count %}
+                                                {% assign count = product.metafields.reviews.rating_count %}
+                                            {% endif %}
+                                            {% render 'star-rating', 
+                                                value: product.metafields.reviews.rating.value,
+                                                count: count,
+                                                show_count_title: true
+                                            %}
+                                    {% endcase %}
+                                {% endcapture %}
+                            {% if Block_content != blank %}
+                                <div class="{{ cn }}-info-block @type:{{ block.type }}" data-meta-block {{ block.shopify_attributes }}>
+                                    {{ Block_content }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <product-variant-listener class="{{ cn }}-info-footer" section-id="{{ section.id }}" id="{{ section.id }}-view-more-link">
+                            <a href="{{ variant.url }}" class="{{ cn }}-product-link reset-link">
+                                {{ 'products.product.more_details' | t }}
+                                {% render 'icon', name: 'angle-right' %}
+                            </a>
+                        </product-variant-listener>
+                    </div>
+                </div>
+            </{{ NS }}>
+        </product-variant-provider>
+    </div>
+</div>
+
+{% schema %}
+    {
+        "name": "Product quick view",
+        "settings": [
+            {
+                "type": "checkbox",
+                "id": "use_image_crop",
+                "label": "Crop images to fit the container",
+                "default": true
+            },
+            {
+                "type": "range",
+                "id": "gallery_width",
+                "label": "Image width",
+                "min": 40,
+                "max": 70,
+                "step": 1,
+                "unit": "%",
+                "default": 60
+            }
+        ],
+        "blocks": [
+            {
+                "type": "compare_checkbox",
+                "name": "Compare toggler",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "paragraph",
+                        "content": "Add 'Products compare' section to the 'Overlay Group' to enable this feature"
+                    },
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "Label",
+                        "default": "Add to Compare List",
+                        "info": "Optional"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "prev_attach",
+                        "label": "Attach to previous block",
+                        "info": "Reduces excess padding",
+                        "default": false
+                    }
+                ]
+            },
+            {
+                "type": "countdown",
+                "name": "Countdown",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "paragraph",
+                        "content": "t:sections.main-product.blocks.countdown.settings.paragraph.content"
+                    },
+                    {
+                        "type": "text",
+                        "id": "meta_heading",
+                        "label": "Heading",
+                        "default": "Sale ends in:"
+                    },
+                    {
+                        "type": "range",
+                        "id": "text_scale",
+                        "label": "Countdown scale",
+                        "min": 100,
+                        "max": 300,
+                        "step": 5,
+                        "unit": "%",
+                        "default": 175
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "use_sale_price_color",
+                        "label": "Use sale price color",
+                        "default": true
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "prev_attach",
+                        "label": "Attach to previous block",
+                        "info": "Reduces excess padding",
+                        "default": false
+                    }
+                ]
+            },
+            {
+                "type": "title",
+                "name": "Product title",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "range",
+                        "id": "heading_scale",
+                        "label": "Text scale",
+                        "min": 50,
+                        "max": 120,
+                        "step": 5,
+                        "unit": "%",
+                        "default": 80,
+                        "info": "Based on headings font size."
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "enable_text_truncation",
+                        "label": "Enable text truncation",
+                        "default": true
+                    },
+                    {
+                        "type": "range",
+                        "id": "max_lines",
+                        "label": "Maximum lines before truncation",
+                        "min": 1,
+                        "step": 1,
+                        "max": 5,
+                        "default": 3,
+                        "info": "Will be ignored if text truncation is off"
+                    },
+                    {
+                        "type": "header",
+                        "content": "Product custom badges",
+                        "info": "t:g.info.custom_badges"
+                    },
+                    {
+                        "type": "select",
+                        "label": "Custom badges display",
+                        "id": "badges_display",
+                        "options": [
+                            {
+                                "value": "before",
+                                "label": "Above product title"
+                            },
+                            {
+                                "value": "after",
+                                "label": "Below product title"
+                            },
+                            {
+                                "value": "none",
+                                "label": "Do not display badges"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "range",
+                        "id": "badges_scale",
+                        "label": "Badges text scale",
+                        "min": 80,
+                        "max": 120,
+                        "step": 5,
+                        "unit": "%",
+                        "default": 100,
+                        "info": "Based on body font size."
+                    }
+                ]
+            },
+            {
+                "type": "price",
+                "name": "Price",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "checkbox",
+                        "id": "show_savings",
+                        "label": "Show savings",
+                        "default": true
+                    },
+                    {
+                        "type": "range",
+                        "id": "text_scale",
+                        "label": "Text scale",
+                        "min": 90,
+                        "max": 350,
+                        "step": 10,
+                        "unit": "%",
+                        "default": 200
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "bold_text",
+                        "label": "Bold price text"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "show_taxes",
+                        "label": "Show taxes and shipping note",
+                        "default": true
+                    }
+                ]
+            },
+            {
+                "type": "buy_buttons",
+                "name": "Buy buttons",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "checkbox",
+                        "id": "show_dynamic_checkout",
+                        "default": true,
+                        "label": "t:sections.featured-product.blocks.buy_buttons.settings.show_dynamic_checkout.label",
+                        "info": "t:sections.main-product.blocks.buy_buttons.settings.show_dynamic_checkout.info"
+                    }
+                ]
+            },
+            {
+                "type": "variant_selector",
+                "name": "Variant selector",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "select",
+                        "id": "show_variant_image",
+                        "label": "Show variant image",
+                        "options": [
+                            {
+                                "value": "all",
+                                "label": "Show for all options"
+                            },
+                            {
+                                "value": "colors",
+                                "label": "Show for color options only"
+                            },
+                            {
+                                "value": "none",
+                                "label": "Don't show images"
+                            }
+                        ],
+                        "default": "none"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "color_swatches",
+                        "label": "Replace product color options with color swatches",
+                        "info": "[Learn more](https://support.milehighthemes.com/hc/en-us/articles/360019946294-How-do-I-setup-color-swatches-on-my-product-pages-)"
+                    },
+                    {
+                        "type": "select",
+                        "id": "price_display",
+                        "label": "Variant price display",
+                        "options": [
+                            {
+                                "value": "none",
+                                "label": "None"
+                            },
+                            {
+                                "value": "diff",
+                                "label": "Difference with selected variant"
+                            },
+                            {
+                                "value": "abs",
+                                "label": "Show price for each variant"
+                            }
+                        ],
+                        "default": "diff",
+                        "info": "This option will work if variant prices are various"
+                    },
+                    {
+                        "type": "select",
+                        "id": "swatches_grid_columns",
+                        "label": "Desktop buttons columns",
+                        "options": [
+                            {
+                                "value": "1",
+                                "label": "1 column"
+                            },
+                            {
+                                "value": "2",
+                                "label": "2 columns"
+                            },
+                            {
+                                "value": "auto",
+                                "label": "Auto"
+                            }
+                        ],
+                        "default": "auto"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "show_stock_alert",
+                        "label": "Show low stock alert",
+                        "default": false,
+                        "info": "Will not work with color swatches. You can set up low stock threshold in 'Cart' theme settings."
+                    }
+                ]
+            },
+            {
+                "type": "description",
+                "name": "Product description",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "meta_heading",
+                        "label": "t:g.common.label.heading",
+                        "info": "Optional"
+                    },
+                    {
+                        "type": "range",
+                        "id": "font_scale",
+                        "min": 100,
+                        "max": 150,
+                        "default": 100,
+                        "step": 5,
+                        "unit": "%",
+                        "label": "Text scale"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "use_expand",
+                        "default": true,
+                        "label": "Add 'Read more' link for long descriptions"
+                    }
+                ]
+            },
+            {
+                "type": "stock_alert",
+                "name": "Stock status",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "checkbox",
+                        "id": "prev_attach",
+                        "label": "Attach to previous block",
+                        "info": "Reduces excess padding",
+                        "default": false
+                    }
+                ]
+            },
+            {
+                "type": "quantity_selector",
+                "name": "Quantity selector",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "select",
+                        "id": "input_type",
+                        "label": "Selector type",
+                        "options": [
+                            {
+                                "value": "dropdown",
+                                "label": "Dropdown"
+                            },
+                            {
+                                "value": "input",
+                                "label": "Input"
+                            }
+                        ],
+                        "default": "dropdown"
+                    }
+                ]
+            },
+            {
+                "type": "rating",
+                "name": "Product rating",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "paragraph",
+                        "content": "t:g.info.product.reviews"
+                    },
+                    {
+                        "type": "checkbox",
+                        "id": "show_count",
+                        "label": "Show reviews count",
+                        "default": true
+                    }
+                ]
+            }
+        ],
+        "default": { 
+            "blocks": [
+                {
+                    "type": "title"
+                },
+                {
+                    "type": "rating"
+                },
+                {
+                    "type": "price"
+                },
+                {
+                    "type": "variant_selector"
+                },
+                {
+                    "type": "buy_buttons"
+                }
+            ]
+        }
+    }
+{% endschema %}

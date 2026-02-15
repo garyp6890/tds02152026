@@ -1,0 +1,75 @@
+{%- assign heading = 'templates.search.search_for' | t: terms: search.terms -%}
+
+{%- if search.performed == false and search.results_count <= 0 -%}
+    {%- assign heading = 'general.search.search' | t -%}
+{%- endif -%}
+
+{% capture Page_header %}
+    {% render 'page-header',
+        heading: heading,
+        bg_image: section.settings.bg_image,
+        bg_image_overlay: section.settings.bg_image_overlay,
+        text_position: section.settings.text_position
+    %}
+{% endcapture %}
+
+{%- if section.settings.only_results_show -%}
+    {%- if search.performed and search.results_count > 0 -%}
+        {{ Page_header }}
+    {%- endif -%}
+{%- else -%}
+    {{ Page_header }}
+{%- endif -%}
+
+
+{% schema %}
+{
+    "name": "Search header",
+    "settings": [
+        {
+            "type": "paragraph",
+            "content": "You can change page title size in 'Typography' theme settings"
+        },
+        {
+            "type": "image_picker",
+            "id": "bg_image",
+            "label": "Background image",
+            "info": "t:g.media.resolution_recommendations.full_screen"
+        },
+        {
+            "type": "range",
+            "id": "bg_image_overlay",
+            "min": 0,
+            "max": 90,
+            "step": 5,
+            "unit": "%",
+            "label": "Background image overlay opacity",
+            "default": 30,
+            "info": "Has no effect if text is placed outside of an image"
+        },
+        {
+            "type": "select",
+            "id": "text_position",
+            "label": "Text position",
+            "options": [
+                {
+                    "value": "inside",
+                    "label": "Inside of an image"
+                },
+                {
+                    "value": "outside",
+                    "label": "Outside of an image"
+                }
+            ],
+            "default": "inside",
+            "info": "Has no effect if there is no background image"
+        },
+        {
+            "type": "checkbox",
+            "id": "only_results_show",
+            "label": "Show only if there are search results",
+            "default": true
+        }
+    ]
+}
+{% endschema %}
