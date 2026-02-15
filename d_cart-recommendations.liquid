@@ -1,0 +1,76 @@
+{% render 'load-css', file: 'product-card-min' %}
+{% assign first_cart_item = cart.items | first %}
+
+{%- capture Content -%}
+    {% render 'product-recommendations-slider',
+        ref_product: first_cart_item.product,
+        req_section: 'r_cart-notification-recommendations',
+        slides_per_view: section.settings.slides_per_view,
+        slide_by: section.settings.slide_every,
+        limit: section.settings.products_limit,
+        show_pagination: false,
+        container: true
+    %}
+{%- endcapture -%}
+
+<cart-live-region section-id="{{ section.id }}" id="cartRecommendations-{{ section.id }}">
+    {% if cart != empty %}
+        <cart-recommendations url="{{ routes.cart_url }}" section-id="{{ section.id }}" hidden>
+            {% render 'section-body',
+                content: Content,
+                heading: section.settings.heading,
+                subheading: section.settings.subheading,
+                spaced: true
+            %}
+        </cart-recommendations>
+    {% endif %}
+</cart-live-region>
+
+<script type="module" src="{{ 'cart-recommendations.js' | asset_url }}"></script>
+
+{% schema %}
+    {
+        "name": "Cart recommendations",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "This section is not displayed if there are no items in the cart. Recommendations are based on Shopify recommendations algorithm."
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight",
+                "default": "Inspired by products in the cart"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            },
+            {
+                "type": "select",
+                "id": "slide_every",
+                "label": "Slide per",
+                "options": [
+                    {
+                        "value": "row",
+                        "label": "Row"
+                    },
+                    {
+                        "value": "item",
+                        "label": "Item"
+                    }
+                ],
+                "default": "row"
+            }
+        ],
+        "presets": [
+            {
+                "name": "Cart recommendations"
+            }
+        ],
+        "templates": ["cart"]
+    }
+{% endschema %}

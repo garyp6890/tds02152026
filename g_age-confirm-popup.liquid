@@ -1,0 +1,214 @@
+{%- liquid
+    assign NS = 'age-confirm-popup'
+    assign cn = '#' | append: NS
+
+    if section.settings.background_image != blank
+        assign bg_image = true
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Modal_content -%}
+    <div class="{{ cn }}-modal color-scheme-{{ section.settings.color_scheme }}">
+            {%- if bg_image -%}
+                <div class="{{ cn }}-image mobile-hidden">
+                    {% render 'media',
+                        image: section.settings.background_image,
+                        height: '100%'
+                    %}
+                </div>
+            {%- endif -%}
+            <div class="{{ cn }}-content {% if bg_image %}@with-image{% endif %}">
+                {% render 'hero', 
+                    blocks: section.blocks,
+                    f_button_atts: 'data-element="confirm"',
+                    s_button_tier: 'secondary',
+                    align: 'center'
+                %}
+            </div>
+        </div>
+{%- endcapture -%}
+
+{%- capture Modal -%}
+    {% render 'modal',
+        content: Modal_content,
+        id: NS,
+        height: '100%',
+        width: '100vw',
+        show_close: false,
+        animation: 'none'
+    %} 
+{%- endcapture -%}
+    
+{%- if request.design_mode -%}
+    <div class="{{ cn }}" section-id="{{ section.id }}">
+        {{ Modal }}  
+    </div>
+{%- else -%}
+    <{{ NS }} class="{{ cn }}" section-id="{{ section.id }}">
+        {{ Modal }}  
+    </{{ NS }}>
+{%- endif -%}
+
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+
+{%- if request.design_mode -%}
+    <script type="text/json" data-{{section.id}}-blocks-size-settings>
+        {{ section.blocks.size | json }}
+    </script>
+    <script type="module">
+        const { DOMEvents } = Global;
+        
+        class EditorAgeConfirmPopup extends window.Editor {
+            events = {
+                section: {
+                    select: this._onAgeConfirmPopupSelect,
+                    deselect: this._onAgeConfirmPopupDeselect
+                },
+                block: {
+                    select: this._onAgeConfirmPopupBlockSelect
+                }
+            }
+            
+            init() {
+                document.querySelector('[data-element="confirm"]').addEventListener('click', this._close.bind(this))
+            }
+            
+            _onAgeConfirmPopupSelect() {
+                if (!this.blocksCount) return;
+                this._open();
+            }
+            
+            _onAgeConfirmPopupDeselect() {
+                this._close();
+            }
+            
+            _onAgeConfirmPopupBlockSelect() {
+                if (this.opened) return;
+                this._open();
+            }
+
+            _open() {
+                this.$modal.dispatchEvent(DOMEvents.MODAL_OPEN);
+                this.opened = true;
+            }
+            
+            _close() {
+                this.$modal.dispatchEvent(DOMEvents.MODAL_CLOSE);
+                this.opened = false;
+            }
+
+            get $modal () {
+                return document.querySelector(`[section-id="${this.sectionId}"]`).querySelector('modal-container');
+            }
+        }
+        const ageConfirmEditorUX = new EditorAgeConfirmPopup('{{ section.id }}');
+        ageConfirmEditorUX.blocksCountSelector = '[data-{{section.id}}-blocks-size-settings]';
+        ageConfirmEditorUX.render();
+    </script>
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Age confirm popup",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "invert",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "image_picker",
+            "id": "background_image",
+            "label": "Desktop image",
+            "info": "t:g.media.resolution_recommendations.full_screen"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "heading",
+            "name": "t:g.hero.heading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "inline_richtext",
+                    "id": "heading",
+                    "label": "t:g.hero.heading.label", 
+                    "info": "t:g.info.heading_highlight",
+                    "default": "Confirm your age"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "t:g.hero.text.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "Confirm question",
+                    "default": "<p>Are you 18 years old or older?</p>"
+                }
+            ]
+        },
+        {
+            "type": "buttons",
+            "name": "t:g.hero.buttons.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Confirm button" 
+                },
+                {
+                    "type": "text",
+                    "id": "f_button_label",
+                    "label": "t:g.hero.buttons.first.label",
+                    "default": "Yes"
+                },
+                {
+                    "type": "header",
+                    "content": "Deny button" 
+                },
+                {
+                    "type": "text",
+                    "id": "s_button_label",
+                    "label": "t:g.hero.buttons.second.label",
+                    "default": "No"
+                },
+                {
+                    "type": "url",
+                    "id": "s_button_link",
+                    "label": "t:g.hero.buttons.second.link",
+                    "info": "Link for the user redirect if he/her doesn't confirm age"
+                }
+            ]
+        }
+    ],
+    "limit": 1,
+    "presets": [
+        {
+            "name": "Age confirm popup",
+            "blocks": [
+                {
+                    "type": "heading"
+                },
+                {
+                    "type": "text"
+                },
+                {
+                    "type": "buttons"
+                }
+            ]
+        }
+    ],
+    "enabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

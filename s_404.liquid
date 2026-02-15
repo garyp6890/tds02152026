@@ -1,0 +1,163 @@
+{%- liquid
+    assign heading = 'templates.404.subtext' | t
+    assign subheading = 'templates.404.title' | t
+    assign f_button_label = 'general.continue_shopping' | t
+    assign f_button_link = routes.all_products_collection_url
+    if section.settings.image != blank
+        assign hero_auto_colors = true
+    else
+        assign hero_auto_colors = false
+    endif
+    unless section.settings.image_size == 'origin'
+        assign image_height = section.settings.image_size
+    endunless
+    unless section.settings.mobile_image_size == 'origin'
+        assign mobile_image_height = section.settings.mobile_image_size
+    endunless
+-%}
+
+{%- capture Hero_text -%}
+    {% render 'hero', 
+        align: 'center',
+        size: section.settings.text_size,
+        auto_colors: hero_auto_colors,
+        text_color: text_color,
+        bg_color: bg_color,
+        heading: heading,
+        subheading: subheading,
+        f_button_label: f_button_label,
+        f_button_link: f_button_link,
+        gap_size: 'h3',
+        accent: true
+    %}
+{%- endcapture -%}
+
+{% if section.settings.image != blank %}
+    {%- assign spaced = false -%}
+    {%- assign container = false -%}
+    {% capture Caption %}
+        {% render 'floating-content',
+            content: Hero_text,
+            absolute: true,
+            x: 'center',
+            y: 'center',
+            padded: true
+        %}
+    {% endcapture %}
+    {% capture Content %}
+        {% render 'media'
+            image: section.settings.image,
+            image_mobile: section.settings.mobile_image,
+            height: image_height,
+            height_mobile: mobile_image_height, 
+            placeholder: 'lifestyle',
+            overlay: section.settings.overlay,
+            content: Caption
+        %}
+    {% endcapture %}
+{% else %}
+    {%- assign spaced = true -%}
+    {%- assign container = true -%}
+    {%- assign Content = Hero_text -%}
+{% endif %}
+
+{% render 'section-body',
+    content: Content,
+    spaced: spaced,
+    container: container
+%}
+
+{% schema %}
+{
+    "name": "404 Page",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:g.media.image_background",
+            "info": "t:g.media.resolution_recommendations.full_screen"
+        },
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "t:g.media.image_size.label",
+            "options": [
+                {
+                    "value": "origin",
+                    "label": "Original"
+                },
+                {
+                    "value": "100vh",
+                    "label": "Full height"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                },
+                {
+                    "value": "650px",
+                    "label": "650px"
+                },
+                {
+                    "value": "750px",
+                    "label": "750px"
+                }
+            ],
+            "default": "origin"
+        },
+        {
+            "type": "image_picker",
+            "id": "mobile_image",
+            "label": "t:g.media.mobile_image_background",
+            "info": "t:g.media.resolution_recommendations.mobile"
+        },
+        {
+            "type": "select",
+            "id": "mobile_image_size",
+            "label": "t:g.media.image_size.mobile_label",
+            "options": [
+                {
+                    "value": "origin",
+                    "label": "Original"
+                },
+                {
+                    "value": "100vh",
+                    "label": "Full height"
+                },
+                {
+                    "value": "350px",
+                    "label": "350px"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                },
+                {
+                    "value": "650px",
+                    "label": "650px"
+                }
+            ],
+            "default": "origin"
+        },
+        {
+            "type": "range",
+            "id": "overlay",
+            "label": "t:g.media.overlay",
+            "min": 0,
+            "max": 90,
+            "unit": "%",
+            "step": 1,
+            "default": 0
+        }
+    ]
+}
+{% endschema %}

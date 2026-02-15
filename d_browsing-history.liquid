@@ -1,0 +1,87 @@
+{%- liquid
+    if section.settings.section_layout == 'full'
+        assign use_offset = true
+    endif
+    assign products_gap = 20
+-%}
+
+
+{% capture Content %}
+    <browsing-history-loader section-id="{{ section.id }}" req-section="r_product-card">
+        {% render 'slideshow-inline-blaze',
+            slides_per_view: section.settings.slides_per_view,
+            slide_by: section.settings.slide_every,
+            inert: true
+        %}
+    </browsing-history-loader>   
+{% endcapture %}
+
+<browsing-history-slider section-id="{{ section.id }}" hidden>
+    {% render 'section-body',
+        content: Content,
+        heading: section.settings.heading,
+        subheading: section.settings.subheading,
+        spaced: true,
+        force_layout: true
+    %}
+</browsing-history-slider>
+
+<script type="module" src="{{ 'browsing-history-loader.js' | asset_url }}"></script>
+<script type="module" src="{{ 'browsing-history-slider.js' | asset_url }}"></script>
+
+
+{% schema %}
+    {
+    "name": "Browsing history",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Browsing history"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "select",
+            "id": "slide_every",
+            "label": "Slide per",
+            "options": [
+                {
+                    "value": "row",
+                    "label": "Row"
+                },
+                {
+                    "value": "item",
+                    "label": "Item"
+                }
+            ],
+            "default": "row"
+        },
+        {
+            "type": "range",
+            "id": "slides_per_view",
+            "label": "Products per row on desktop",
+            "min": 3,
+            "max": 6,
+            "step": 1,
+            "default": 4
+        }  
+    ],
+    "presets": [
+        {
+            "name": "Browsing history",
+            "category": "Product"
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

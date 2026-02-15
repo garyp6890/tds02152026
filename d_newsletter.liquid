@@ -1,0 +1,249 @@
+{%- liquid
+    assign NS = "newsletter"
+    assign cn = '#' | append: NS
+    assign newsletter_form_id = 'NewsletterForm-' | append: section.id
+    assign newsletter_input_id = newsletter_form_id | append: 'input'
+-%}
+{% render 'load-css', file: 'newsletter' %}
+
+{%- capture Content -%}
+    <div class="{{ cn }}">
+        <div class="{{ cn }}-header">
+            {% if section.settings.subheading != blank and settings.type_subheading_position == 'above' %}
+                <p class="{{ cn }}-subheading #subheading">{{ section.settings.subheading }}</p>
+            {% endif %}
+            {% if section.settings.heading != blank %}
+                <h3 class="{{ cn }}-heading heading-font">
+                    {% render 'accent-text',
+                        text: section.settings.heading,
+                    %}
+                </h3>
+            {% endif %}
+            {% if section.settings.subheading != blank and settings.type_subheading_position == 'below' %}
+                <p class="{{ cn }}-subheading #subheading">{{ section.settings.subheading }}</p>
+            {% endif %}
+        </div>        
+        {% render 'hero-newsletter', size: size %}
+        {% comment %}
+            {% assign newsletter_form_id = 'NewsletterForm-' | append: section.id %}    
+            {% form 'customer', id: newsletter_form_id %}
+                <input type="hidden" name="contact[tags]" value="newsletter"> 
+                {%- if form.posted_successfully? -%}
+                    <div class="{{ cn }}-notification" id="Newsletter-success--{{ section.id }}" tabindex="-1" autofocus>
+                        {% render 'icon', name: 'check' %}
+                        {{ 'newsletter.success' | t }}
+                    </div>
+                {%- endif -%}
+                {%- if form.errors -%}
+                    <div class="{{ cn }}-notification" id="Newsletter-error--{{ section.id }}">
+                        {% render 'icon', name: 'x' %}
+                        {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+                    </div>
+                {%- endif -%}   
+                <div class="{{ cn }}-form">
+                    <label class="visually-hidden" for="{{ newsletter_input_id }}">{{ 'newsletter.long_label' | t }}</label>
+                    
+                    <input 
+                        class="{{ cn }}-input"
+                        id="{{ newsletter_input_id }}"
+                        type="email"
+                        name="contact[email]"
+                        value="{{ form.email | escape }}"
+                        aria-required="true"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        autocomplete="email"
+                        {% if form.errors %}
+                            autofocus
+                            aria-invalid="true"
+                            aria-describedby="Newsletter-error--{{ section.id }}"
+                        {% elsif form.posted_successfully? %}
+                            aria-describedby="Newsletter-success--{{ section.id }}"
+                        {% endif %}
+                        placeholder="{{ 'newsletter.long_label' | t }}"
+                        required
+                    >
+                    <div class="{{ cn }}-submit">
+                        {%- render 'button',
+                            type: 'submit',
+                            t_text: 'newsletter.button_label'
+                        -%}
+                    </div>
+                </div>
+            {% endform %}
+        {% endcomment %}
+    </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    container: true,
+    color_scheme: section.settings.color_scheme,
+    bg_pattern: section.settings.pattern,
+    bg_pattern_scale: section.settings.pattern_scale,
+    bg_pattern_animation: section.settings.pattern_animation
+%}
+
+{% schema %}
+{
+    "name": "Newsletter",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "accent",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "default": "Newsletter",
+            "info": "t:g.info.heading_highlight"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.label",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Newsletter"
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

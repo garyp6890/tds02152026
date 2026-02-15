@@ -1,0 +1,225 @@
+{% liquid
+    assign NS = 'popup-gallery'
+    assign cn = '#' | append: NS
+
+    if section.settings.stacked_columns
+        assign gap = '0px'
+        assign gap_mobile = '0px'
+        assign curved_section = true
+    else
+        assign curved_section = false
+        assign gap = 'var(--glob-gutter)'
+        assign gap_mobile = 'var(--glob-gutter)'
+        assign animate_target = 'hover-animate-target'
+    endif
+
+    assign columns = section.settings.columns
+    assign mobile_columns = section.settings.mobile_columns
+
+    assign spaced = true
+    if section.settings.layout == 'full'
+        assign curved_section = false
+        assign spaced = false
+    endif
+    assign popup_id = 'popup-image-gallery-' | append: section.id 
+%}
+
+{%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw)) * 0.17{%- endcapture -%}
+{%- capture image_srcsize_mobile -%}90vw * 0.64{%- endcapture -%}
+{%- capture hero_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw)) * 0.64{%- endcapture -%}
+{%- capture hero_image_srcsize_mobile -%}90vw{%- endcapture -%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+{% capture Content %}
+    <slideshow-blaze-controller section-id="{{ section.id }}">
+        <div class="#grid @type:columns {% if section.settings.layout == 'full' %}@outer-gap{% endif %}" style="--columns: {{ columns }}; --columns-mobile: {{ mobile_columns }}; --gap: {{ gap }}; --gap-mobile: {{ gap_mobile }};">
+            {% for block in section.blocks %}
+                {% if block.settings.image == blank %}
+                    {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+                {% endif %}
+                <div class="{{ cn }}-item hover-animate {{ animate_target }} {% if section.settings.stacked_columns %}@stacked{% endif %}" {{ block.shopify_attributes }}>                
+                    {%- capture Slides -%}
+                        {{ Slides }}
+                        <div class="{{ cn }}-slide-wrapper">
+                            <div class="{{ cn }}-hero">
+                                {% render 'media',
+                                    image: block.settings.image,
+                                    image_mobile: block.settings.image,
+                                    placeholder: 'image',
+                                    srcsize_desktop: hero_image_srcsize_desktop,
+                                    srcsize_mobile: hero_image_srcsize_mobile,
+                                    height: '100%',
+                                    height_mobile: '100%',
+                                    image_fit: 'contain',
+                                    border_radius: 'inner',
+                                    placeholder: 'collection-apparel',
+                                    placeholder_index: placeholder_index
+                                %}
+                            </div>
+                        </div>
+                    {%- endcapture -%}
+                    <modal-open tabindex="0" target="{{ popup_id }}" section-id="{{ section.id }}">
+                        <div class="{{ cn }}-item-media" data-element="controller" data-control-index="{{ forloop.index0 }}">
+                            {% render 'media',
+                                image: block.settings.image,
+                                placeholder: 'collection-apparel',
+                                placeholder_index: placeholder_index,
+                                srcsize_desktop: image_srcsize_desktop,
+                                srcsize_mobile: image_srcsize_mobile,
+                                size: section.settings.image_size
+                            %}
+                        </div>
+                    </modal-open>
+                </div>
+            {% endfor %}
+            {% capture Slider %}
+                {% render 'slideshow-blaze',
+                    slides: Slides,
+                    id: popup_id,
+                    show_navigation: true
+                %}
+            {% endcapture %}
+            {% render 'modal',
+                content: Slider,
+                id: popup_id
+            %}
+        </div>
+    </slideshow-blaze-controller>
+{% endcapture %}
+
+<script type="module" src="{{ 'slideshow-blaze-controller.js' | asset_url }}"></script>
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    container: section.settings.layout,
+    curved: curved_section,
+    spaced: spaced
+%}
+
+{% schema %}
+{
+    "name": "Popup image gallery",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Popup image gallery"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "select",
+            "id": "layout",
+            "label": "t:g.section.layout.label",
+            "options": [
+                {
+                    "value": "container",
+                    "label": "Container"
+                },
+                {
+                    "value": "full",
+                    "label": "Full width"
+                }
+            ],
+            "default": "full"
+        },
+        {
+            "type": "checkbox",
+            "id": "stacked_columns",
+            "label": "Stack columns",
+            "default": true,
+            "info": "Removes padding around images"
+        },
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "t:g.media.image_size.gallery_label",
+            "options": [
+                {
+                    "value": "portrait",
+                    "label": "t:g.media.image_size.options.portrait"
+                },
+                {
+                    "value": "landscape",
+                    "label": "t:g.media.image_size.options.landscape"
+                },
+                {
+                    "value": "square",
+                    "label": "t:g.media.image_size.options.square"
+                }
+            ],
+            "default": "square" 
+        },
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Desktop columns",
+            "step": 1,
+            "max": 10,
+            "min": 2,
+            "default": 6
+        },
+        {
+            "type": "range",
+            "id": "mobile_columns",
+            "label": "Mobile columns",
+            "min": 2,
+            "step": 1,
+            "max": 4,
+            "default": 3
+        }
+    ],
+    "blocks": [
+        {
+            "type": "image",
+            "name": "Image",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "t:g.media.image",
+                    "info": "t:g.media.resolution_recommendations.full_screen"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Popup image gallery",
+            "blocks": [
+              {
+                  "type": "image"
+              },
+              {
+                  "type": "image"
+              },
+              {
+                  "type": "image"
+              },
+              {
+                  "type": "image"
+              },
+              {
+                  "type": "image"
+              },
+              {
+                  "type": "image"
+              }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

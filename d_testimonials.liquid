@@ -1,0 +1,166 @@
+{% render 'load-css', file: 'testimonial-card', lazy: true %}
+
+{%- capture Content -%}
+    {% capture Slides %}
+        {% for block in section.blocks %}
+            <div {{ block.shopify_attributes }}>
+                {% render 'testimonial-card',
+                    author_image: block.settings.author_image,
+                    author_name: block.settings.author_name,
+                    heading: block.settings.heading,
+                    text: block.settings.text,
+                    product: block.settings.product,
+                    show_stars: section.settings.show_stars,
+                    stars_count: block.settings.star_count
+                %}
+            </div>
+        {% endfor %}
+    {% endcapture %}
+
+    {% render 'slideshow-inline-blaze',
+        slides: Slides,
+        slides_per_view: section.settings.slides_per_view,
+        slide_by: 'item'
+    %}
+{%- endcapture -%}
+
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    spaced: true,
+    button_label: section.settings.section_button_label,
+    button_link: section.settings.section_button_link
+%}
+
+{% schema %}
+{
+    "name":"Testimonials",
+    "settings":[
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Testimonials"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "range",
+            "id": "slides_per_view",
+            "label": "Items per view on desktop",
+            "min": 3,
+            "max": 5,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "checkbox",
+            "id": "show_stars",
+            "label": "Show stars",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "t:g.section.button.header"
+        },
+        {
+            "type": "text",
+            "id": "section_button_label",
+            "label": "t:g.section.button.label"
+        },
+        {
+            "type": "url",
+            "id": "section_button_link",
+            "label": "t:g.section.button.link"
+        }
+    ],
+    "blocks":[
+        {
+            "type":"testimonial",
+            "name":"Testimonial",
+            "limit": 12,
+            "settings":[
+            {
+                "type":"image_picker",
+                "id":"author_image",
+                "label":"Author image",
+                "info": "t:g.media.resolution_recommendations.testimonials"
+            },
+            {
+                "type":"text",
+                "id":"author_name",
+                "label":"Author name",
+                "default":"Author"
+            },
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Heading"
+            },
+            {
+                "type":"textarea",
+                "id":"text",
+                "label":"Text",
+                "default":"Review or testimonial text"
+            },
+            {
+                "type": "select",
+                "id": "star_count",
+                "label": "Star count",
+                "options": [
+                    {
+                        "value": "4",
+                        "label": "4"
+                    },
+                    {
+                        "value": "4.5",
+                        "label": "4.5"
+                    },
+                    {
+                        "value": "5",
+                        "label": "5"
+                    }
+                ],
+                "default": "5"
+            },
+            {
+                "type": "product",
+                "id": "product",
+                "label": "Product (optional)"
+            }
+            ]
+        }
+    ],
+    "presets":[
+        {
+            "name":"Testimonials",
+            "blocks":[
+                {
+                    "type":"testimonial"
+                },
+                {
+                    "type":"testimonial"
+                },
+                {
+                    "type":"testimonial"
+                },
+                {
+                    "type":"testimonial"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

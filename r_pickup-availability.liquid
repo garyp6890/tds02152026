@@ -1,0 +1,81 @@
+{%- liquid
+    assign cn = '#pickup-availability'
+    assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true    
+-%}
+
+{%- capture Variant_image -%}
+    {% if product_variant.image %}
+        <div class="{{ cn }}-header-image">
+            {% render 'media',
+                image: product_variant.image,
+                image_resolution: 75,
+                aspect_ratio: '1x1'
+            %}
+        </div>  
+    {% endif %}
+{%- endcapture -%}
+
+{%- capture Variant_title -%}
+    {%- unless product_variant.product.has_only_default_variant -%}
+        <p class="{{ cn }}-variant-title">
+        {%- for product_option in product_variant.product.options_with_values -%}
+            {{ product_option.name | escape }}:&nbsp;
+            {%- for value in product_option.values -%}
+                {%- if product_option.selected_value == value -%}
+                    <span>{{ value | escape }}</span>
+                {%- endif -%}
+            {%- endfor -%}
+            {%- unless forloop.last -%},&nbsp;{%- endunless forloop.last -%}
+        {%- endfor -%}
+        </p>
+    {%- endunless -%}
+{%- endcapture -%}
+
+<div id="pickupAviabilitySection" class="{{ cn }}">
+    {%- if pick_up_availabilities.size > 0 -%}
+        <div class="{{ cn }}-header">
+            {{ Variant_image }}
+            <div class="{{ cn }}-header-text">
+                <h3 class="{{ cn }}-product-title">{{ product_variant.product.title | escape }}</h3>
+                {{ Variant_title }}
+            </div>
+            <modal-close class="{{ cn }}-header-close" section-id="{{ section.id }}">
+                {% render 'icon', name: 'x' %}
+            </modal-close>
+        </div>
+        <div class="{{ cn }}-body">
+            {% for store_availability in pick_up_availabilities %}
+                {%- assign address = store_availability.location.address -%}
+                {%- capture Location -%}{{ address.address1 }}, {% if address.address2 != blank %}{{ address.address2 }}, {% endif %}{{ address.city }}, {{ address.province_code }} {{ address.zip }}, {{ address.country }}{%- endcapture -%}
+                <div class="{{ cn }}-item">
+                    <div class="{{ cn }}-item-icon">
+                        {% render 'icon', name: 'map-marker', load: true %}
+                    </div>
+                    <div class="{{ cn }}-item-info">
+                        <h4 class="{{ cn }}-item-title">{{ store_availability.location.name }}</h4>
+                        <div class="{{ cn }}-item-location">{{ Location }}</div>
+                        <a class="styled-link" href="https://maps.google.com?daddr={{ Location | url_encode }}" target="_blank">{{ 'products.product.pickup_availability.directions' | t }}</a>
+                        <div class="{{ cn }}-item-status">
+                            {%- if store_availability.available -%}
+                                <div class="{{ cn }}-item-status-icon color-success">
+                                    {% render 'icon', name: 'check' %}
+                                </div>
+                                <span class="{{ cn }}-item-status-text">
+                                    {{ 'products.product.pickup_availability.pick_up_available' | t }}.
+                                    {{ store_availability.pick_up_time }}
+                                </span>
+                            {%- else -%}
+                                <div class="{{ cn }}-item-status-icon color-danger">
+                                    {% render 'icon', name: 'x' %}
+                                </div>
+                                <span class="{{ cn }}-item-status-text">
+                                    {{ 'products.product.pickup_availability.pick_up_unavailable' | t }}
+                                </span>
+                            {%- endif -%}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {%- endif -%}
+</div>

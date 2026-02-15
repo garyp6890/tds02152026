@@ -1,0 +1,242 @@
+{%- liquid
+    assign NS = 'complementary-products'
+    assign cn = '#' | append: NS
+    assign current_variant = product.selected_or_first_available_variant
+    assign current_variant_image = current_variant.image | default: current_variant.product.featured_image
+    assign complementary_products = product.metafields.shopify--discovery--product_recommendation.complementary_products.value
+    assign product_form_id = 'complemetary-products-' | append: product.id | append: section.id
+    assign complementary_subtotal = current_variant.price 
+
+    assign subtotal = current_variant.price
+    assign c_products_count = 0
+
+    unless settings.product_card_image_crop
+        assign image_fit = 'contain'
+    endunless
+-%}
+
+    
+    
+{%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/5{%- endcapture -%}
+{%- capture image_srcsize_mobile -%}90vw/1.5{%- endcapture -%}
+
+{% capture Complementaries %}
+    {% for c_product in complementary_products %}
+        {% if c_product.available %}
+            {%- liquid
+                assign c_product_variant = c_product.first_available_variant
+                assign subtotal = subtotal | plus: c_product_variant.price
+                assign image = c_product_variant.image | default: c_product.featured_image        
+                assign input_id = "coplementary-product-" | append: section.id | append: c_product_variant.id
+                assign c_products_count = c_products_count | plus: 1
+            -%}
+            <div class="{{ cn }}-item-wrapper">
+                <div class="{{ cn }}-item">
+                    <div class="{{ cn }}-item-inner">
+                        <a href="{{ c_product.url }}" class="stretched-link">{{ c_product.title }}</a>
+                        <div class="{{ cn }}-item-media">
+                            {% render 'media',
+                                image: image,
+                                size: settings.product_card_image_size,
+                                image_fit: image_fit,
+                                srcsize_desktop: image_srcsize_desktop,
+                                srcsize_mobile: image_srcsize_mobile
+                            %}
+                        </div>
+                        <div class="{{ cn }}-item-body">
+                            <h5 class="{{ cn }}-item-title">{{ c_product.title }}</h5>
+                            {% unless c_product.has_only_default_variant %}
+                                <p class="{{ cn }}-item-variant">
+                                    {{ c_product_variant.title }}
+                                </p>
+                            {% endunless %}
+                            <div class="{{ cn }}-item-price desktop-hidden">
+                                {% render 'price', display_compare: false, variant: c_product_variant %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="{{ cn }}-item-footer">
+                        <label class="{{ cn }}-item-footer-check-label" for="{{ input_id }}">
+                            <input
+                                value="{{ c_product_variant.id }}"
+                                class="{{ cn }}-item-footer-check-input"
+                                type="checkbox"
+                                id="{{ input_id }}"
+                                form="{{ product_form_id }}"
+                                name="buy_with_{{forloop.index}}"
+                                data-element="complementary-item"
+                                data-price-value="{{ c_product_variant.price }}"
+                                checked
+                                hidden
+                            > 
+                            <div class="{{ cn }}-item-footer-check-figure">
+                                {% render 'icon', name: 'check' %}
+                            </div>
+                            <div class="{{ cn }}-item-price mobile-hidden">
+                                {% render 'price', display_compare: false, variant: c_product_variant %}
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endcapture %}                               
+
+{% if c_products_count > 0 %}
+    {%- render 'load-css', file: NS -%}
+    {% assign items_count = c_products_count | plus: 1 %}
+    {% capture Content %}
+        <product-form section-id="{{ section.id }}" multiple-products>
+            {%- form 'product', product, autocomplete: 'off', id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                <div class="#grid @type:columns {% if settings.design_center_layout %}@center{% endif %}" style="--columns: 5; --gap-scale: 2;" >
+                    <div class="{{ cn }}-item-wrapper">
+                        <div class="{{ cn }}-item">
+                            <a href="#complementary_product_anchor-{{ product.id }}" class="stretched-link">{{ product.title }}</a>
+                            <div class="{{ cn }}-item-inner">
+                                <div class="{{ cn }}-item-media">
+                                    {% render 'media',
+                                        image: current_variant_image
+                                        size: settings.product_card_image_size,
+                                        image_fit: image_fit,
+                                        srcsize_desktop: image_srcsize_desktop,
+                                        srcsize_mobile: image_srcsize_mobile
+                                    %}
+                                </div>
+                                <div class="{{ cn }}-item-body">
+                                    <h5 class="{{ cn }}-item-title">
+                                        {{ 'sections.compare_products.this_item' | t }}: {{ product.title }}
+                                    </h5>
+                                    {% unless product.has_only_default_variant %}
+                                        <p class="{{ cn }}-item-variant">{{ current_variant.title }}</p>
+                                    {% endunless %}                                   
+                                    <div class="{{ cn }}-item-price desktop-hidden">
+                                        {% render 'price', display_compare: false, variant: current_variant %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="{{ cn }}-item-footer">
+                                {% assign input_id = "main-product-" | append: section.id | append: current_variant.id %}
+                                <label class="{{ cn }}-item-footer-check-label" for="{{ input_id }}">
+                                    <input
+                                        name="id"
+                                        id="{{ input_id }}"
+                                        value="{{ current_variant.id }}"
+                                        form="{{ product_form_id }}"
+                                        class="{{ cn }}-item-footer-check-input"
+                                        type="checkbox"
+                                        form="{{ product_form_id }}"
+                                        data-price-value="{{ current_variant.price }}"
+                                        checked
+                                        hidden
+                                    > 
+                                    <div class="{{ cn }}-item-footer-check-figure">
+                                        {% render 'icon', name: 'check' %}
+                                    </div>
+                                    <div class="{{ cn }}-item-price mobile-hidden">
+                                        {% render 'price', display_compare: false, variant: current_variant %}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {{ Complementaries }}
+                    
+                </div>
+                <div class="{{ cn }}-sidebar" data-element="total">
+                        <div class="{{ cn }}-sidebar-inner">
+                            <div class="{{ cn }}-total">
+                                <span class="#subheading">{{ 'products.total_price' | t }}</span>
+                                <span class="{{ cn }}-total-value" data-element="subtotal">{{ subtotal | money }}</span>
+                            </div>
+                            {%- capture Button_text -%}
+                                <span class="{{ cn }}-multiple-count" data-element="counter" data-count="{{ items_count }}">
+                                    {{ 'products.add_count_items_to_cart_html' | t: amount: items_count }}
+                                </span>
+                                <span class="{{ cn }}-single-count">
+                                    {{ 'products.product.add_to_cart' | t }}
+                                </span>
+                            {%- endcapture -%}
+                            {%- capture Add_to_cart -%}
+                                {% render 'button',
+                                    type: 'submit',
+                                    text: Button_text,
+                                    no_arrow: true,
+                                    loading: true,
+                                    display_style: 'gradient',
+                                    element: 'to-cart-button'
+                                %}
+                            {%- endcapture -%}
+                            {%- render 'product-to-cart', 
+                                trigger: Add_to_cart,
+                                variant: current_variant,
+                                form_child: true
+                            -%}
+                        </div>
+                    </div>
+            {%- endform -%}
+        </product-form>
+    {% endcapture %}
+{% endif %}
+
+{% if Content != blank %}
+    <{{ NS }}
+        id="complementaryProductsSection-{{ section.id }}"
+        section-id="{{ section.id }}"
+        product-url="{{ product.url }}"
+        class="{{ cn }}"
+        subtotal="{{ subtotal }}" 
+        money-template="{{ money_template }}" 
+        selected-count="{{ items_count }}"
+        initial-variant="{{ current_variant.id }}" 
+    >
+        {% if current_variant.available %}
+            {% render 'section-body',
+                content: Content,
+                spaced: true,
+                container: true,
+                heading: section.settings.heading,
+                subheading: section.settings.subheading
+            %}
+        {% endif %}
+    </{{ NS }}>   
+    <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{% endif %}
+
+{% schema %}
+    {
+        "name": "Complementary products",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "This section will be hidden if there are no complementary products or current product variant is not available"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:g.section.complementary_info"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight",
+                "default": "Frequently bought together"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            }
+        ],
+        "blocks": [
+            
+        ],
+        "presets": [
+            {
+                "name": "Complementary products"
+            }
+        ],
+        "templates": ["product"]
+    }
+{% endschema %}

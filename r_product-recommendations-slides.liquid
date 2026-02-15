@@ -1,0 +1,12 @@
+{%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/4 - 20px{%- endcapture -%}
+{%- capture image_srcsize_mobile -%}90vw/1.5 - 15px{%- endcapture -%}
+
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+    {%- for product in recommendations.products -%}
+        {% render 'product-card',
+            product: product,
+            image_srcsize_desktop: image_srcsize_desktop,
+            image_srcsize_mobile: image_srcsize_mobile
+        %}
+    {%- endfor -%}
+{%- endif -%}

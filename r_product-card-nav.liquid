@@ -1,0 +1,10 @@
+{%- if product -%}    
+    <template data-req-content>
+        {% render 'main-nav-card',
+            src: product,
+            type: 'product',
+            show_price: true,
+            image_position: 'left'
+        %}
+    </template>
+{%- endif -%}

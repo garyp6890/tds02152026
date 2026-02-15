@@ -1,0 +1,364 @@
+{% render 'load-css', file: 'product-promotion' %}
+
+{% assign cn = '#product-promotion' %}
+
+{%- assign product = section.settings.product -%}
+
+{%- capture Body -%}
+    <div class="{{ cn }}-body" style="--desktop-text-align: {{ section.settings.desktop_text_align }};">
+        
+        {% for block in section.blocks %}
+            <div class="{{ cn }}-block" {{ block.shopify_attributes }}>
+                {% case block.type %}
+                    {% when 'info' %}
+                        <div class="{{ cn }}-info">
+                            <div class="{{ cn }}-info-image {% if block.settings.image_margin %}@with-margin{% endif %}">
+                                {% if block.settings.custom_image != blank %}
+                                    {% assign product_image = block.settings.custom_image %}
+                                {% else %}
+                                    {% assign product_image = product.featured_image %}
+                                {% endif %}
+                                {% if block.settings.image_margin %}
+                                    {% assign image_radius = 'inner' %}
+                                {% endif %}
+                                {% render 'media',
+                                    image: product_image,
+                                    placeholder: 'product-apparel',
+                                    image_res: 120,
+                                    height: '100%',
+                                    height_mobile: '100%',
+                                    border_radius: image_radius
+                                %}
+                            </div>
+                            <div class="{{ cn }}-info-desc">
+                                {% if block.settings.show_reviews %}
+                                    {% render 'star-rating',
+                                        value: product.metafields.reviews.rating.value,
+                                        count: product.metafields.reviews.rating_count
+                                    %}
+                                {% endif %}
+                                <h3 class="{{ cn }}-info-desc-title">{{ product.title }}</h3>
+                                <div class="{{ cn }}-info-desc-price">
+                                    {% render 'price',
+                                        product: product
+                                    %}
+                                </div>
+                            </div>
+                        </div>
+                    {% when 'heading' %}   
+                        {% if section.blocks.size == 3 and forloop.index == 2 %}
+                            {% assign align = 'center' %}
+                        {% endif %}
+                        {% if forloop.last %}
+                            {% assign align = 'right' %}
+                        {% endif %}
+                        {% render 'hero',
+                            heading: block.settings.heading,
+                            heading_scale: block.settings.heading_scale,
+                            subheading: block.settings.subheading,
+                            align: align
+                        %}
+                    {% when 'countdown' %}
+                        <div class="{{ cn }}-countdown-wrapper">
+                            {% if block.settings.heading != blank %}
+                                <h3 class="{{ cn }}-countdown-heading">{{ block.settings.heading }}</h3>
+                            {% endif %}
+                            <div class="{{ cn }}-countdown">
+                                {% render 'countdown-timer',
+                                    date: block.settings.date,
+                                    show_on_expire: false,
+                                    show_time_fraction: true,
+                                    digits_scale: 220
+                                %}
+                            </div>
+                        </div>
+                    {% when 'button' %}
+                        <div class="{{ cn }}-button">
+                            {% render 'button',
+                                text: block.settings.text,
+                                link: product.url,
+                                tag: 'a'
+                            %}
+                        </div>
+                {% endcase %}
+            </div>
+        {% endfor %}
+    </div>
+{%- endcapture -%}
+
+{% capture Content %}
+    <div class="{{ cn }}">
+        <a class="stretched-link" href="{{ product.url }}" aria-label="{{ product.title }}"></a>
+        <div class="#container">
+            {{ Body }}
+        </div>
+    </div>
+{% endcapture %}
+
+
+{% render 'section-body',
+    content: Content,
+    color_scheme: section.settings.color_scheme,
+    paint: 'content',
+    bg_pattern: section.settings.pattern,
+    bg_pattern_scale: section.settings.pattern_scale,
+    bg_pattern_animation: section.settings.pattern_animation
+%}
+
+{% schema %}
+{
+    "name": "Product promotion",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "main",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "product",
+            "id": "product",
+            "label": "Product",
+            "info": "Whole area will be a link to the selected product"
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.label",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        }
+    ],
+    "max_blocks": 3,
+    "blocks": [
+        {
+            "type": "info",
+            "name": "Product info",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "custom_image",
+                    "label": "Custom product image",
+                    "info": "t:g.media.resolution_recommendations.logos"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "image_margin",
+                    "label": "Add margin to the image on desktop",
+                    "default": true
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_reviews",
+                    "label": "Show reviews",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "heading",
+            "name": "Heading",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "Heading",
+                    "default": "Don't miss out on this deal"
+                },
+                {
+                    "type": "range",
+                    "id": "heading_scale",
+                    "label": "Heading scale",
+                    "min": 80,
+                    "max": 250,
+                    "default": 100,
+                    "step": 5,
+                    "unit": "%",
+                    "info": "Based on 'Headings base font size' theme setting"
+                },
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "Subheading",
+                    "info": "t:g.hero.subheading_position.info"
+                }
+            ]
+        },
+        {
+            "type": "countdown",
+            "name": "Countdown",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "Heading"
+                },
+                {
+                    "type": "text",
+                    "id": "date",
+                    "label": "End date",
+                    "info": "Format: mm-dd-yyyy",
+                    "default": "04-03-2024"
+                }
+            ]
+        },
+        {
+            "type": "button",
+            "name": "Button",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "text",
+                    "label": "Buttton label",
+                    "default": "Shop now"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Product promotion",
+            "blocks": [
+                {
+                    "type": "info"
+                },
+                {
+                    "type": "heading"
+                },
+                {
+                    "type": "countdown"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

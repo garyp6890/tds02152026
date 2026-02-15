@@ -1,0 +1,45 @@
+{%- capture Content -%}
+    {%- for block in section.blocks -%}
+        {% render block %}
+    {%- endfor -%}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    spaced: true,
+    container: 'default' 
+%}
+
+  {% schema %}
+  {
+    "name": "t:sections.apps.name",
+    "tag": "section",
+    "class": "section",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        }
+    ],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ],
+    "presets": [
+      {
+        "name": "t:sections.apps.presets.name"
+      }
+    ]
+  }
+  {% endschema %}

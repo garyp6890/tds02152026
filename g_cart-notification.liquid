@@ -1,0 +1,237 @@
+{% liquid
+    assign NS = 'cart-notification'
+    assign cn = '#' | append: NS
+    assign products_variant_ids = cart.attributes['notification_items_variant_ids'] | split: ',' 
+    assign products_count = products_variant_ids | size
+    assign with_recommendations = section.blocks | where: 'type', 'recommendations' | first
+    assign with_shipping_bar = section.blocks | where: 'type', 'free_shipping_bar' | first
+%}
+
+{% render 'load-css', file: NS %}
+{% render 'load-css', file: 'product-card-min' %}
+
+{%- capture Msg -%}
+    <div class="{{ cn }}-msg">
+        <div class="{{ cn }}-msg-icon">
+            {% render 'icon', name: 'check' %}
+        </div>
+        <h5 class="{{ cn }}-msg-title">{{ 'general.cart.notification.title' | t }}</h5>
+    </div>
+{%- endcapture -%}
+
+{%- capture Summary -%}
+    <div class="{{ cn }}-summary">
+        <div class="{{ cn }}-summary-cart">
+            <div class="{{ cn }}-summary-info">
+                <span class="{{ cn }}-summary-items">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+                <span class="{{ cn }}-summary-total">{{ cart.total_price | money }}</span>
+            </div>
+        </div>
+        {% form 'cart', cart %}
+            {% render 'button',
+                t_text: 'sections.cart.checkout',
+                block: true,
+                display_style: 'gradient',
+                name: 'checkout',
+                type: 'submit',
+                no_arrow: true
+            %}
+        {% endform %}
+        <a class="{{ cn }}-summary-link" href="{{ routes.cart_url }}">
+            {% render 'icon', name: 'cart-shopping' %}
+            {{ 'general.cart.notification.go_to_cart' | t }}
+        </a>
+    </div>
+{%- endcapture -%}
+
+{% capture Products %}
+    {% if products_count == 1 %}
+        {% for cart_item in cart.items %}
+            {% assign variant_id = cart_item.variant_id | append: '' %}
+            {% if variant_id == products_variant_ids[0] %}
+                {% assign main_item = cart_item %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+        <div class="{{ cn }}-product">
+            <div class="{{ cn }}-product-image">
+                {% render 'media',
+                    image: main_item.image,
+                    link: main_item.variant.url,
+                    image_res: 180,
+                    border_radius: 'base'
+                %}
+            </div>
+            <div class="{{ cn }}-product-info">
+                {{ Msg }}
+                <h5 class="{{ cn }}-product-info-title"><a class="unstyled-link" href="{{ main_item.variant.url }}">{{ main_item.product.title }}</a></h5>
+                {% assign properties_size = main_item.properties | size %}
+                {%- if main_item.product.has_only_default_variant == false or main_item.properties.size != 0 -%}
+                    <dl class="{{ cn }}-product-info-options">
+                        {%- unless main_item.product.has_only_default_variant -%}
+                            {%- for option in main_item.options_with_values -%}
+                                <div class="{{ cn }}-product-info-option">
+                                    <dt class="{{ cn }}-product-info-option-name">{{ option.name }}:</dt>
+                                    <dd class="{{ cn }}-product-info-option-value">{{ option.value }}</dd>
+                                </div>
+                            {%- endfor -%}
+                        {%- endunless -%}
+                        {%- for property in main_item.properties -%}
+                            {%- assign property_first_char = property.first | slice: 0  -%}
+                            {%- if property.last != blank and property_first_char != '_' -%}
+                                <div class="{{ cn }}-product-info-option">
+                                    <dt class="{{ cn }}-product-info-option-name">{{ property.first }}:</dt>
+                                    <dd class="{{ cn }}-product-info-option-value">
+                                        {%- if property.last contains '/uploads/'  -%}
+                                            <a class="unstyled-link" target="_blank" href="{{ property.last }}">
+                                                {{ property.last | split: '/' | last }}
+                                            </a>
+                                        {%- else  -%}
+                                            {{ property.last }}
+                                        {%- endif -%}
+                                    </dd>
+                                </div>
+                            {%- endif -%}
+                        {%- endfor -%}
+                    </dl>
+                {%- endif -%}
+            </div>
+        </div>   
+    {% endif %}
+    {% if products_count > 1 %}
+        <div class="{{ cn }}-products-list-wrapper">
+            <div class="{{ cn }}-products-list {% if products_count > 3 %} @grid-list {% endif %}">
+                {% for variant_id_str in products_variant_ids %}
+                    {% assign variant_id = variant_id_str | plus: 0 %}
+                    {% assign cart_item = cart.items | where: 'variant_id', variant_id | first %}
+                    {% if cart_item != blank %}
+                        {% if forloop.first %}
+                            {% assign main_item = cart_item %}
+                        {% endif %}
+                        <div class="{{ cn }}-products-list-item">
+                            <div class="{{ cn }}-products-list-item-image">
+                                {% render 'media',
+                                    image: cart_item.image,
+                                    link: cart_item.variant.url,
+                                    image_res: 120,
+                                    border_radius: 'base'
+                                %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="{{ cn }}-products-list-msg">
+                {{ Msg }}
+            </div>
+        </div>
+    {% endif %}
+{% endcapture %}
+
+{% capture Modal_content %}
+    <cart-live-region 
+        section-id="{{ section.id }}" 
+        id="cartNotificationPopupLive" 
+    >
+        {% if main_item != blank %}
+            <div class="{{ cn }}-inner">
+                <div class="{{ cn }}-body">
+                    <modal-close class="{{ cn }}-close" section-id="{{ section.id }}">
+                        {% render 'icon', name: 'x' %}
+                    </modal-close>
+                    {{ Products }}
+                    {{ Summary }}
+                </div>
+                {% for block in section.blocks %}
+                    {% case block.type %}
+                        {% when 'recommendations' %}
+                            {% render 'cart-notification-recommendations',
+                                ref_product: main_item.product,
+                                heading: block.settings.heading,
+                                block: block
+                            %}
+                        {% when 'free_shipping_bar' %}
+                            {% render 'cart-notification-free-shipping-bar', block: block %}
+                    {% endcase %}
+                {% endfor %}
+            </div>
+        {% else %}
+            {% # TODO: make a better feedback %}
+            <h2>{{ 'general.cart.notification.error' | t }}</h2>
+        {% endif %}
+    </cart-live-region>
+{% endcapture %}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}">
+    {% render 'modal',
+        show_close: false,
+        id: 'cart-notification-modal',
+        content: Modal_content,
+        animation: 'top'
+    %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{% if with_recommendations %}
+    <script type="module" src="{{ 'slideshow-inline-blaze.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'product-recommendations-slider.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'cart-notification-recommendations.js' | asset_url }}"></script>
+{% endif %}
+{% if with_shipping_bar %}
+    <script type="module" src="{{ 'free-shipping-progress-bar.js' | asset_url }}"></script>
+    {% render 'load-css', file: 'cart-notification-free-shipping-bar', lazy: true %}
+{% endif %}
+{% schema %}
+    {
+        "name": "Cart notification",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "This notification will pop up when a product is added to the cart"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "recommendations",
+                "name": "Recommendations",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "heading",
+                        "label": "Heading",
+                        "default": "You might also like"
+                    }
+                ]
+            },
+            {
+                "type": "free_shipping_bar",
+                "name": "Free shipping bar",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "paragraph",
+                        "content": "Configure your free shipping minimum amount in theme settings"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Cart notification",
+                "blocks": [
+                    {
+                        "type": "free_shipping_bar"
+                    },
+                    {
+                        "type": "recommendations"
+                    }
+                ]
+            }
+        ],
+        "limit": 1,
+        "enabled_on": {
+            "groups": ["custom.overlay"]
+        }
+    }
+{% endschema %}

@@ -1,0 +1,144 @@
+{%- liquid
+    assign video = section.settings.hosted_video | default: section.settings.embedded_video
+-%}
+
+{%- capture Content -%}
+    {% render 'video-player', 
+        video: video,
+        height: section.settings.desktop_height,
+        mobile_height: section.settings.mobile_height,
+        use_original_ar: section.settings.use_original_ar
+    %}
+{%- endcapture -%}
+
+{% render 'section-body',
+    heading: section.settings.heading,
+    content: Content,
+    container: true,
+    spaced: true,
+    button_label: section.settings.section_button_label,
+    button_link: section.settings.section_button_url,
+    content_width: section.settings.content_width
+%}
+
+{% schema %}
+{
+    "name": "Video player",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Video player"
+        },
+        {
+            "type": "video_url",
+            "accept": ["vimeo", "youtube"],
+            "id": "embedded_video",
+            "label": "Video URL",
+            "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+        },
+        {
+            "type": "video",
+            "id": "hosted_video",
+            "label": "A Store-hosted video",
+            "info": "Has priority over the 'Video URL'."
+        },
+        {
+            "type": "checkbox",
+            "id": "use_original_ar",
+            "label": "Keep the video's original aspect ratio",
+            "default": false,
+            "info": "Affects only the Store-hosted videos."
+        },
+        {
+            "type": "select",
+            "id": "desktop_height",
+            "label": "Desktop height",
+            "options": [
+                {
+                    "value": "auto",
+                    "label": "Auto"
+                },
+                {
+                    "value": "500px",
+                    "label": "500px"
+                },
+                {
+                    "value": "600px",
+                    "label": "600px"
+                },
+                {
+                    "value": "700px",
+                    "label": "700px"
+                },
+                {
+                    "value": "800px",
+                    "label": "800px"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "mobile_height",
+            "label": "Mobile height",
+            "options": [
+                {
+                    "value": "auto",
+                    "label": "Auto"
+                },
+                {
+                    "value": "300px",
+                    "label": "300px"
+                },
+                {
+                    "value": "400px",
+                    "label": "400px"
+                },
+                {
+                    "value": "500px",
+                    "label": "500px"
+                },
+                {
+                    "value": "600px",
+                    "label": "600px"
+                }
+            ]
+        },
+        {
+            "type": "range",
+            "id": "content_width",
+            "label": "Desktop content width",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "default": 80,
+            "unit": "%"
+        },
+        {
+            "type": "header",
+            "content": "t:g.section.button.header"
+        },
+        {
+            "type": "text",
+            "id": "section_button_label",
+            "label": "t:g.section.button.label"
+        },
+        {
+            "type": "url",
+            "id": "section_button_url",
+            "label": "t:g.section.button.link"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Video player"
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "footer", "custom.overlay"]
+    }
+}
+{% endschema %}

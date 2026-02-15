@@ -1,0 +1,651 @@
+{% comment %}
+    LINK IN BIO PAGE SECTION - That Dtail Guy Custom Section
+    -------------------------------------------------------
+    This section recreates the linktree functionality on a Shopify page,
+    adding collapsible sections, business icons, a product carousel, and an FAQ.
+    
+    FIXES APPLIED:
+    1. Replaced 'img_url' filter with 'image_url' (modern standard).
+    2. Added 'width' and 'height' attributes to all <img> tags to fix CLS warnings.
+    3. Added a new preset to pre-populate with the user's actual Linktree links.
+    4. FIXED: Added the required 'label' property to the 'header_text_color' setting to fix the FileSaveError.
+{% endcomment %}
+
+<div class="link-in-bio-wrapper">
+
+    {# 1. HEADER ICONS & PROFILE INFO #}
+    <div class="bio-header">
+        {% if section.settings.profile_image %}
+            <img class="profile-image" 
+                 src="{{ section.settings.profile_image | image_url: '150x150' }}" 
+                 alt="{{ section.settings.profile_title }}"
+                 width="100"
+                 height="100">
+        {% endif %}
+        
+        <h1 class="profile-title">{{ section.settings.profile_title }}</h1>
+        <p class="profile-subtitle">{{ section.settings.profile_subtitle }}</p>
+
+        <div class="business-icons">
+            {% for block in section.blocks limit: 3 %}
+                {% if block.type == 'business_icon' %}
+                    <a href="{{ block.settings.icon_link }}" class="business-icon-link" aria-label="{{ block.settings.icon_text }}">
+                        {% if block.settings.icon_image %}
+                            <img src="{{ block.settings.icon_image | image_url: '48x48' }}" 
+                                 alt="{{ block.settings.icon_text }}"
+                                 width="48"
+                                 height="48">
+                        {% else %}
+                            <span class="icon-placeholder">{{ block.settings.icon_text | slice: 0, 1 }}</span>
+                        {% endif %}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    {# 2. MAIN LINK BUTTONS & COLLAPSIBLE SECTIONS #}
+    <div class="bio-links">
+        {% for block in section.blocks %}
+            {% case block.type %}
+                
+                {# STANDARD NON-COLLAPSIBLE LINK BUTTON #}
+                {% when 'link_button' %}
+                    <a href="{{ block.settings.link_url }}" 
+                       class="link-button" 
+                       style="background-color: {{ block.settings.button_color }}; color: {{ block.settings.text_color }};"
+                       {{ block.shopify_attributes }}>
+                        {{ block.settings.link_text }}
+                    </a>
+
+                {# COLLAPSIBLE LINK GROUP (THE LINKTREE FEATURE) #}
+                {% when 'collapsible_group' %}
+                    <div class="collapsible-group" {{ block.shopify_attributes }}>
+                        <button class="collapsible-header" data-target="#collapse-{{ block.id }}" aria-expanded="false" aria-controls="collapse-{{ block.id }}" 
+                            style="background-color: {{ block.settings.header_color }}; color: {{ block.settings.header_text_color }};">
+                            {{ block.settings.group_title }} <span class="collapse-icon">+</span>
+                        </button>
+                        <div id="collapse-{{ block.id }}" class="collapsible-content">
+                            {% for i in (1..3) %}
+                                {% assign link_url = 'link_url_' | append: i %}
+                                {% assign link_text = 'link_text_' | append: i %}
+                                {% if block.settings[link_url] != blank %}
+                                    <a href="{{ block.settings[link_url] }}" class="sub-link-button">
+                                        {{ block.settings[link_text] }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+            {% endcase %}
+        {% endfor %}
+    </div>
+
+    {# 3. PRODUCT CAROUSEL #}
+    {% if section.settings.product_list != blank %}
+        <div class="product-carousel-container">
+            <h2>Featured Products</h2>
+            <div class="product-carousel">
+                {% for product in section.settings.product_list.products %}
+                    <a href="{{ product.url }}" class="carousel-item">
+                        <img src="{{ product.featured_image | image_url: '300x300' }}" 
+                             alt="{{ product.title }}"
+                             width="150"
+                             height="150">
+                        <p>{{ product.title }}</p>
+                        <p class="price">{{ product.price | money }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+            <small>NOTE: This requires a JavaScript library (like Slick or Swiper) added to your theme for true carousel functionality.</small>
+        </div>
+    {% endif %}
+
+    {# 4. FAQ SECTION (COLLAPSIBLE ACCORDION) #}
+    <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        {% for block in section.blocks %}
+            {% if block.type == 'faq_item' %}
+                <div class="faq-item" {{ block.shopify_attributes }}>
+                    <button class="faq-question" data-target="#faq-answer-{{ block.id }}" aria-expanded="false" aria-controls="faq-answer-{{ block.id }}">
+                        {{ block.settings.question }} <span class="faq-icon">v</span>
+                    </button>
+                    <div id="faq-answer-{{ block.id }}" class="faq-answer">
+                        {{ block.settings.answer }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {# 5. CUSTOMER CONTENT CAROUSEL/WIDGET AREA #}
+    <div class="customer-content-area">
+        <h2>Customer Showcases / Reviews</h2>
+        {% if section.settings.customer_content_html != blank %}
+             {{ section.settings.customer_content_html }}
+        {% else %}
+             <p>This is where your Judge.me widget or custom video/photo carousel code will be inserted via the theme editor settings.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+  // JavaScript for Collapsible Link Groups and FAQ Accordion
+  function setupCollapsible(headerClass, contentClass, iconClass) {
+    document.querySelectorAll(headerClass).forEach(header => {
+      header.addEventListener('click', () => {
+        const content = document.querySelector(header.dataset.target);
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+        // Toggle state
+        header.setAttribute('aria-expanded', !isExpanded);
+        
+        // Toggle display of content
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+          // Change icon from '-' (expanded) to '+' (collapsed) for the link groups
+          const icon = header.querySelector(iconClass);
+          if(icon) {
+             icon.textContent = (headerClass === '.collapsible-header' ? '+' : 'v');
+          }
+        } else {
+          // Set max-height to the scroll height for smooth collapse/expand
+          content.style.maxHeight = content.scrollHeight + "px";
+          // Change icon from '+' (collapsed) to '-' (expanded) for the link groups
+          const icon = header.querySelector(iconClass);
+          if(icon) {
+            icon.textContent = (headerClass === '.collapsible-header' ? '-' : '^');
+          }
+        }
+      });
+    });
+  }
+
+  // Setup Link Group Collapse (uses + / -)
+  setupCollapsible('.collapsible-header', '.collapsible-content', '.collapse-icon');
+  
+  // Setup FAQ Collapse (uses v / ^) - I updated the default icon in CSS to be 'v'
+  setupCollapsible('.faq-question', '.faq-answer', '.faq-icon');
+  
+  // Initial state setup for both
+  document.querySelectorAll('.collapsible-content, .faq-answer').forEach(content => {
+      content.style.maxHeight = null; // Ensure initially closed
+  });
+</script>
+
+<style>
+/* Basic CSS for Linktree Look & Feel */
+.link-in-bio-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif; /* Use your theme's font stack */
+}
+
+/* Profile Header */
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.profile-title {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.profile-subtitle {
+    margin-top: 5px;
+    opacity: 0.7;
+}
+
+/* Business Icons */
+.business-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0 25px 0;
+}
+.business-icon-link {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+.business-icon-link:hover {
+    transform: scale(1.1);
+}
+.business-icon-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* Placeholder for icons if images aren't used */
+.icon-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Link Buttons */
+.bio-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+.link-button {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 10px;
+    border: 2px solid #000; /* Linktree style border */
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+.link-button:hover {
+    opacity: 0.8;
+}
+
+/* Collapsible Group Styles */
+.collapsible-group {
+    width: 100%;
+}
+.collapsible-header {
+    width: 100%;
+    padding: 15px 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: 2px solid #000;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: uppercase;
+}
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+.sub-link-button {
+    display: block;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin-top: 5px;
+    background: #f0f0f0; /* Lighter background for nested links */
+    color: #333;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+.sub-link-button:hover {
+    background: #e0e0e0;
+}
+
+/* Product Carousel */
+.product-carousel-container {
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+.product-carousel {
+    display: flex;
+    overflow-x: scroll; /* Enables horizontal scrolling for the "carousel" */
+    gap: 15px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+}
+.carousel-item {
+    flex: 0 0 150px; /* Fixed width for each item */
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+.carousel-item img {
+    /* Set dimensions to match the width/height attributes in Liquid */
+    width: 150px; 
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.carousel-item p {
+    margin: 5px 0 0;
+    font-size: 0.9em;
+}
+.price {
+    font-weight: bold;
+    color: green; /* Adjust color as needed */
+}
+
+/* FAQ Section (Accordion) */
+.faq-section {
+    margin-top: 40px;
+    text-align: left;
+}
+.faq-question {
+    width: 100%;
+    text-align: left;
+    padding: 15px;
+    margin-top: 10px;
+    background-color: #f7f7f7;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.faq-icon {
+    font-size: 0.8em;
+}
+.faq-answer {
+    padding: 0 15px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+.faq-answer p {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0;
+    font-size: 0.9em;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Link In Bio Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Profile Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "profile_image",
+      "label": "Profile Image"
+    },
+    {
+      "type": "text",
+      "id": "profile_title",
+      "label": "Profile Title (e.g., @thatdtailguy)",
+      "default": "@ThatDtailGuy"
+    },
+    {
+      "type": "text",
+      "id": "profile_subtitle",
+      "label": "Profile Subtitle (e.g., Your tagline)",
+      "default": "The Official Link Page"
+    },
+    {
+      "type": "header",
+      "content": "Product Carousel"
+    },
+    {
+      "type": "collection",
+      "id": "product_list",
+      "label": "Collection to Showcase"
+    },
+    {
+      "type": "header",
+      "content": "Customer Showcase / Widget"
+    },
+    {
+      "type": "html",
+      "id": "customer_content_html",
+      "label": "Insert Judge.me or Video Carousel Code Here",
+      "info": "Paste the embed code from your reviews app or custom carousel here."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "business_icon",
+      "name": "Business Icon (Top)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon_text",
+          "label": "Icon/Business Name",
+          "default": "Biz 1"
+        },
+        {
+          "type": "url",
+          "id": "icon_link",
+          "label": "Icon Link URL",
+          "default": "/"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon Image (48x48 recommended)"
+        }
+      ]
+    },
+    {
+      "type": "link_button",
+      "name": "Standard Link Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Button Text",
+          "default": "Shop All Products"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Button URL",
+          "default": "/collections/all"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button Background Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Button Text Color",
+          "default": "#ffffff"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_group",
+      "name": "Collapsible Link Group",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "group_title",
+          "label": "Collapsible Header Text",
+          "default": "See All Resources"
+        },
+        {
+          "type": "color",
+          "id": "header_color",
+          "label": "Header Background Color",
+          "default": "#333333"
+        },
+        {
+          "type": "color",
+          "id": "header_text_color",
+          "label": "Header Text Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Nested Links (Max 3)"
+        },
+        {
+          "type": "text",
+          "id": "link_text_1",
+          "label": "Link 1 Text"
+        },
+        {
+          "type": "url",
+          "id": "link_url_1",
+          "label": "Link 1 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_text_2",
+          "label": "Link 2 Text"
+        },
+        {
+          "type": "url",
+          "id": "link_url_2",
+          "label": "Link 2 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_text_3",
+          "label": "Link 3 Text"
+        },
+        {
+          "type": "url",
+          "id": "link_url_3",
+          "label": "Link 3 URL"
+        }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How long does shipping take?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Shipping usually takes 3-5 business days.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Link In Bio Page - ThatDtailGuy",
+      "settings": {
+        "profile_title": "@ThatDtailGuy"
+      },
+      "blocks": [
+        {
+          "type": "link_button",
+          "settings": {
+            "link_text": "Thatdetailshop.com",
+            "link_url": "https://www.thatdetailshop.com/?utm_source=linktree&utm_medium=button&utm_campaign=site",
+            "button_color": "#000000",
+            "text_color": "#ffffff"
+          }
+        },
+        {
+          "type": "link_button",
+          "settings": {
+            "link_text": "The UGLY Truth About The Detailing Industry w/ ThatDtailGuy",
+            "link_url": "https://www.youtube.com/live/knnlgy3IEzw?si=Im2g5ZdJDs7_D8Zj",
+            "button_color": "#b80000",
+            "text_color": "#ffffff"
+          }
+        },
+        {
+          "type": "link_button",
+          "settings": {
+            "link_text": "Join That Detail Group (11K+ FB)",
+            "link_url": "https://www.facebook.com",
+            "button_color": "#3b5998",
+            "text_color": "#ffffff"
+          }
+        },
+        {
+          "type": "collapsible_group",
+          "settings": {
+            "group_title": "Hot Items",
+            "header_color": "#ff8c00",
+            "header_text_color": "#000000",
+            "link_text_1": "TDS Foam Cannon Pro V1.0",
+            "link_url_1": "https://www.thatdetailshop.com",
+            "link_text_2": "TDS Bundle Pro",
+            "link_url_2": "https://www.thatdetailshop.com",
+            "link_text_3": "TDS Towel 1600 (Purple)",
+            "link_url_3": "https://www.thatdetailshop.com"
+          }
+        },
+        {
+          "type": "collapsible_group",
+          "settings": {
+            "group_title": "Contact Me",
+            "header_color": "#444444",
+            "header_text_color": "#ffffff",
+            "link_text_1": "Message Me – FB Messenger",
+            "link_url_1": "https://m.me",
+            "link_text_2": "Message Me – WhatsApp",
+            "link_url_2": "https://wa.me",
+            "link_text_3": "Email Me",
+            "link_url_3": "mailto:youremail@example.com"
+          }
+        },
+        {
+          "type": "collapsible_group",
+          "settings": {
+            "group_title": "Socials",
+            "header_color": "#4267B2",
+            "header_text_color": "#ffffff",
+            "link_text_1": "Facebook (100K+)",
+            "link_url_1": "https://www.facebook.com",
+            "link_text_2": "Instagram (7K+)",
+            "link_url_2": "https://www.instagram.com",
+            "link_text_3": "Tik Tok (117,000+)"
+          }
+        },
+        {
+          "type": "link_button",
+          "settings": {
+            "link_text": "To Leave a Review on Google",
+            "link_url": "https://g.page",
+            "button_color": "#4285F4",
+            "text_color": "#ffffff"
+          }
+        },
+        {
+          "type": "collapsible_group",
+          "settings": {
+            "group_title": "Please Help Happiness Bag Grow",
+            "header_color": "#76D7C4",
+            "header_text_color": "#000000",
+            "link_text_1": "(Click Here) Donate To Happiness Bag, INC",
+            "link_url_1": "https://www.paypal.com",
+            "link_text_2": "HB Story & Mission Statement",
+            "link_url_2": "https://www.happinessbag.org",
+            "link_text_3": "Latest On Happiness Bag Expansion"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Link In Bio Page"
+    }
+  ]
+}
+{% endschema %}

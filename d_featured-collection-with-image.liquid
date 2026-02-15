@@ -1,0 +1,599 @@
+{%- liquid
+    assign NS = 'collection-with-image'
+    assign cn = '#' | append: NS
+    assign product_columns = 2
+    assign product_columns_mobile = 2
+
+    if section.settings.image_size == 75
+        assign product_columns = 1
+    elsif section.settings.image_size < 50
+        assign product_columns = 3
+    endif
+
+    assign products_limit = product_columns | times: section.settings.rows
+    
+    assign gt_media = section.settings.image_size | append: '%'
+    assign gt_text = '1fr'
+     
+    if section.settings.image_position == 'right'
+        assign grid_template = gt_text | append: ' ' | append: gt_media 
+    else
+        assign grid_template = gt_media | append: ' ' | append: gt_text
+    endif
+
+    assign position = section.settings.text_position | split: '-'
+    assign text_y = position[0]
+    assign text_x = position[1]
+
+    assign image_loading = 'lazy'
+    if section.index0 == 0
+        assign image_loading = 'eager'
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture product_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) * {{ 100 | minus: section.settings.image_size | divided_by: 100.0 }})/{{ product_columns }}{%- endcapture -%}
+{%- capture product_image_srcsize_mobile -%}90vw/{{ product_columns_mobile }}{%- endcapture -%}
+
+{%- capture banner_srcsize_desktop -%}min(100vw, max(50vw, {{ settings.container_width }}px * {{ section.settings.image_size | divided_by: 100.0 }})){%- endcapture -%}
+{%- capture banner_srcsize_mobile -%}90vw{%- endcapture -%}
+
+{%- capture Collection_grid -%}
+        {%- if section.settings.collection != blank -%}
+            {%- liquid
+                assign products_collection = section.settings.collection.products
+                if section.settings.show_only_products_in_stock
+                    assign products_collection = products_collection | where: 'available'
+                endif
+            -%}
+            {%- for product in products_collection limit: products_limit -%}
+                {% render 'product-card', 
+                    product: product,
+                    image_srcsize_desktop: product_image_srcsize_desktop,
+                    image_srcsize_mobile: product_image_srcsize_mobile
+                %}
+            {%- endfor -%}
+        {%- else -%}
+            {%- for product in (1..products_limit) -%}
+            {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+                {% render 'product-card',
+                    product: false,
+                    placeholder_index: placeholder_index
+                %}
+            {%- endfor -%}
+        {%- endif -%}
+{%- endcapture -%}
+
+{%- capture Content -%}
+    {%- if section.settings.collection.all_products_count == 0 -%}
+        {%- if request.design_mode -%}
+            {% render 'editor-notification',
+                t_heading: 'general.editor.empty_collection_message'
+            %}
+        {%- endif -%}
+    {%- else -%}
+        <div class="{{ cn }} #grid @type:template {% if curved %}@with-radius{% endif %}" style="--template: {{ grid_template }}; --template-mobile: none;">
+            {%- capture Hero -%}
+                <div class="{{ cn }}-image-wrapper color-scheme-{{ section.settings.color_scheme }} {% if section.settings.image_position == 'right' %}mob-first-item {% endif %}">
+                    <div class="{{ cn }}-image">
+                        {%- capture Hero_text -%}
+                            {% render 'hero', 
+                                blocks: section.blocks,
+                                align: text_x,
+                                auto_colors: true,
+                                box: section.settings.use_box
+                            %}
+                        {%- endcapture -%}
+
+                        {% capture Caption %}
+                            {% render 'floating-content',
+                                content: Hero_text,
+                                absolute: true,
+                                x: text_x,
+                                y: text_y,
+                                container: true,
+                                padded: true
+                            %}
+                            {% if section.settings.collection.url != blank %}
+                                <a class="stretched-link" href="{{ section.settings.collection.url }}" aria-label="{{ section.settings.collection.title }}"></a>
+                            {% endif %}
+                        {% endcapture %}
+
+                        {% assign image = section.settings.image | default: section.settings.collection.featured_image %}
+                        {% if section.settings.use_box %}
+                            {% assign overlay = 0 %}
+                        {% else %}
+                            {% assign overlay = section.settings.overlay %}
+                        {% endif %}
+                        {% render 'media'
+                            image: image,
+                            placeholder: 'hero-apparel',
+                            overlay: overlay,
+                            height: '100%',
+                            srcsize_desktop: banner_srcsize_desktop,
+                            srcsize_mobile: banner_srcsize_mobile,
+                            image_loading: image_loading
+                        %}
+                        {{ Caption }}
+                    </div>
+                </div>
+            {%- endcapture -%}
+            
+            {%- capture Products -%}
+                <div class="#grid @type:columns" style="--columns: {{ product_columns }}; --columns-mobile: {{ product_columns_mobile }};">
+                    {{ Collection_grid }}
+                </div>
+            {%- endcapture -%}
+            {%- if section.settings.image_position == 'right' -%}
+                {{ Products }}
+                {{ Hero }}
+            {%- else -%}
+                {{ Hero }}
+                {{ Products }}
+            {%- endif -%}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    container: true,
+    spaced: true
+%}
+
+{% schema %}
+{
+    "name": "Collection with image",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Collection with image"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "t:g.common.label.subheading"
+        },
+        {
+            "type": "header",
+            "content": "Collection"
+        },
+        {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+        },
+        {
+            "type": "range",
+            "id": "rows",
+            "label": "Maximum product rows",
+            "min": 1,
+            "step": 1,
+            "max": 6,
+            "default": 3
+        },
+        {
+            "type": "checkbox",
+            "id": "show_only_products_in_stock",
+            "label": "Show only products in stock",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "Image"
+        },
+        {
+            "type": "paragraph",
+            "content": "Collection image is set by default"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Custom image",
+            "info": "t:g.media.resolution_recommendations.most_of_screen"
+        },
+        {
+            "type": "range",
+            "id": "image_size",
+            "label": "Desktop image width",
+            "min": 25,
+            "max": 75,
+            "step": 5,
+            "default": 70,
+            "unit": "%"
+        },
+        {
+            "type": "range",
+            "id": "overlay",
+            "min": 0,
+            "max": 90,
+            "step": 5,
+            "default": 0,
+            "unit": "%",
+            "label": "t:g.media.overlay"
+        },
+        {
+            "type": "select",
+            "id": "image_position",
+            "label": "t:g.media.image_position",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "t:g.media.position.left"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.media.position.right"
+                }
+            ],
+            "default": "right"
+        },
+        {
+            "type": "header",
+            "content": "t:g.common.caption"
+        },
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "invert",
+            "label": "Color scheme"
+        },
+        {
+            "type": "select",
+            "id": "text_position",
+            "label": "t:g.hero.caption.position.label",
+            "options": [
+              {
+                "value": "top-left",
+                "label": "t:g.hero.caption.position.options.x0y0"
+              },
+              {
+                "value": "top-center",
+                "label": "t:g.hero.caption.position.options.x0y1"
+              },
+              {
+                "value": "top-right",
+                "label": "t:g.hero.caption.position.options.x0y2"
+              },
+              {
+                "value": "center-left",
+                "label": "t:g.hero.caption.position.options.x1y0"
+              },
+              {
+                "value": "center-center",
+                "label": "t:g.hero.caption.position.options.x1y1"
+              },
+              {
+                "value": "center-right",
+                "label": "t:g.hero.caption.position.options.x1y2"
+              },
+              {
+                "value": "bottom-left",
+                "label": "t:g.hero.caption.position.options.x2y0"
+              },
+              {
+                "value": "bottom-center",
+                "label": "t:g.hero.caption.position.options.x2y1"
+              },
+              {
+                "value": "bottom-right",
+                "label": "t:g.hero.caption.position.options.x2y2"
+              }
+            ],
+            "default": "center-center"
+        },
+        {
+            "type": "checkbox",
+            "id": "use_box",
+            "label": "t:g.hero.use_box"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "icon",
+            "name": "t:g.hero.icon.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "select",
+                    "id": "icon",
+                    "label": "t:g.common.icon.label",
+                    "options": [
+                        {
+                            "value": "bell",
+                            "label": "t:g.icons.bell"
+                        },
+                        {
+                            "value": "check",
+                            "label": "t:g.icons.check"
+                        },
+                        {
+                            "value": "clock",
+                            "label": "t:g.icons.clock"
+                        },
+                        {
+                            "value": "coins",
+                            "label": "t:g.icons.coins"
+                        },
+                        {
+                            "value": "credit-card",
+                            "label": "t:g.icons.credit_card"
+                        },
+                        {
+                            "value": "truck-delivery",
+                            "label": "t:g.icons.truck_delivery"
+                        },
+                        {
+                            "value": "discount",
+                            "label": "t:g.icons.discount"
+                        },
+                        {
+                            "value": "flag",
+                            "label": "t:g.icons.flag"
+                        },
+                        {
+                            "value": "mood-happy",
+                            "label": "t:g.icons.mood_happy"
+                        },
+                        {
+                            "value": "headphones",
+                            "label": "t:g.icons.headphones"
+                        },
+                        {
+                            "value": "heart",
+                            "label": "t:g.icons.heart"
+                        },
+                        {
+                            "value": "help",
+                            "label": "t:g.icons.help"
+                        },
+                        {
+                            "value": "info",
+                            "label": "t:g.icons.info"
+                        },
+                        {
+                            "value": "leaf",
+                            "label": "t:g.icons.leaf"
+                        },
+                        {
+                            "value": "lock",
+                            "label": "t:g.icons.lock"
+                        },
+                        {
+                            "value": "mail",
+                            "label": "t:g.icons.mail"
+                        },
+                        {
+                            "value": "map-marker",
+                            "label": "t:g.icons.map_marker"
+                        },
+                        {
+                            "value": "message",
+                            "label": "t:g.icons.message"
+                        },
+                        {
+                            "value": "pig-money",
+                            "label": "t:g.icons.pig_money"
+                        },
+                        {
+                            "value": "package",
+                            "label": "t:g.icons.package"
+                        },
+                        {
+                            "value": "phone",
+                            "label": "t:g.icons.phone"
+                        },
+                        {
+                            "value": "receipt",
+                            "label": "t:g.icons.receipt"
+                        },
+                        {
+                            "value": "recycle",
+                            "label": "t:g.icons.recycle"
+                        },
+                        {
+                            "value": "rocket",
+                            "label": "t:g.icons.rocket"
+                        },
+                        {
+                            "value": "shield-check",
+                            "label": "t:g.icons.shield_check"
+                        },
+                        {
+                            "value": "mood-smile",
+                            "label": "t:g.icons.mood_smile"
+                        },
+                        {
+                            "value": "star",
+                            "label": "t:g.icons.star"
+                        },
+                        {
+                            "value": "building-store",
+                            "label": "t:g.icons.building_store"
+                        },
+                        {
+                            "value": "tag",
+                            "label": "t:g.icons.tag"
+                        },
+                        {
+                            "value": "thumbs-up",
+                            "label": "t:g.icons.thumbs_up"
+                        },
+                        {
+                            "value": "users",
+                            "label": "t:g.icons.users"
+                        }
+                    ],
+                    "default": "star"
+                }
+            ]
+        },
+        {
+            "type": "social_menu",
+            "name": "Social media icons",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "t:settings_schema.social-media.info"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "social_new_tab",
+                    "label": "Open social media profiles in a new tab",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "heading",
+            "name": "t:g.hero.heading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "inline_richtext",
+                    "id": "heading",
+                    "label": "t:g.hero.heading.label",
+                    "default": "Image banner",
+                    "info": "t:g.info.heading_highlight"
+                },
+                {
+                    "type": "range",
+                    "id": "heading_scale",
+                    "label": "Heading scale",
+                    "min": 80,
+                    "max": 250,
+                    "default": 120,
+                    "step": 5,
+                    "unit": "%",
+                    "info": "Based on 'Headings base font size' theme setting"
+                }
+            ]
+        },
+        {
+            "type": "subheading",
+            "name": "t:g.hero.subheading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "t:g.hero.subheading.label",
+                    "default": "Subheading"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "t:g.hero.text.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "t:g.hero.text.label",
+                    "default": "<p>Text</p>"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "enlarge_text",
+                    "label": "Enlarge text"
+                }
+            ]
+        },
+        {
+            "type": "timer",
+            "name": "Countdown",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "date",
+                    "label": "End date",
+                    "info": "Format: mm-dd-yyyy",
+                    "default": "04-03-2024"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "hide_on_complete",
+                    "label": "Hide timer on complete"
+                }
+            ]
+        },
+        {
+            "type": "buttons",
+            "name": "t:g.hero.buttons.single.header",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "info",
+                    "label": "Button info block",
+                    "info": "Will be hidden if button is not set"
+                },
+                {
+                    "type": "text",
+                    "id": "f_button_label",
+                    "label": "t:g.hero.buttons.single.label"
+                },
+                {
+                    "type": "select",
+                    "id": "f_button_tier",
+                    "label": "t:g.hero.buttons.single.style",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primary"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secondary"
+                        },
+                        {
+                            "value": "link",
+                            "label": "Link"
+                        }
+                    ],
+                    "default": "primary",
+                    "info": "t:g.info.button.style"
+                }
+            ]
+        }
+    ],    
+    "presets": [
+        {
+            "name": "Collection with image",
+            "blocks": [
+                {
+                    "type": "subheading",
+                    "settings": {
+                        "subheading": "Subheading"
+                    }
+                },
+                {
+                    "type": "heading",
+                    "settings": {
+                        "heading": "Image banner"
+                    }
+                },
+                {
+                    "type": "text",
+                    "settings": {
+                        "text": "<p>Give customers details about the hero image or content on the template.</p>"
+                    }
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "footer", "custom.overlay"]
+    }
+}
+{% endschema %}

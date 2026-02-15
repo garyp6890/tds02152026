@@ -1,0 +1,204 @@
+{% capture Content %}
+    {%- for block in section.blocks -%}
+        {%- assign tab_id = 'tab-' | append: section.id | append: block.id -%}
+        
+        {%- capture TabsNavItems -%}
+            {{ TabsNavItems }}
+            {%- if block.settings.product_tab_heading != blank -%}
+                {%- assign tab_heading = block.settings.product_tab_heading -%}
+            {%- endif -%}
+            {%- render 'product-tabs-nav-item', active: forloop.first, heading: tab_heading, tab_id: tab_id -%}
+        {%- endcapture -%}
+
+        {% capture TabsPanes %}
+            {{ TabsPanes }}
+            {%- capture PaneContent -%}
+                {% case block.type %}
+                    {% when 'description' %}
+                    {%- assign size_unit = block.settings.font_scale | times: 1.0 -%}
+                    {%- assign size_unit = size_unit | divided_by: 100 -%}
+                        {% if product.description != blank %}
+                            <div class="#rte" style="--font-size: {{ size_unit }}rem;" {{ block.shopify_attributes }}>
+                                {{ product.description }}
+                            </div>
+                        {% endif %}
+
+                    {% when 'specs' %}
+                        <div {{ block.shopify_attributes }}>
+                            {% render 'product-specs', specs: block.settings.specs %}
+                        </div>
+
+                    {% when 'custom_text' %}
+                    {%- assign size_unit = block.settings.font_scale | times: 1.0 -%}
+                    {%- assign size_unit = size_unit | divided_by: 100 -%}
+                        {% if block.settings.text != blank %}
+                            <div class="#rte" style="--font-size: {{ size_unit }}rem;" {{ block.shopify_attributes }}>
+                                {{ block.settings.text }}
+                            </div>
+                        {% endif %}
+                        
+                    {% when 'custom_page' %}
+                    {%- assign size_unit = block.settings.font_scale | times: 1.0 -%}
+                    {%- assign size_unit = size_unit | divided_by: 100 -%}
+                        {%- if block.settings.page != blank -%}
+                            <div class="#rte" style="--font-size: {{ size_unit }}rem;" {{ block.shopify_attributes }}>
+                                {{ block.settings.page.content }}
+                            </div>
+                        {%- endif -%}
+                {% endcase %}
+            {%- endcapture -%}
+            {%- render 'product-tabs-pane', active: forloop.first, tab_id: tab_id, content: PaneContent -%}
+        {% endcapture %}
+    {%- endfor -%}
+
+    {%- render 'product-tabs',
+        nav_items: TabsNavItems,
+        panes: TabsPanes,
+    -%}
+
+{% endcapture %}
+
+
+{% render 'section-body',
+    content: Content,
+    spaced: true,
+    content_width: section.settings.content_width,
+    force_layout: true,
+    container: true
+%}
+
+{% schema %}
+{
+    "name": "Product tabs",
+    "settings": [
+        {
+            "type": "range",
+            "id": "content_width",
+            "label": "Section width",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "default": 80,
+            "unit": "%"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "description",
+            "name": "Product description",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "product_tab_heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "Description"
+                },
+                {
+                    "type": "range",
+                    "id": "font_scale",
+                    "min": 100,
+                    "max": 150,
+                    "default": 100,
+                    "step": 5,
+                    "unit": "%",
+                    "label": "Font scale"
+                }
+            ]
+        },
+        {
+            "type": "specs",
+            "name": "Specifications",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "product_tab_heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "Specifications"
+                },
+                {
+                    "type": "richtext",
+                    "id": "specs",
+                    "label": "Specifications",
+                    "default": "<p>Brand: {{ product.vendor }}<\/p><p>Title: {{ product.title }}<\/p>",
+                    "info": "t:g.info.product.specs"
+                }
+            ]
+        },
+        {
+            "type": "custom_text",
+            "name": "Text",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "product_tab_heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "Text heading"
+                },
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "Text",
+                    "default": "<p>Text content</p>"
+                },
+                {
+                    "type": "range",
+                    "id": "font_scale",
+                    "min": 100,
+                    "max": 150,
+                    "default": 100,
+                    "step": 5,
+                    "unit": "%",
+                    "label": "Font scale"
+                }
+            ]
+        },
+        {
+            "type": "custom_page",
+            "name": "Custom page",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "product_tab_heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "Page"
+                },
+                {
+                    "type": "page",
+                    "id": "page",
+                    "label": "Page"
+                },
+                {
+                    "type": "range",
+                    "id": "font_scale",
+                    "min": 100,
+                    "max": 150,
+                    "default": 100,
+                    "step": 5,
+                    "unit": "%",
+                    "label": "Font scale"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Product tabs",
+            "blocks": [
+                {
+                    "type": "description"
+                },
+                {
+                    "type": "custom_text",
+                    "settings": {
+                        "product_tab_heading": "Shipping information",
+                        "text": "<p>Shipping costs are calculated at time of checkout by our shopping cart, based on the weight of your order and the method of shipment.</p>"
+                    }
+                }
+            ]
+        }
+    ],
+    "templates": ["product"]
+}
+{% endschema %}

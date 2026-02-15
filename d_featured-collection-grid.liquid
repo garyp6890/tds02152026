@@ -1,0 +1,295 @@
+{%- liquid
+    assign product_columns = section.settings.columns
+    assign product_columns_mobile = 2
+    assign products_limit = product_columns | times: section.settings.rows
+
+    if section.blocks.size == 2
+         assign products_limit = products_limit | minus: 1
+    endif
+-%}
+
+
+{%- capture product_image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px)/{{ product_columns }}{%- endcapture -%}
+{%- capture product_image_srcsize_mobile -%}90vw/{{ product_columns_mobile }}{%- endcapture -%}
+
+{%- capture Collection_grid -%}
+    {%- for block in section.blocks -%}
+        {%- case block.type -%}
+            {%- when 'products' -%}
+                {%- if request.design_mode -%}
+                    <div {{ block.shopify_attributes }} hidden></div>
+                {%- endif -%}
+                {%- if section.settings.collection != blank -%}
+                    {%- assign products_collection = section.settings.collection.products -%}
+                    {%- if block.settings.show_only_products_in_stock -%}
+                        {%- assign products_collection = products_collection | where: 'available' -%}
+                    {%- endif -%}
+                    {%- for product in products_collection limit: products_limit -%}
+                        {% render 'product-card', 
+                            product: product,
+                            image_srcsize_desktop: product_image_srcsize_desktop,
+                            image_srcsize_mobile: product_image_srcsize_mobile
+                        %}
+                    {%- endfor -%}
+                {%- else -%}
+                    {%- for product in (1..products_limit) -%}
+                    {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+                        {% render 'product-card',
+                            product: false,
+                            placeholder_index: placeholder_index
+                        %}
+                    {%- endfor -%}
+                {%- endif -%}
+            {%- when 'banner' -%}
+                {% assign gallery_heading = block.settings.heading %}
+                {% if gallery_heading == blank and section.settings.collection == blank %}
+                    {% assign gallery_heading = section.settings.heading %}
+                {% endif %}
+                <div class="#grid-column @mobile-full" {{ block.shopify_attributes }}>
+                    {%- assign banner_image = block.settings.image | default: section.settings.collection.image -%}
+                    {%- if banner_image != blank -%}
+                        {% render 'load-css', file: 'gallery-card' %}
+                        {% render 'gallery-card',
+                            image: banner_image,
+                            overlay: block.settings.image_overlay,
+                            full_height: true,
+                            heading: gallery_heading,
+                            heading_scale: block.settings.heading_scale,
+                            subheading: block.settings.subheading,
+                            link: section.settings.collection.url,
+                            caption_x: 'center',
+                            caption_y: 'center',
+                            inner_caption: true,
+                            image_srcsize_desktop: product_image_srcsize_desktop,
+                            image_srcsize_mobile: product_image_srcsize_mobile,
+                            image_size: 'square',
+                            color_scheme: block.settings.color_scheme,
+                            button_label: block.settings.button,
+                            button_tier: block.settings.button_tier
+                        %}
+                    {%- else -%}
+                        {% capture Hero_text %}
+                            {% if settings.design_center_layout %}
+                                {% assign x_align = 'center' %}
+                            {% endif %}
+                            <div class="rel">
+                                {% render 'hero',
+                                    subheading: block.settings.subheading,
+                                    heading: gallery_heading,
+                                    heading_scale: block.settings.heading_scale,
+                                    f_button_label: block.settings.button,
+                                    f_button_tier: block.settings.button_tier,
+                                    align: x_align,
+                                    gap: 4
+                                %} 
+                                <a class="stretched-link" href="{{ section.settings.collection.url }}" aria-label="{{ section.settings.collection.title }}"></a>
+                            </div>
+                        {% endcapture %}
+
+                        {% render 'floating-content',
+                            y: 'center',
+                            content: Hero_text,
+                            container: true,
+                            padded: true
+                        %}
+                    {%- endif -%}
+                </div>
+        {%- endcase -%}
+    {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture Content -%}
+    {%- if section.settings.collection.all_products_count == 0 -%}
+        {%- if request.design_mode -%}
+            {% render 'editor-notification',
+                t_heading: 'general.editor.empty_collection_message'
+            %}
+        {%- endif -%}
+    {%- else -%}
+        <div class="#grid @type:columns" style="--columns: {{ product_columns }}; --columns-mobile: {{ product_columns_mobile }};">
+            {{ Collection_grid }}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    spaced: true,
+    container: true,
+    button_label: section.settings.section_button_label,
+    button_link: section.settings.collection.url
+%}
+
+{% schema %}
+{
+    "name": "Featured collection grid",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Featured collection grid"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "t:g.common.label.subheading"
+        },
+        {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection"
+        },
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Desktop columns",
+            "min": 2,
+            "step": 1,
+            "max": 6,
+            "default": 4
+        },
+        {
+            "type": "range",
+            "id": "rows",
+            "label": "Maximum rows",
+            "min": 2,
+            "step": 1,
+            "max": 6,
+            "default": 3
+        },
+        {
+            "type": "header",
+            "content": "t:g.section.button.header"
+        },
+        {
+            "type": "text",
+            "id": "section_button_label",
+            "label": "t:g.section.button.label"
+        }
+    ],
+    "blocks": [
+        {
+            "name": "Products",
+            "type": "products",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "checkbox",
+                    "id": "show_only_products_in_stock",
+                    "label": "Show only products in stock",
+                    "default": false
+                }
+            ]
+        },
+        {
+            "name": "Ending banner",
+            "type": "banner",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "color_scheme",
+                    "id": "color_scheme",
+                    "default": "invert",
+                    "label": "Color scheme"
+                },
+                {
+                    "type": "header",
+                    "content": "Image",
+                    "info": "Collection image is set by default" 
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Custom image",
+                    "info": "t:g.media.resolution_recommendations.third_of_screen"
+                },
+                {
+                    "type": "range",
+                    "id": "image_overlay",
+                    "label": "Overlay opacity",
+                    "min": 0,
+                    "step": 5,
+                    "max": 90,
+                    "unit": "%",
+                    "default": 0
+                },
+                {
+                    "type": "header",
+                    "content": "Caption"
+                },
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "{{ section.settings.collection.title }}"
+                },
+                {
+                    "type": "range",
+                    "id": "heading_scale",
+                    "label": "Heading scale",
+                    "min": 60,
+                    "max": 150,
+                    "default": 80,
+                    "step": 5,
+                    "unit": "%",
+                    "info": "Based on 'Headings base font size' theme setting"
+                },
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "t:g.common.label.subheading",
+                    "default": "Shop All"
+                },
+                {
+                    "type": "text",
+                    "id": "button",
+                    "label": "Button label",
+                    "default": "Shop All"
+                },
+                {
+                    "type": "select",
+                    "id": "button_tier",
+                    "label": "Button style",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primary"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secondary"
+                        },
+                        {
+                            "value": "link",
+                            "label": "Link"
+                        }
+                    ],
+                    "default": "primary",
+                    "info": "t:g.info.button.style"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Featured collection grid",
+            "blocks": [
+                {
+                    "type": "products"
+                },
+                {
+                    "type": "banner"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

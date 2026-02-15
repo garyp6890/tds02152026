@@ -1,0 +1,166 @@
+{%- liquid
+    assign NS = 'cart'
+    assign cn = '#' | append: NS
+    assign form_id = 'cartForm-' | append: section.id    
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Content -%}
+<div
+    class="{{ cn }}"
+    section-id="{{ section.id }}"
+>
+    <cart-live-region section-id="{{ section.id }}" id="mainCartLiveRegion">
+
+    {% if cart == empty %}
+        {% render 'splash-msg',
+            t_heading: 'sections.cart.empty.heading',
+            t_subheading: 'sections.cart.empty.subheading',
+            button_t_label: 'general.continue_shopping',
+            button_link: routes.all_products_collection_url
+        %}
+    {% else %}
+    <div class="{{ cn }}-header">
+        {% render 'hero',
+            heading: section.settings.heading,
+            heading_tag: 'h1'
+        %}  
+    </div>
+    <div class="{{ cn }}-body">
+        <div class="#grid @type:template" style="--template: 1fr 30%; --template-mobile: none; --gap: 4rem;">
+            <div class="{{ cn }}-body-inner">
+                <cart-loader section-id="{{ section.id }}" class="{{ cn }}-items">
+                    <form action="{{ routes.cart_url }}" method="post" id="{{ form_id }}">                            
+                        {%- for item in cart.items -%}
+                            {% render 'cart-item', 
+                                item: item,
+                                show_stock_alert: section.settings.show_stock_alert,
+                                line_index: forloop.index
+                            %}
+                        {%- endfor -%}
+                    </form>
+                </cart-loader>
+                <div class="{{ cn }}-footer">
+                    <a class="{{ cn }}-footer-link reset-link" href="{{ routes.all_products_collection_url }}">
+                        {% render 'icon', name: 'angle-left' %}    
+                        {{ 'general.continue_shopping' | t }}
+                    </a>
+                </div>
+            </div>
+            <div class="{{ cn }}-sidebar-wrapper {% if section.settings.mobile_sticky_checkout %}@mobile-sticky{% endif %}">
+                {% render 'cart-sidebar', form_id: form_id %}
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+
+    </cart-live-region>
+</div>
+
+<script type="module" src="{{ 'cart-loader.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+{% if settings.cart_variant_selector %}
+    {% render 'load-css', file: 'cart-variant-selector-modal' %}
+    <script type="module" src="{{ 'cart-variant-selector-modal.js' | asset_url }}"></script>
+{% endif %}
+
+
+{% render 'section-body',
+   content: Content,
+   container: 'default',
+   spaced: true
+%}
+
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    {
+        "type": "inline_richtext",
+        "id": "heading",
+        "label": "t:g.common.label.heading",
+        "info": "t:g.info.heading_highlight",
+        "default": "Your cart"
+    },
+    {
+        "type": "checkbox",
+        "id": "show_stock_alert",
+        "label": "Show stock alert",
+        "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "Subtotal",
+      "limit": 1
+    },
+    {
+      "type": "checkout",
+      "name": "Checkout button",
+      "limit": 1,
+      "settings": [
+        {
+            "type": "checkbox",
+            "id": "show_payment_methods",
+            "label": "Show payment methods",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_additional_checkout_buttons",
+            "label": "Show additional checkout buttons",
+            "default": true,
+            "info": "t:sections.main-product.blocks.buy_buttons.settings.show_dynamic_checkout.info"
+        }
+      ]
+    },
+    {
+        "type": "order_notes",
+        "name": "Order notes",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "select",
+                "id": "default_state",
+                "label": "Default state",
+                "options": [
+                    {
+                        "value": "closed",
+                        "label": "Closed"
+                    },
+                    {
+                        "value": "opened",
+                        "label": "Opened"
+                    }
+                ],
+                "default": "closed"
+            }
+        ]
+    },
+    {
+        "type": "tax_note",
+        "name": "Taxes and shipping note",
+        "limit": 1
+    },
+    {
+        "type": "free_shipping",
+        "name": "Free shipping status",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "Configure your free shipping minimum amount in theme settings"
+            }
+        ]
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

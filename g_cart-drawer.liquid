@@ -1,0 +1,639 @@
+{%- liquid
+    assign NS = 'cart-drawer'
+    assign cn = '#' | append: NS
+    assign form_id = 'cartForm-' | append: section.id    
+    assign modal_id = 'cart-drawer'
+    assign live_region_id = NS | append: '-live-region'
+    assign with_shipping_bar = section.blocks | where: 'type', 'free_shipping' | first
+-%}
+
+
+{% unless request.page_type == 'cart' %}
+    
+{% render 'load-css', file: NS, lazy: true %}
+{% render 'load-css', file: 'product-card-min', lazy: true %}
+
+{%- unless cart == empty -%}
+    {% capture Subtotal %}
+        {%- liquid
+            if cart.total_price != cart.original_total_price
+                assign has_discount = true
+                assign subtotal_title = 'sections.cart.new_subtotal' | t
+            else
+                assign has_discount = false
+                assign subtotal_title = 'sections.cart.subtotal' | t
+            endif   
+        -%}
+        <div class="{{ cn }}-subtotal">
+            {%- if has_discount -%}
+                <div class="{{ cn }}-subtotal-item">
+                    <h5 class="{{ cn }}-subtotal-item-title">
+                        {{ 'sections.cart.subtotal' | t }}
+                    </h5>
+                    <h5 class="{{ cn }}-subtotal-item-spacer"></h5>
+                    <h5 class="{{ cn }}-subtotal-item-price">
+                        {{ cart.original_total_price | money }}
+                    </h5>
+                </div>
+                <div class="{{ cn }}-subtotal-item">
+                    <h5 class="{{ cn }}-subtotal-item-title">
+                        {{ 'customer.order.discount' | t }}
+                    </h5>
+                    <h5 class="{{ cn }}-subtotal-item-spacer"></h5>
+                    <h5 class="{{ cn }}-subtotal-item-price">
+                        -{{ cart.total_discount | money }}
+                    </h5>
+                </div>    
+            {%- endif -%}
+            <div class="{{ cn }}-subtotal-item @final">
+                <h5 class="{{ cn }}-subtotal-item-title">
+                    {{ subtotal_title }}
+                </h5>
+                <h5 class="{{ cn }}-subtotal-item-spacer"></h5>
+                <h5 class="{{ cn }}-subtotal-item-price">
+                    {{ cart.total_price | money }}
+                </h5>
+            </div>
+            <div class="{{ cn }}-subtotal-tax-note">
+                {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                    {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                {%- elsif cart.taxes_included -%}
+                    {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+                {%- elsif shop.shipping_policy.body != blank -%}
+                    {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                {%- else -%}
+                    {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+                {%- endif -%}
+            </div>
+        </div> 
+    {% endcapture %}
+    {% capture Order_notes %}
+        <h5 class="{{ cn }}-order-notes-heading">
+            {{ 'sections.cart.note' | t }}
+        </h5>
+        <textarea class="{{ cn }}-order-notes-input" name="note" id="CartOrderNote" cols="30" rows="6">{{ cart.note }}</textarea> 
+    {% endcapture %}
+{%- endunless -%}
+
+{%- capture Checkout_button -%}
+    <cart-live-region section-id="{{ section.id }}" id="{{ live_region_id }}-checkout" class="{{ cn }}-checkout @position:{{ section.settings.checkout_position }}">
+        {%- unless cart == empty -%}
+            {%- assign checkout_button_label = 'sections.cart.checkout' | t -%}
+            {%- if section.settings.show_final_price_checkout_button -%}
+                {%- assign final_price = cart.total_price | money -%}
+                {%- capture checkout_button_label -%}
+                    {{ checkout_button_label }}
+                    <span class="{{ cn }}-checkout-total">{{ final_price }}</span>
+                {%- endcapture -%}
+            {%- endif -%}
+            {% render 'button',
+                text: checkout_button_label,
+                block: true,
+                type: 'submit',
+                form: form_id,
+                size: 'h3',
+                display_style: 'gradient',
+                name: 'checkout',
+                no_arrow: true
+            %}
+        {%- endunless -%}
+        </cart-live-region>
+{%- endcapture -%}
+
+{% capture Modal_content %}
+    <div class="{{ cn }} initial-hidden">
+        <form action="{{ routes.cart_url }}" method="post" novalidate id="{{ form_id }}" class="{{ cn }}-body">
+            <div class="{{ cn }}-header">
+                <div class="{{ cn }}-header-inner">
+                    <modal-close type="button" class="{{ cn }}-close" section-id="{{ section.id }}">
+                        {% render 'icon', name: 'x' %}
+                    </modal-close>
+                    <h2 class="{{ cn }}-heading">{{ 'sections.cart.title' | t }}</h2>
+                    <div class="{{ cn }}-cart-link">
+                        <a class="stretched-link" href="{{ routes.cart_url }}" aria-label="{{ 'general.accessibility.cart' | t }}"></a>
+                        {%- if section.settings.show_cart_counter -%}
+                            <cart-live-region section-id="{{ section.id }}" id="cartCounter-{{ section.id }}">
+                                {%- if cart.item_count > 0 -%}
+                                    <span class="{{ cn }}-cart-counter">{{ cart.item_count }}</span>
+                                {%- endif -%}
+                            </cart-live-region>
+                        {%- endif -%}
+                        {% render 'icon', name: 'bag-shopping' %}
+                    </div>
+                </div>
+                {%- if section.settings.checkout_position == 'top' -%}
+                    {{ Checkout_button }}
+                {%- endif -%}
+            </div>
+            <cart-live-region class="{{ cn }}-block" section-id="{{ section.id }}" id="{{ live_region_id }}-empty">
+                {%- if cart == empty -%}
+                    <div class="{{ cn }}-empty">
+                        {% render 'splash-msg',
+                            t_heading: 'sections.cart.empty.heading',
+                            t_subheading: 'sections.cart.empty.subheading',
+                            footer: Close_button
+                        %}                
+                    </div>
+                {%- endif -%}
+            </cart-live-region>
+            {% for block in section.blocks %}
+                {% case block.type %}
+                    {% when 'products' %}
+                        <cart-live-region section-id="{{ section.id }}" id="{{ live_region_id }}-{{ block.type }}" class="{{ cn }}-block" {{ block.shopify_attributes }}>
+                            {%- unless cart == empty -%}
+                                <div class="{{ cn }}-products">
+                                    {%- for cart_product in cart.items -%}
+                                        {%- liquid 
+                                            assign max_qty = false
+                                            assign track_qty = true
+                                            if cart_product.variant.inventory_management == nil or cart_product.variant.inventory_policy == 'continue'
+                                                assign track_qty = false
+                                            endif
+                                            if track_qty
+                                                assign cart_product_count = cart | item_count_for_variant: cart_product.variant_id
+                                                if cart_product_count == cart_product.variant.inventory_quantity
+                                                    assign max_qty = true
+                                                endif
+                                            endif
+                                        -%}
+                                        <div class="{{ cn }}-product {% if section.settings.show_stock_alert %}@show-stock-alert{% endif %}" data-item-key="{{ cart_product.key }}">
+                                            {% render 'spinner', size: 'xs' %}
+                                            <div class="{{ cn }}-product-inner">
+                                                {%- capture Remove_button -%}
+                                                    {%- if block.settings.show_remove_button -%}
+                                                        <cart-qty
+                                                            class="{{ cn }}-product-remove"
+                                                            key="{{ cart_product.key }}"
+                                                            line="{{ forloop.index }}"
+                                                            value="0"
+                                                            section-id="{{ section.id }}"
+                                                        >
+                                                            {% render 'icon', name: 'x' %}
+                                                        </cart-qty>
+                                                    {%- endif -%}
+                                                {%- endcapture -%}
+                                                {%- capture Qty_control -%}
+                                                    <div class="{{ cn }}-product-qty-adjust">
+                                                        <cart-qty
+                                                            class="{{ cn }}-product-qty-button @type:minus"
+                                                            value="{{ cart_product.quantity | minus: 1 }}"
+                                                            key="{{ cart_product.key }}"
+                                                            line="{{ forloop.index }}"
+                                                            section-id="{{ section.id }}"
+                                                        >{% render 'icon', name: 'minus' %}</cart-qty>
+                                                        <span class="{{ cn }}-product-qty">{{ cart_product.quantity }}</span>
+                                                        <cart-qty
+                                                            {% if max_qty %}disabled{% endif %} 
+                                                            class="{{ cn }}-product-qty-button @type:plus {% if max_qty %}@disabled{% endif %} "
+                                                            value="{{ cart_product.quantity | plus: 1 }}"
+                                                            key="{{ cart_product.key }}"
+                                                            line="{{ forloop.index }}"
+                                                            section-id="{{ section.id }}"
+                                                        >{% render 'icon', name: 'plus' %}</cart-qty>
+                                                    </div>
+                                                    {%- if max_qty -%}
+                                                        <div class="{{ cn }}-product-qty-max-note">
+                                                            {% render 'icon', name: 'exclamation' %}
+                                                            <span>{{ 'general.cart.qty_max_note' | t }}</span>
+                                                        </div>
+                                                    {%- endif -%}
+                                                {%- endcapture -%}
+                                                {%- capture Product_info -%}
+                                                    <div class="{{ cn }}-product-info">
+                                                        {% if cart_product.line_level_discount_allocations.size > 0 %}
+                                                            <ul class="{{ cn }}-product-discounts">
+                                                                {% for discount in cart_product.line_level_discount_allocations %}
+                                                                    <li class="{{ cn }}-product-discounts-item">{% render 'icon', name: 'tag', load: true %} {{ discount.discount_application.title }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                        {%- if cart_product.selling_plan_allocation != nil -%}
+                                                            <p class="{{ cn }}-product-selling-plan">{{ cart_product.selling_plan_allocation.selling_plan.name }}</p>
+                                                        {%- endif -%}
+                                                        {% if settings.show_preorder_badge %}
+                                                            {% assign is_preorder = false %}
+                                                            {% if cart_product.product.template_suffix == 'pre-order' %}
+                                                                {% assign is_preorder = true %}
+                                                            {%- elsif cart_product.variant.inventory_quantity <= 0 and cart_product.variant.inventory_management and cart_product.variant.inventory_policy != 'deny' -%}
+                                                                {% assign is_preorder = true %}
+                                                            {%- endif -%}
+                                                        {% endif %}
+                                                        {% if is_preorder %}
+                                                            <p class="{{ cn }}-product-preorder">{{ 'general.cart.preorder' | t }}</p>
+                                                        {% endif %}
+
+                                                    </div>
+                                                {%- endcapture -%}
+                                                {%- capture Input -%}
+                                                    <input
+                                                        type="hidden"
+                                                        name="updates[]"
+                                                        value="{{ cart_product.quantity | escape }}"
+                                                        form="{{ form_id }}"
+                                                        id="Quantity-{{ cart_product.variant.id }}"
+                                                    >
+                                                {%- endcapture -%}
+                                                {% render 'product-card-min',
+                                                    cart_line_item: cart_product,
+                                                    cart_line_index: forloop.index,
+                                                    product: cart_product.product,
+                                                    variant: cart_product.variant,
+                                                    actions: Qty_control,
+                                                    after_heading: Remove_button,
+                                                    body: Product_info,
+                                                    before: Input,
+                                                    max_qty: max_qty,
+                                                    track_qty: track_qty,
+                                                    price: cart_product.final_price
+                                                %}
+                                            </div>
+                                        </div>
+                                    {%- endfor -%}
+                                </div> 
+                            {%- endunless -%}
+                        </cart-live-region>
+                    {% when 'subtotal' %}
+                        <cart-live-region section-id="{{ section.id }}" id="{{ live_region_id }}-{{ block.type }}" class="{{ cn }}-block" {{ block.shopify_attributes }}>
+                            {{- Subtotal -}}
+                        </cart-live-region>
+                    {% when 'free_shipping' %}
+                        <cart-live-region section-id="{{ section.id }}" id="{{ live_region_id }}-{{ block.type }}" class="{{ cn }}-block" {{ block.shopify_attributes }}>
+                            {% render 'free-shipping-progress-bar' %}
+                        </cart-live-region>
+                    {% when 'order_notes' %}
+                        <cart-live-region section-id="{{ section.id }}" id="{{ live_region_id }}-{{ block.type }}" class="{{ cn }}-block" {{ block.shopify_attributes }}>
+                            {{- Order_notes -}}
+                        </cart-live-region>
+                    {% when 'banner' %}
+                        <div class="{{ cn }}-block {% if block.settings.full_width %}@full{% endif %}" {{ block.shopify_attributes }}>
+                            {%- liquid
+                                assign position = block.settings.text_position | split: '-'
+                                assign caption_y = position[0]
+                                assign caption_x = position[1]
+                            -%}
+                            {% render 'load-css', file: 'gallery-card' %}
+                            {% render 'gallery-card',
+                                image: block.settings.image,
+                                heading: block.settings.heading,
+                                subheading: block.settings.subheading,
+                                caption_y: caption_y,
+                                caption_x: caption_x,
+                                caption_size: 'sm',
+                                inner_caption: true,
+                                link: block.settings.link,
+                                stacked: block.settings.full_width,
+                                color_scheme: block.settings.color_scheme
+                            %}
+                        </div>     
+                    {%- when 'product_recommendations' -%}
+                        <cart-live-region section-id="{{ section.id }}" id="{{ live_region_id }}-{{ block.type }}" class="{{ cn }}-block @full" {{ block.shopify_attributes }}>
+                            {% if cart != empty or block.settings.fallback_products.count > 0 %}
+                                <div class="{{ cn }}-upsells {% if cart == empty %}@fallback{% endif %}">
+                                    <h5 class="{{ cn }}-upsells-heading">
+                                        {{ block.settings.heading }}
+                                    </h5>
+                                    {% if cart == empty %}
+                                        {% capture Fallback_products %}
+                                            {% for f_product in block.settings.fallback_products %}
+                                                {% render 'product-card-min',
+                                                    product: f_product,
+                                                    add_to_cart: true
+                                                %}
+                                            {% endfor %}     
+                                        {% endcapture %}
+                                        {% render 'slideshow-inline-blaze',
+                                            slides: Fallback_products,
+                                            slides_per_view: 1.15,
+                                            slides_per_view_mobile: 1.15,
+                                            show_pagination: false,
+                                            slide_by: 'item',
+                                            container: false,
+                                            clipped: false
+                                        %}
+                                    {% else %}
+                                        {% render 'product-recommendations-slider', 
+                                            ref_product: cart.items.first.product,
+                                            req_section: 'r_cart-notification-recommendations',
+                                            slides_per_view: 1.15,
+                                            slides_per_view_mobile: 1.15,
+                                            show_pagination: false,
+                                            slide_by: 'item',
+                                            limit: 5,
+                                            clipped: false
+                                        %}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </cart-live-region>
+                    {% when '@app' %}
+                        {% render block %}
+                {% endcase %}
+            {% endfor %}
+            {%- if section.settings.checkout_position == 'bottom' -%}
+                {{ Checkout_button }}
+            {%- endif -%}
+        </form>
+    </div>
+{%- endcapture -%}
+
+<{{ NS }} section-id="{{ section.id }}">
+    {% render 'modal',
+        content: Modal_content,
+        x: 'right',
+        height: '100%',
+        width: 'min(450px, 95vw)',
+        id: modal_id,
+        show_close: false,
+        animation: 'right'
+    %}
+</{{ NS }}>
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{% if with_shipping_bar %}
+    {% render 'load-css', file: 'free-shipping-progress-bar' %}
+    <script type="module" src="{{ 'free-shipping-progress-bar.js' | asset_url }}"></script>
+{% endif %}
+{% if settings.cart_variant_selector %}
+    {% render 'load-css', file: 'cart-variant-selector-modal' %}
+    <script type="module" src="{{ 'cart-variant-selector-modal.js' | asset_url }}"></script>
+{% endif %}
+
+{% endunless %}
+
+{%- if request.design_mode -%}
+    <script type="module">
+        const { Utils, DOMEvents } = Global;
+
+        class CartDrawerPopup extends window.Editor {
+            events = {
+                section: {
+                    select: this._onCartDrawerSelect,
+                    deselect: this._onCartDrawerDeselect,
+                    load: this._onCartDrawerReoreder
+                },
+                block: {
+                    select: this._onCartDrawerBlockSelect
+                }
+            }
+            _onCartDrawerReoreder(e) {
+                this._updateDrawerTrigger();
+                this._open();
+            }
+
+            _onCartDrawerSelect() {
+                this._open();
+            }
+            
+            _onCartDrawerDeselect() {
+                this._close();
+            }
+            
+            _onCartDrawerBlockSelect() {
+                if (this.opened) return;
+                this._open();
+            }
+
+            _updateDrawerTrigger() {
+                document.querySelector('modal-open[target="cart-drawer"]').$target = this.$modal;
+            }
+
+            _open() {
+                this.$modal.dispatchEvent(DOMEvents.MODAL_OPEN);
+                this.opened = true;
+            }
+            
+            _close() {
+                this.$modal.dispatchEvent(DOMEvents.MODAL_CLOSE);
+                this.opened = false;
+            }
+
+            get $modal () {
+                return document.querySelector('cart-drawer').querySelector('modal-container');
+            }
+        }
+        const cartDrawerEditorUX = new CartDrawerPopup('{{ section.id }}');
+        cartDrawerEditorUX.render();
+    </script>
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Cart drawer",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "show_final_price_checkout_button",
+            "label": "Show final price on the checkout button",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "show_stock_alert",
+            "label": "Show stock alert",
+            "default": false
+        },
+        {
+            "type": "select",
+            "id": "checkout_position",
+            "label": "Checkout button position",
+            "options": [
+                {
+                    "value": "bottom",
+                    "label": "Sticky bottom"
+                },
+                {
+                    "value": "top",
+                    "label": "Top (after heading)"
+                }
+            ],
+            "default": "bottom"
+        },
+        {
+            "type": "header",
+            "content": "Cart icon"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_cart_counter",
+            "label": "Show item count",
+            "default": false
+        }
+    ],
+    "blocks": [
+        {
+            "type": "product_recommendations",
+            "name": "Upsell products",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "Heading",
+                    "default": "You may interested in"
+                },
+                {
+                    "type": "product_list",
+                    "id": "fallback_products",
+                    "label": "Fallback products",
+                    "limit": 5,
+                    "info": "Is displayed when the cart is empty. Product recommendations based on Shopify recommendations algorithm are used by default."
+                }
+            ]   
+        },
+        {
+            "type": "banner",
+            "name": "Promotion banner",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "color_scheme",
+                    "id": "color_scheme",
+                    "default": "invert",
+                    "label": "Color Scheme"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "t:g.media.image",
+                    "info": "t:g.media.resolution_recommendations.half_of_screen"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "full_width",
+                    "label": "Enable full width for banner",
+                    "default": false
+                },
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "t:g.common.label.heading"
+                },
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "Subheading",
+                    "info": "t:g.hero.subheading_position.info"
+                },
+                {
+                    "type": "select",
+                    "id": "text_position",
+                    "label": "t:g.hero.caption.position.label",
+                    "options": [
+                        {
+                            "value": "top-left",
+                            "label": "t:g.hero.caption.position.options.x0y0"
+                        },
+                        {
+                            "value": "top-center",
+                            "label": "t:g.hero.caption.position.options.x0y1"
+                        },
+                        {
+                            "value": "top-right",
+                            "label": "t:g.hero.caption.position.options.x0y2"
+                        },
+                        {
+                            "value": "center-left",
+                            "label": "t:g.hero.caption.position.options.x1y0"
+                        },
+                        {
+                            "value": "center-center",
+                            "label": "t:g.hero.caption.position.options.x1y1"
+                        },
+                        {
+                            "value": "center-right",
+                            "label": "t:g.hero.caption.position.options.x1y2"
+                        },
+                        {
+                            "value": "bottom-left",
+                            "label": "t:g.hero.caption.position.options.x2y0"
+                        },
+                        {
+                            "value": "bottom-center",
+                            "label": "t:g.hero.caption.position.options.x2y1"
+                        },
+                        {
+                            "value": "bottom-right",
+                            "label": "t:g.hero.caption.position.options.x2y2"
+                        }
+                    ],
+                    "default": "center-center"
+                },
+                {
+                   "type": "url",
+                   "id": "link",
+                   "label": "t:g.common.label.link"
+                }
+            ]
+        },
+        {
+            "type": "products",
+            "name": "Cart products",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "This block is visible when cart is not empty"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_remove_button",
+                    "label": "Show remove button",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "subtotal",
+            "name": "Subtotal",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "This block is visible when cart is not empty"
+                }
+            ]
+        },
+        {
+            "type": "free_shipping",
+            "name": "Free shipping status",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "Configure your free shipping minimum amount in theme settings"
+                }
+            ]
+        },
+        {
+            "type": "order_notes",
+            "name": "Order notes",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "This block is visible when cart is not empty"
+                }
+            ]
+        },
+        {
+            "type": "@app"
+        }
+    ],
+    "limit": 1,
+    "presets": [
+        {
+            "name": "Cart drawer",
+            "blocks": [
+                {
+                    "type": "products"
+                },
+                {
+                    "type": "subtotal"
+                }
+            ]
+        }
+    ],
+    "enabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

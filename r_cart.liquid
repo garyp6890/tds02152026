@@ -1,0 +1,14 @@
+<div hidden data-element="cart-counter">{{ cart.item_count }}</div>
+<div hidden data-element="items-wrapper">
+    {%- for item in cart.items -%}
+        {% render 'cart-item', item: item %}
+    {%- endfor -%}
+</div>
+
+<div hidden data-element="subtotal-block">
+    {% render 'cart-subtotal' %}
+</div>
+
+<div hidden data-element="free-shipping-block" data-dynamic="free-shipping">
+    {% render 'free-shipping-progress-bar' %}
+</div>

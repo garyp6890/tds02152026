@@ -1,0 +1,675 @@
+{%- liquid
+    assign position = section.settings.text_position | split: '-'
+    assign text_y = position[0]
+    assign text_x = position[1]
+
+    if section.settings.section_layout
+        assign section_spaced = true
+        assign section_curved = true
+    endif 
+
+    assign mobile_offset = section.settings.mobile_offset
+    if mobile_offset == true
+        assign align_mobile_center = true
+        assign mobile_overlay = 0
+    endif
+    assign use_box = section.settings.use_box
+
+    unless section.settings.image_size == 'origin'
+        assign image_height = section.settings.image_size
+    endunless
+    unless section.settings.mobile_image_size == 'origin'
+        assign mobile_image_height = section.settings.mobile_image_size
+    endunless
+
+    if mobile_offset == true 
+        assign mobile_box = true
+    endif
+-%}
+
+{% if section.settings.pattern != blank and section.settings.pattern != 'none' %}
+    {% capture Bg_pattern %}
+        {% render 'bg-pattern', 
+            pattern: section.settings.pattern, 
+            pattern_scale: section.settings.pattern_scale,
+            pattern_opacity: section.settings.pattern_opacity,
+            animation: section.settings.pattern_animation
+        %}
+    {% endcapture %}
+{% endif %}
+
+{%- capture Hero_text -%}
+    {% render 'hero', 
+        blocks: section.blocks,
+        align: text_x,
+        auto_colors: true,
+        box: use_box,
+        mobile_box: mobile_box,
+        align_mobile_center: align_mobile_center
+    %}
+{%- endcapture -%}
+
+{% capture Caption %}
+    {% render 'floating-content',
+        content: Hero_text,
+        absolute: true,
+        x: text_x,
+        y: text_y,
+        mobile_offset: mobile_offset,
+        container: true,
+        padded: true
+    %}
+{% endcapture %}
+
+{%- capture Content -%}
+    {% if section.settings.use_box %}
+        {% assign overlay = 0 %}
+    {% else %}
+        {% assign overlay = section.settings.overlay %}
+    {% endif %}
+    <div class="rel">
+        {% render 'media',
+            image: section.settings.image,
+            image_mobile: section.settings.mobile_image,
+            height: image_height,
+            height_mobile: mobile_image_height,
+            placeholder: 'hero-apparel',
+            overlay: overlay,
+            mobile_overlay: mobile_overlay
+        %}
+        {{ Bg_pattern }}
+        {{ Caption }}
+    </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    container: section.settings.section_layout,
+    spaced: section_spaced,
+    curved: section_curved,
+    color_scheme: section.settings.color_scheme,
+    paint: 'none'
+%}
+
+{% schema %}
+{
+    "name": "Hero video popup",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "invert",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "select",
+            "id": "section_layout",
+            "label": "t:g.section.layout.label",
+            "options": [
+                {
+                    "value": "container",
+                    "label": "Container"
+                },
+                {
+                    "value": "full",
+                    "label": "Full width"
+                }
+            ],
+            "default": "full"
+        },
+        {
+            "type": "header",
+            "content": "t:g.common.media"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:g.media.image",
+            "info": "t:g.media.resolution_recommendations.full_screen"
+        },
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "t:g.media.image_size.label",
+            "options": [
+                {
+                    "value": "origin",
+                    "label": "Original"
+                },
+                {
+                    "value": "100vh",
+                    "label": "Full height"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                },
+                {
+                    "value": "650px",
+                    "label": "650px"
+                },
+                {
+                    "value": "750px",
+                    "label": "750px"
+                }
+            ],
+            "default": "origin"
+        },
+        {
+            "type": "image_picker",
+            "id": "mobile_image",
+            "label": "t:g.media.mobile_image",
+            "info": "t:g.media.resolution_recommendations.mobile"
+        },
+        {
+            "type": "select",
+            "id": "mobile_image_size",
+            "label": "t:g.media.image_size.mobile_label",
+            "options": [
+                {
+                    "value": "origin",
+                    "label": "Original"
+                },
+                {
+                    "value": "100vh",
+                    "label": "Full height"
+                },
+                {
+                    "value": "350px",
+                    "label": "350px"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                },
+                {
+                    "value": "650px",
+                    "label": "650px"
+                }
+            ],
+            "default": "origin"
+        },
+        {
+            "type": "range",
+            "id": "overlay",
+            "label": "t:g.media.overlay",
+            "min": 0,
+            "max": 90,
+            "step": 5,
+            "unit": "%",
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "t:g.common.caption"
+        },
+        {
+            "type": "checkbox",
+            "id": "use_box",
+            "label": "t:g.hero.use_box",
+            "info": "t:g.hero.use_box_hero_info"
+        },
+        {
+            "type": "select",
+            "id": "text_position",
+            "label": "t:g.hero.caption.position.label",
+            "options": [
+                {
+                    "value": "top-left",
+                    "label": "t:g.hero.caption.position.options.x0y0"
+                },
+                {
+                    "value": "top-center",
+                    "label": "t:g.hero.caption.position.options.x0y1"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.hero.caption.position.options.x0y2"
+                },
+                {
+                    "value": "center-left",
+                    "label": "t:g.hero.caption.position.options.x1y0"
+                },
+                {
+                    "value": "center-center",
+                    "label": "t:g.hero.caption.position.options.x1y1"
+                },
+                {
+                    "value": "center-right",
+                    "label": "t:g.hero.caption.position.options.x1y2"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.hero.caption.position.options.x2y0"
+                },
+                {
+                    "value": "bottom-center",
+                    "label": "t:g.hero.caption.position.options.x2y1"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.hero.caption.position.options.x2y2"
+                }
+            ],
+            "default": "center-center"
+        },
+        {
+            "type": "checkbox",
+            "id": "mobile_offset",
+            "label": "Display text in the card below the image on mobile",
+            "default": false,
+            "info": "t:g.hero.use_box_hero_info"
+        },
+        {
+            "type": "header",
+            "content": "t:g.patterns.settings.label" 
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.pattern_image",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "range",
+            "id": "pattern_opacity",
+            "min": 5,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Pattern opacity",
+            "default": 65
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "video_popup",
+            "name": "t:g.hero.video_popup.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "video_url",
+                    "id": "embedded_video",
+                    "accept": ["vimeo", "youtube"],
+                    "label": "t:g.media.video.url",
+                    "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+                },
+                {
+                    "type": "video",
+                    "id": "hosted_video",
+                    "label": "A Store-hosted video",
+                    "info": "Has priority over the 'Video URL'."
+                },
+                {
+                    "type": "checkbox",
+                    "id": "autoplay",
+                    "label": "Autoplay video when popup is opened",
+                    "default": true
+                },
+                {
+                    "type": "image_picker",
+                    "id": "cover_image",
+                    "label": "t:g.media.video.cover_image",
+                    "info": "t:g.media.video.cover_image_info"
+                },
+                {
+                    "type": "range",
+                    "id": "image_width",
+                    "label": "t:g.media.image_width",
+                    "min": 50,
+                    "max": 100,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 70
+                }
+            ]
+        },
+        {
+            "type": "social_menu",
+            "name": "Social media icons",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "t:settings_schema.social-media.info"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "social_new_tab",
+                    "label": "Open social media profiles in a new tab",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "heading",
+            "name": "t:g.hero.heading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "inline_richtext",
+                    "id": "heading",
+                    "label": "t:g.hero.heading.label",
+                    "default": "Heading",
+                    "info": "t:g.info.heading_highlight"
+                },
+                {
+                    "type": "range",
+                    "id": "heading_scale",
+                    "label": "Heading scale",
+                    "min": 80,
+                    "max": 250,
+                    "default": 120,
+                    "step": 5,
+                    "unit": "%",
+                    "info": "Based on 'Headings base font size' theme setting"
+                }
+            ]
+        },
+        {
+            "type": "subheading",
+            "name": "t:g.hero.subheading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "t:g.hero.subheading.label",
+                    "default": "Subheading"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "t:g.hero.text.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "t:g.hero.text.label",
+                    "default": "<p>Text</p>"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "enlarge_text",
+                    "label": "Enlarge text"
+                }
+            ]
+        },
+        {
+            "type": "timer",
+            "name": "Countdown",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "date",
+                    "label": "End date",
+                    "info": "Format: mm-dd-yyyy",
+                    "default": "04-03-2024"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "hide_on_complete",
+                    "label": "Hide timer on complete"
+                }
+            ]
+        },
+        {
+            "type": "buttons",
+            "name": "t:g.hero.buttons.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "info",
+                    "label": "Buttons info block",
+                    "info": "Will be hidden if buttons are not set"
+                },
+                {
+                    "type": "header",
+                    "content": "t:g.hero.buttons.first.header" 
+                },
+                {
+                    "type": "text",
+                    "id": "f_button_label",
+                    "label": "t:g.hero.buttons.first.label"
+                },
+                {
+                    "type": "url",
+                    "id": "f_button_link",
+                    "label": "t:g.hero.buttons.first.link"
+                },
+                {
+                    "type": "select",
+                    "id": "f_button_tier",
+                    "label": "t:g.hero.buttons.second.style",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primary"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secondary"
+                        },
+                        {
+                            "value": "link",
+                            "label": "Link"
+                        }
+                    ],
+                    "default": "primary",
+                    "info": "t:g.info.button.style"
+                },
+                {
+                    "type": "header",
+                    "content": "t:g.hero.buttons.second.header" 
+                },
+                {
+                    "type": "text",
+                    "id": "s_button_label",
+                    "label": "t:g.hero.buttons.second.label"
+                },
+                {
+                    "type": "url",
+                    "id": "s_button_link",
+                    "label": "t:g.hero.buttons.second.link"
+                },
+                {
+                    "type": "select",
+                    "id": "s_button_tier",
+                    "label": "t:g.hero.buttons.second.style",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primary"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secondary"
+                        },
+                        {
+                            "value": "link",
+                            "label": "Link"
+                        }
+                    ],
+                    "default": "secondary",
+                    "info": "t:g.info.button.style"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Hero video popup",
+            "blocks": [
+                {
+                    "type": "video_popup",
+                    "settings": {
+                        "embedded_video": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+                    }
+                },
+                {
+                    "type": "subheading",
+                    "settings": {
+                        "subheading": "Subheading"
+                    }
+                },
+                {
+                    "type": "heading",
+                    "settings": {
+                        "heading": "Hero video heading"
+                    }
+                },
+                {
+                    "type": "text",
+                    "settings": {
+                        "text": "<p>Give customers details about the hero video or content on the template.</p>"
+                    }
+                },
+                {
+                    "type": "buttons",
+                    "settings": {
+                        "f_button_label": "Shop Now"
+                    }
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

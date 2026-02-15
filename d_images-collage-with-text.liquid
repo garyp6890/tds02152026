@@ -1,0 +1,482 @@
+{% liquid
+    assign NS = 'images-collage'
+    assign cn = '#' | append: NS
+
+    assign position = section.settings.text_position | split: '-'
+    assign text_y = position[0]
+    assign text_x = position[1]
+
+    if section.settings.color_scheme == settings.color_scheme and section.settings.pattern == 'none'
+        assign spaced = true
+    else
+        assign padded = true
+    endif
+
+    assign image_loading = 'lazy'
+    if section.index0 == 0
+        assign image_loading = 'eager'
+    endif
+
+    if section.settings.f_button_label == blank and section.settings.s_button_label == blank
+        assign stretched_link = true
+    endif
+%}
+
+{% render 'load-css', file: NS %}
+
+{% capture Collage %}
+    <div class="{{ cn }}-media" data-element="wrapper">
+        {% for block in section.blocks %}
+            {% assign x_offset_factor = block.settings.coord_x | minus: 50.0 | divided_by: 50.0 %}
+            {% assign y_offset_factor = block.settings.coord_y | minus: 50.0 | divided_by: 50.0 %}
+            {% if block.settings.image == blank %}                
+                {%- capture placeholder_index -%}{%- cycle 1, 2, 3 -%}{%- endcapture -%}
+            {% endif %}
+            <div class="{{ cn }}-media-layer" style="--z: {{ forloop.rindex }};">
+                <div
+                    class="{{ cn }}-media-image"
+                    style="
+                        --x: {{ block.settings.coord_x }}%;
+                        --y: {{ block.settings.coord_y }}%;
+                        --x-offset-factor: {{ x_offset_factor }};
+                        --y-offset-factor: {{ y_offset_factor }};
+                        --image-width: {{ block.settings.image_width }}%;
+                    "
+                    data-element="image"    
+                >
+                    {% render 'media',
+                        image: block.settings.image,
+                        placeholder: 'hero-apparel',
+                        placeholder_index: placeholder_index,
+                        image_loading: image_loading
+                    %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endcapture %}
+
+{%- capture Hero -%}
+    {%- render 'hero',
+        align: text_x,
+        heading: section.settings.heading,
+        heading_scale: section.settings.heading_scale,
+        subheading: section.settings.subheading,
+        text: section.settings.text,
+        f_button_label: section.settings.f_button_label,
+        f_button_link: section.settings.f_button_link,
+        f_button_tier: section.settings.f_button_tier,
+        outer_gap: true
+    -%}
+{%- endcapture -%}
+
+{% capture Text %}
+    {% render 'floating-content',
+        content: Hero,
+        x: text_x,
+        y: text_y,
+        padded: true
+    %}
+{% endcapture %}
+
+{% capture Content %}
+    <{{ NS }} class="{{ cn }} @image-position:{{ section.settings.collage_position }}" section-id="{{ section.id }}" style="
+        --inner-width: {{ section.settings.section_width }}%;
+    ">
+        <div class="#container">
+            <div class="{{ cn }}-inner">
+                {% render 'media-with-text',
+                    media: Collage,
+                    text: Text,
+                    media_width: section.settings.collage_width,
+                    media_position: section.settings.collage_position
+                %}
+            </div>
+        </div>
+    </{{ NS }}>
+{% endcapture %}
+
+{% render 'section-body',
+    content: Content,
+    color_scheme: section.settings.color_scheme,
+    bg_pattern: section.settings.pattern,
+    bg_pattern_scale: section.settings.pattern_scale,
+    bg_pattern_animation: section.settings.pattern_animation,
+    spaced: spaced,
+    padded: padded
+%}
+
+{% schema %}
+    {
+        "name": "Images collage with text",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "Section height is determined by the tallest image."
+            },
+            {
+                "type": "color_scheme",
+                "id": "color_scheme",
+                "default": "main",
+                "label": "Color Scheme"
+            },
+            {
+                "type": "range",
+                "id": "section_width",
+                "label": "Desktop content width",
+                "min": 50,
+                "max": 100,
+                "step": 5,
+                "default": 80,
+                "unit": "%"
+            },
+            {
+                "type": "range",
+                "id": "collage_width",
+                "label": "Collage width",
+                "min": 30,
+                "step": 1,
+                "max": 70,
+                "unit": "%",
+                "default": 50
+            },
+            {
+                "type": "select",
+                "id": "collage_position",
+                "label": "Collage position",
+                "options": [
+                    {
+                        "value": "left",
+                        "label": "t:g.media.position.left"
+                    },
+                    {
+                        "value": "right",
+                        "label": "t:g.media.position.right"
+                    }
+                ],
+                "default": "left"
+            },
+            {
+                "type": "header",
+                "content": "t:g.common.caption" 
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "default": "Heading",
+                "info": "t:g.info.heading_highlight"
+            },
+            {
+                "type": "range",
+                "id": "heading_scale",
+                "label": "Heading scale",
+                "min": 80,
+                "max": 250,
+                "default": 120,
+                "step": 5,
+                "unit": "%",
+                "info": "Based on 'Headings base font size' theme setting"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "default": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            },
+            {
+                "type": "richtext",
+                "id": "text",
+                "label": "Text",
+                "default": "<p>Give customers details about the banner image(s) or content on the template.</p>"
+            },
+            {
+                "type": "select",
+                "id": "text_position",
+                "label": "t:g.hero.caption.position.label",
+                "options": [
+                {
+                    "value": "top-left",
+                    "label": "t:g.hero.caption.position.options.x0y0"
+                },
+                {
+                    "value": "top-center",
+                    "label": "t:g.hero.caption.position.options.x0y1"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.hero.caption.position.options.x0y2"
+                },
+                {
+                    "value": "center-left",
+                    "label": "t:g.hero.caption.position.options.x1y0"
+                },
+                {
+                    "value": "center-center",
+                    "label": "t:g.hero.caption.position.options.x1y1"
+                },
+                {
+                    "value": "center-right",
+                    "label": "t:g.hero.caption.position.options.x1y2"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.hero.caption.position.options.x2y0"
+                },
+                {
+                    "value": "bottom-center",
+                    "label": "t:g.hero.caption.position.options.x2y1"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.hero.caption.position.options.x2y2"
+                }
+                ],
+                "default": "center-center"
+            },
+            {
+                "type": "header",
+                "content": "t:g.hero.buttons.single.header" 
+            },
+            {
+                "type": "text",
+                "id": "f_button_label",
+                "label": "t:g.hero.buttons.single.label"
+            },
+            {
+                "type": "url",
+                "id": "f_button_link",
+                "label": "t:g.hero.buttons.single.link"
+            },
+            {
+                "type": "select",
+                "id": "f_button_tier",
+                "label": "t:g.hero.buttons.second.style",
+                "options": [
+                    {
+                        "value": "primary",
+                        "label": "Primary"
+                    },
+                    {
+                        "value": "secondary",
+                        "label": "Secondary"
+                    },
+                    {
+                        "value": "link",
+                        "label": "Link"
+                    }
+                ],
+                "default": "primary",
+                "info": "t:g.info.button.style"
+            },
+            {
+                "type": "select",
+                "id": "pattern",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:g.patterns.none"
+                    },
+                    {
+                        "value": "pattern-bubbles_100",
+                        "label": "t:g.patterns.bubbles"
+                    },
+                    {
+                        "value": "pattern-endless-clouds_56",
+                        "label": "t:g.patterns.endless_clouds"
+                    },
+                    {
+                        "value": "pattern-hideout_40",
+                        "label": "t:g.patterns.hideout"
+                    },
+                    {
+                        "value": "pattern-diagonal-lines_6",
+                        "label": "t:g.patterns.diagonal_lines"
+                    },
+                    {
+                        "value": "pattern-polka-dots_20",
+                        "label": "t:g.patterns.polka_dots"
+                    },
+                    {
+                        "value": "pattern-graph-paper_100",
+                        "label": "t:g.patterns.graph_paper"
+                    },
+                    {
+                        "value": "pattern-leaf_80",
+                        "label": "t:g.patterns.leaf"
+                    },
+                    {
+                        "value": "pattern-topography_600",
+                        "label": "t:g.patterns.topography"
+                    },
+                    {
+                        "value": "pattern-jigsaw_192",
+                        "label": "t:g.patterns.jigsaw"
+                    },
+                    {
+                        "value": "pattern-tic-tac-toe_64",
+                        "label": "t:g.patterns.tic_tac_toe"
+                    },
+                    {
+                        "value": "pattern-bank-note_100",
+                        "label": "t:g.patterns.bank_note"
+                    },
+                    {
+                        "value": "pattern-formal-invitation_100",
+                        "label": "t:g.patterns.formal_invitation"
+                    },
+                    {
+                        "value": "pattern-wiggle_52",
+                        "label": "t:g.patterns.wiggle"
+                    },
+                    {
+                        "value": "pattern-charlie-brown_20",
+                        "label": "t:g.patterns.charlie_brown"
+                    }
+                ],
+                "label": "t:g.patterns.settings.label",
+                "default": "none",
+                "info": "t:g.patterns.settings.info"
+            },
+            {
+                "type": "range",
+                "id": "pattern_scale",
+                "min": 50,
+                "max": 200,
+                "step": 10,
+                "unit": "%",
+                "label": "t:g.patterns.settings.label_scale",
+                "default": 100
+            },
+            {
+                "type": "select",
+                "id": "pattern_animation",
+                "label": "t:g.patterns.settings.label_animation",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:g.patterns.settings.animation_options.no_animation"
+                    },
+                    {
+                        "value": "blink",
+                        "label": "t:g.patterns.settings.animation_options.blink"
+                    },
+                    {
+                        "value": "top",
+                        "label": "t:g.patterns.settings.animation_options.top"
+                    },
+                    {
+                        "value": "top-right",
+                        "label": "t:g.patterns.settings.animation_options.top_right"
+                    },
+                    {
+                        "value": "right",
+                        "label": "t:g.patterns.settings.animation_options.right"
+                    },
+                    {
+                        "value": "bottom-right",
+                        "label": "t:g.patterns.settings.animation_options.bottom_right"
+                    },
+                    {
+                        "value": "bottom",
+                        "label": "t:g.patterns.settings.animation_options.bottom"
+                    },
+                    {
+                        "value": "bottom-left",
+                        "label": "t:g.patterns.settings.animation_options.bottom_left"
+                    },
+                    {
+                        "value": "left",
+                        "label": "t:g.patterns.settings.animation_options.left"
+                    },
+                    {
+                        "value": "top-left",
+                        "label": "t:g.patterns.settings.animation_options.top_left"
+                    }
+                ],
+                "default": "none",
+                "info": "t:g.patterns.settings.animation_info"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "image",
+                "name": "Image",
+                "settings": [
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Image",
+                        "info": "t:g.media.resolution_recommendations.third_of_screen"
+                    },
+                    {
+                        "type": "range",
+                        "id": "image_width",
+                        "label": "t:g.hero.image.width",
+                        "min": 10,
+                        "max": 100,
+                        "step": 1,
+                        "unit": "%",
+                        "default": 30
+                    },
+                    {
+                        "type": "range",
+                        "id": "coord_x",
+                        "label": "Horizontal position",
+                        "min": 0,
+                        "max": 100,
+                        "step": 1,
+                        "unit": "%",
+                        "default": 50
+                    },
+                    {
+                        "type": "range",
+                        "id": "coord_y",
+                        "label": "Vertical position",
+                        "min": 0,
+                        "max": 100,
+                        "step": 1,
+                        "unit": "%",
+                        "default": 50
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Images collage with text",
+                "blocks": [
+                    {
+                        "type": "image",
+                        "settings": {
+                            "image_width": 30,
+                            "coord_x": 50,
+                            "coord_y": 50
+                        }
+                    },
+                    {
+                        "type": "image",
+                        "settings": {
+                            "image_width": 50,
+                            "coord_x": 25,
+                            "coord_y": 70
+                        }
+                    },
+                    {
+                        "type": "image",
+                        "settings": {
+                            "image_width": 45,
+                            "coord_x": 75,
+                            "coord_y": 25
+                        }
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "templates": ["password"],
+            "groups": ["header", "footer", "custom.overlay"]
+        }
+    }
+{% endschema %}

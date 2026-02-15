@@ -1,0 +1,411 @@
+{% render 'load-css', file: 'feature-card' %}
+
+
+{%- capture Content -%}
+    <div class="#grid @type:columns @outer-gap-mobile:y" style="--columns: {{ section.blocks.size }}; --gap: 4rem; --gap-mobile: 3rem;">
+        {% for block in section.blocks %}
+            <div {{ block.shopify_attributes }}>
+                {% render 'feature-card',
+                    heading: block.settings.heading,
+                    heading_scale: section.settings.heading_scale,
+                    text: block.settings.text,
+                    icon: block.settings.icon,
+                    media_size: section.settings.media_size,
+                    link: block.settings.link,
+                    text_align: section.settings.section_text_align,
+                    round_media: section.settings.enable_round_media,
+                    image: block.settings.image,
+                    crop_image: block.settings.crop_image
+                %}
+            </div>
+        {% endfor %}
+    </div>
+{%- endcapture -%}
+
+
+{% render 'section-body',
+    content: Content,
+    container: true,
+    color_scheme: section.settings.color_scheme,
+    bg_pattern: section.settings.pattern,
+    bg_pattern_scale: section.settings.pattern_scale,
+    bg_pattern_animation: section.settings.pattern_animation
+%}
+
+{% schema %}
+{
+    "name": "Trust icons",
+    "settings": [
+        {
+        "type": "color_scheme",
+        "id": "color_scheme",
+        "default": "accent",
+        "label": "Color Scheme"
+      },
+        {
+            "type": "select",
+            "id": "section_text_align",
+            "label": "Text alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "t:g.common.text_align.left"
+                },
+                {
+                    "value": "center",
+                    "label": "t:g.common.text_align.center"
+                }
+            ],
+            "default": "left"
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.label",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_round_media",
+            "label": "Round icon"
+        },
+        {
+            "type": "range",
+            "id": "media_size",
+            "label": "Icon size",
+            "min": 20,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 35
+        },
+        {
+            "type": "range",
+            "id": "heading_scale",
+            "label": "Heading scale",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "unit": "%",
+            "default": 55,
+            "info": "Based on 'Headings base font size' Typography theme setting."
+        }
+    ],
+    "blocks": [
+        {
+            "type": "feature",
+            "name": "Item",
+            "limit": 4,
+            "settings": [
+                {
+                    "type": "select",
+                    "id": "icon",
+                    "label": "t:g.common.icon.label",
+                    "options": [
+                        {
+                            "value": "none",
+                            "label": "t:g.icons.none"
+                        },
+                        {
+                            "value": "bell",
+                            "label": "t:g.icons.bell"
+                        },
+                        {
+                            "value": "check",
+                            "label": "t:g.icons.check"
+                        },
+                        {
+                            "value": "clock",
+                            "label": "t:g.icons.clock"
+                        },
+                        {
+                            "value": "coins",
+                            "label": "t:g.icons.coins"
+                        },
+                        {
+                            "value": "credit-card",
+                            "label": "t:g.icons.credit_card"
+                        },
+                        {
+                            "value": "truck-delivery",
+                            "label": "t:g.icons.truck_delivery"
+                        },
+                        {
+                            "value": "discount",
+                            "label": "t:g.icons.discount"
+                        },
+                        {
+                            "value": "flag",
+                            "label": "t:g.icons.flag"
+                        },
+                        {
+                            "value": "mood-happy",
+                            "label": "t:g.icons.mood_happy"
+                        },
+                        {
+                            "value": "headphones",
+                            "label": "t:g.icons.headphones"
+                        },
+                        {
+                            "value": "heart",
+                            "label": "t:g.icons.heart"
+                        },
+                        {
+                            "value": "help",
+                            "label": "t:g.icons.help"
+                        },
+                        {
+                            "value": "info",
+                            "label": "t:g.icons.info"
+                        },
+                        {
+                            "value": "leaf",
+                            "label": "t:g.icons.leaf"
+                        },
+                        {
+                            "value": "lock",
+                            "label": "t:g.icons.lock"
+                        },
+                        {
+                            "value": "mail",
+                            "label": "t:g.icons.mail"
+                        },
+                        {
+                            "value": "map-marker",
+                            "label": "t:g.icons.map_marker"
+                        },
+                        {
+                            "value": "message",
+                            "label": "t:g.icons.message"
+                        },
+                        {
+                            "value": "pig-money",
+                            "label": "t:g.icons.pig_money"
+                        },
+                        {
+                            "value": "package",
+                            "label": "t:g.icons.package"
+                        },
+                        {
+                            "value": "phone",
+                            "label": "t:g.icons.phone"
+                        },
+                        {
+                            "value": "receipt",
+                            "label": "t:g.icons.receipt"
+                        },
+                        {
+                            "value": "recycle",
+                            "label": "t:g.icons.recycle"
+                        },
+                        {
+                            "value": "rocket",
+                            "label": "t:g.icons.rocket"
+                        },
+                        {
+                            "value": "shield-check",
+                            "label": "t:g.icons.shield_check"
+                        },
+                        {
+                            "value": "mood-smile",
+                            "label": "t:g.icons.mood_smile"
+                        },
+                        {
+                            "value": "star",
+                            "label": "t:g.icons.star"
+                        },
+                        {
+                            "value": "building-store",
+                            "label": "t:g.icons.building_store"
+                        },
+                        {
+                            "value": "tag",
+                            "label": "t:g.icons.tag"
+                        },
+                        {
+                            "value": "thumbs-up",
+                            "label": "t:g.icons.thumbs_up"
+                        },
+                        {
+                            "value": "users",
+                            "label": "t:g.icons.users"
+                        }
+                    ],
+                    "default": "star"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Custom image",
+                    "info": "100x100px transparent .png is recommended"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "crop_image",
+                    "label": "Crop image to fit container",
+                    "info": "Will not affect square image",
+                    "default": true
+                },
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "Feature"
+                },
+                {
+                    "type": "textarea",
+                    "id": "text",
+                    "label": "t:g.common.label.text",
+                    "default": "Feature text"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "t:g.common.label.link"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Trust icons",
+            "blocks": [
+                {
+                    "type": "feature"
+                },
+                {
+                    "type": "feature"
+                },
+                {
+                    "type": "feature"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

@@ -1,0 +1,209 @@
+{%- liquid
+    assign NS = 'moving-content'
+    assign cn = '#' | append: NS
+-%}
+
+{% render 'load-css', file: 'testimonial-card', lazy: true %}
+{% capture card_width %}
+    calc(100vw/{{ section.settings.view_max_items }})
+{% endcapture %}
+
+{%- if section.blocks.size > 0 -%}
+    {%- capture Content -%}
+        {%- for block in section.blocks -%}
+            {%- capture Items -%}
+                {{ Items }}
+                    <div class="{{ cn }}-item" style="--height: 100%; --width: {{ card_width }};" {{ block.shopify_attributes }}>
+                        {% render 'testimonial-card',
+                            author_image: block.settings.author_image,
+                            author_name: block.settings.author_name,
+                            heading: block.settings.heading,
+                            text: block.settings.text,
+                            product: block.settings.product,
+                            show_stars: section.settings.show_stars,
+                            stars_count: block.settings.star_count
+                        %}
+                    </div>
+            {%- endcapture -%}
+        {%- endfor -%}
+        {% render 'moving-content',
+            content: Items,
+            stop_on_hover: section.settings.stop_on_hover,
+            direction: section.settings.moving_direction,
+            speed_mult: section.settings.speed_mult,
+            testimonials: true
+        %}
+    {%- endcapture -%}
+
+    {% render 'section-body',
+        content: Content,
+        heading: section.settings.heading,
+        subheading: section.settings.subheading,
+        button_label: section.settings.section_button_label,
+        button_link: section.settings.section_button_link,
+        spaced: true
+    %}
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Testimonials marquee",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Testimonials"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "range",
+            "id": "view_max_items",
+            "label": "Max items in view on desktop",
+            "min": 3,
+            "max": 5,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "checkbox",
+            "id": "show_stars",
+            "label": "Show stars",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "stop_on_hover",
+            "label": "Stop on mouse over",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "moving_direction",
+            "label": "Moving direction",
+            "options": [
+                {
+                    "value": "normal",
+                    "label": "Right to left"
+                },
+                {
+                    "value": "reverse",
+                    "label": "Left to right"
+                }
+            ],
+            "default": "normal"
+        },
+        {
+            "type": "select",
+            "id": "speed_mult",
+            "label": "Moving speed",
+            "options": [
+                {
+                    "value": "2",
+                    "label": "Slow"
+                },
+                {
+                    "value": "1",
+                    "label": "Normal"
+                },
+                {
+                    "value": "0.5",
+                    "label": "Fast"
+                }
+            ],
+            "default": "1"
+        },
+        {
+            "type": "header",
+            "content": "t:g.section.button.header"
+        },
+        {
+            "type": "text",
+            "id": "section_button_label",
+            "label": "t:g.section.button.label"
+        },
+        {
+            "type": "url",
+            "id": "section_button_link",
+            "label": "t:g.section.button.link"
+        }
+    ],
+    "blocks": [
+        {
+            "type":"testimonial",
+            "name":"Testimonial",
+            "limit": 12,
+            "settings":[
+            {
+                "type":"image_picker",
+                "id":"author_image",
+                "label":"Author image",
+                "info": "t:g.media.resolution_recommendations.testimonials"
+            },
+            {
+                "type":"text",
+                "id":"author_name",
+                "label":"Author name",
+                "default":"Author"
+            },
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Heading"
+            },
+            {
+                "type":"textarea",
+                "id":"text",
+                "label":"Text",
+                "default":"Review or testimonial text"
+            },
+            {
+                "type": "select",
+                "id": "star_count",
+                "label": "Star count",
+                "options": [
+                    {
+                        "value": "4",
+                        "label": "4"
+                    },
+                    {
+                        "value": "4.5",
+                        "label": "4.5"
+                    },
+                    {
+                        "value": "5",
+                        "label": "5"
+                    }
+                ],
+                "default": "5"
+            },
+            {
+                "type": "product",
+                "id": "product",
+                "label": "Product (optional)"
+            }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Testimonials marquee",
+            "blocks": [
+                {
+                    "type": "testimonial"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

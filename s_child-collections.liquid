@@ -1,0 +1,151 @@
+{%- liquid
+    assign child_collections = collection.metafields.theme.subcollections.value
+
+    assign product_columns = section.settings.columns
+    assign product_columns_mobile = 2
+    assign product_limit = section.settings.columns
+    if section.settings.show_banner
+        assign product_limit = product_limit | minus: 1
+    endif
+-%}
+
+{%- capture product_image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px)/{{ product_columns }}{%- endcapture -%}
+{%- capture product_image_srcsize_mobile -%}90vw/{{ product_columns_mobile }}{%- endcapture -%}
+
+{% render 'load-css', file: 'gallery-card' %}
+
+{% if child_collections.count > 0 %}
+    {% for child_collection in child_collections %}
+        {%- if child_collection.all_products_count > 0 -%}
+            {% capture Child_collection %}
+                {%- liquid 
+                     assign child_collection_products = child_collection.products 
+                     if section.settings.show_only_products_in_stock  
+                         assign child_collection_products = child_collection_products | where: 'available'
+                     endif
+
+                     if section.settings.show_headings == true
+                         assign heading = child_collection.title  
+                     endif
+
+                     if section.settings.show_buttons == true 
+                         assign button_label = 'sections.collection_list.view_all' | t
+                         assign button_link = child_collection.url
+                     endif
+                -%}
+
+                {% if section.settings.show_banner %}
+                    {% capture Child_collection_banner %}
+                        {%- assign button_label = 'sections.child_collections.shop_all' | t -%}
+                        <div class="#grid-column @mobile-full">
+                            {% render 'gallery-card',
+                                stretched_card: true,
+                                image: child_collection.featured_image,
+                                heading: child_collection.title,
+                                heading_scale: settings.type_section_heading_scale,
+                                button_label: button_label,
+                                button_tier: 'link',
+                                link: child_collection.url,
+                                caption_x: 'center',
+                                caption_y: 'center',
+                                image_size: settings.product_card_image_size,
+                                image_srcsize_desktop: product_image_srcsize_desktop,
+                                image_srcsize_mobile: product_image_srcsize_mobile
+                            %}
+                        </div>
+                    {% endcapture %}
+                {% endif %}
+                
+                <div class="#grid @type:columns {% if settings.design_center_layout %}@center{%- endif -%}" style="--columns: {{ product_columns }}; --columns-mobile: {{ product_columns_mobile }};">
+                    {%- if section.settings.banner_position == 'start' -%}
+                        {{ Child_collection_banner }}
+                    {%- endif -%}
+                    {% for product in child_collection_products limit: product_limit %}
+                        {% render 'product-card',
+                            product: product,
+                            image_srcsize_desktop: product_image_srcsize_desktop,
+                            image_srcsize_mobile: product_image_srcsize_mobile
+                        %}
+                    {% endfor %}
+                    {%- if section.settings.banner_position == 'end' -%}
+                        {{ Child_collection_banner }}
+                    {%- endif -%}
+                </div>  
+            {% endcapture %}
+
+            {% render 'section-body',
+                content: Child_collection,
+                spaced: true,
+                container: true,
+                heading: heading,
+                button_label: button_label,
+                button_link: button_link
+            %}
+        {%- endif -%}
+    {% endfor %}
+{% endif %}
+
+{% schema %}
+    {
+        "name": "Child collections",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "t:g.section.child_collections_info"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_headings",
+                "label": "Show collection titles as headings",
+                "default": true
+            },
+            {
+                "type": "range",
+                "id": "columns",
+                "label": "Desktop columns",
+                "min": 2,
+                "step": 1,
+                "max": 6,
+                "default": 4
+            },
+            {
+                "type": "checkbox",
+                "id": "show_only_products_in_stock",
+                "label": "Show only products in stock",
+                "default": false
+            },
+            {
+                "type": "checkbox",
+                "id": "show_buttons",
+                "label": "Show section buttons",
+                "default": false
+            },
+            {
+                "type": "header",
+                "content": "Collection banner"
+            },
+            {
+              "type": "checkbox",
+              "id": "show_banner",
+              "label": "Show collection banner",
+              "default": true
+            },
+            {
+                "type": "select",
+                "id": "banner_position",
+                "label": "Banner position",
+                "options": [
+                    {
+                        "value": "start",
+                        "label": "Start"
+                    },
+                    {
+                        "value": "end",
+                        "label": "End"
+                    }
+                ],
+                "default": "end"
+            }
+        ]
+    }
+{% endschema %}

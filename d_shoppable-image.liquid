@@ -1,0 +1,332 @@
+{%- liquid
+    assign section_layout = section.settings.section_layout
+
+    assign spot_color_diff = section.settings.spots_color | brightness_difference: '#ffffff'
+    if spot_color_diff > 125
+        assign spot_icon_color = '#ffffff'
+    else
+        assign spot_icon_color = '#2d2d2d'
+    endif
+-%}
+
+{%- if section_layout == 'full' -%}
+    {%- capture image_srcsize_desktop -%}100vw{%- endcapture -%}
+    {%- capture image_srcsize_mobile -%}100vw{%- endcapture -%}
+{%- endif -%}
+
+{%- if section_layout == 'container' -%}
+    {%- capture image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px){%- endcapture -%}
+    {%- capture image_srcsize_mobile -%}90vw{%- endcapture -%}
+    {%- assign curved = true -%}
+    {% assign spaced = true %}
+{%- endif -%}
+
+{% if section.settings.pattern != blank and section.settings.pattern != 'none' %}
+    {% capture Bg_pattern %}
+        {% render 'bg-pattern', 
+            pattern: section.settings.pattern, 
+            pattern_scale: section.settings.pattern_scale,
+            pattern_opacity: section.settings.pattern_opacity,
+            animation: section.settings.pattern_animation
+        %}
+    {% endcapture %}
+{% endif %}
+
+{% capture Content %}
+    {%- render 'hot-spots',
+            blocks: section.blocks,
+            image: section.settings.image,
+            image_srcsize_desktop: image_srcsize_desktop,
+            image_srcsize_mobile: image_srcsize_mobile,
+            spots_color: section.settings.spots_color,
+            spot_icon_color: spot_icon_color,
+            spots_icon_type: section.settings.spots_icon_type,
+            show_product_rating: section.settings.show_product_rating,
+            show_product_custom_badges: section.settings.show_product_custom_badges,
+            bg_pattern: Bg_pattern
+    -%}
+{% endcapture %}
+
+{% render 'section-body',
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    content: Content,
+    spaced: spaced,
+    container: section.settings.section_layout,
+    curved: curved
+%}
+
+{% schema %}
+    {
+        "name": "Shoppable image",
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight",
+                "default": "Shoppable image"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            },
+            {
+                "type": "select",
+                "id": "section_layout",
+                "label": "t:g.section.layout.label",
+                "options": [
+                    {
+                        "value": "container",
+                        "label": "Container"
+                    },
+                    {
+                        "value": "full",
+                        "label": "Full width"
+                    }
+                ],
+                "default": "full"
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "Image",
+                "info": "t:g.media.resolution_recommendations.full_screen"
+            },
+            {
+                "type": "color",
+                "id": "spots_color",
+                "label": "Dots color",
+                "default": "#ffffff"
+            },
+            {
+                "type": "select",
+                "id": "spots_icon_type",
+                "label": "Dots icon type",
+                "options": [
+                    {
+                        "value": "plus",
+                        "label": "Plus"
+                    },
+                    {
+                        "value": "bag-shopping",
+                        "label": "Shopping bag"
+                    },
+                    {
+                        "value": "cart-shopping",
+                        "label": "Shopping cart"
+                    }
+                ],
+                "default": "bag-shopping"
+            },
+            {
+                "type": "checkbox",
+                "id": "show_product_rating",
+                "label": "Show product rating",
+                "default": true
+            },
+            {
+                "type": "checkbox",
+                "id": "show_product_custom_badges",
+                "label": "Show product custom badges",
+                "info": "t:g.info.custom_badges",
+                "default": true
+            },
+            {
+                "type": "header",
+                "content": "t:g.patterns.settings.label"
+            },
+            {
+                "type": "select",
+                "id": "pattern",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:g.patterns.none"
+                    },
+                    {
+                        "value": "pattern-bubbles_100",
+                        "label": "t:g.patterns.bubbles"
+                    },
+                    {
+                        "value": "pattern-endless-clouds_56",
+                        "label": "t:g.patterns.endless_clouds"
+                    },
+                    {
+                        "value": "pattern-hideout_40",
+                        "label": "t:g.patterns.hideout"
+                    },
+                    {
+                        "value": "pattern-diagonal-lines_6",
+                        "label": "t:g.patterns.diagonal_lines"
+                    },
+                    {
+                        "value": "pattern-polka-dots_20",
+                        "label": "t:g.patterns.polka_dots"
+                    },
+                    {
+                        "value": "pattern-graph-paper_100",
+                        "label": "t:g.patterns.graph_paper"
+                    },
+                    {
+                        "value": "pattern-leaf_80",
+                        "label": "t:g.patterns.leaf"
+                    },
+                    {
+                        "value": "pattern-topography_600",
+                        "label": "t:g.patterns.topography"
+                    },
+                    {
+                        "value": "pattern-jigsaw_192",
+                        "label": "t:g.patterns.jigsaw"
+                    },
+                    {
+                        "value": "pattern-tic-tac-toe_64",
+                        "label": "t:g.patterns.tic_tac_toe"
+                    },
+                    {
+                        "value": "pattern-bank-note_100",
+                        "label": "t:g.patterns.bank_note"
+                    },
+                    {
+                        "value": "pattern-formal-invitation_100",
+                        "label": "t:g.patterns.formal_invitation"
+                    },
+                    {
+                        "value": "pattern-wiggle_52",
+                        "label": "t:g.patterns.wiggle"
+                    },
+                    {
+                        "value": "pattern-charlie-brown_20",
+                        "label": "t:g.patterns.charlie_brown"
+                    }
+                ],
+                "label": "t:g.patterns.settings.pattern_image",
+                "default": "none",
+                "info": "t:g.patterns.settings.info"
+            },
+            {
+                "type": "range",
+                "id": "pattern_scale",
+                "min": 50,
+                "max": 200,
+                "step": 10,
+                "unit": "%",
+                "label": "t:g.patterns.settings.label_scale",
+                "default": 100
+            },
+            {
+                "type": "range",
+                "id": "pattern_opacity",
+                "min": 5,
+                "max": 100,
+                "step": 1,
+                "unit": "%",
+                "label": "Pattern opacity",
+                "default": 65
+            },
+            {
+                "type": "select",
+                "id": "pattern_animation",
+                "label": "t:g.patterns.settings.label_animation",
+                "options": [
+                    {
+                        "value": "none",
+                        "label": "t:g.patterns.settings.animation_options.no_animation"
+                    },
+                    {
+                        "value": "blink",
+                        "label": "t:g.patterns.settings.animation_options.blink"
+                    },
+                    {
+                        "value": "top",
+                        "label": "t:g.patterns.settings.animation_options.top"
+                    },
+                    {
+                        "value": "top-right",
+                        "label": "t:g.patterns.settings.animation_options.top_right"
+                    },
+                    {
+                        "value": "right",
+                        "label": "t:g.patterns.settings.animation_options.right"
+                    },
+                    {
+                        "value": "bottom-right",
+                        "label": "t:g.patterns.settings.animation_options.bottom_right"
+                    },
+                    {
+                        "value": "bottom",
+                        "label": "t:g.patterns.settings.animation_options.bottom"
+                    },
+                    {
+                        "value": "bottom-left",
+                        "label": "t:g.patterns.settings.animation_options.bottom_left"
+                    },
+                    {
+                        "value": "left",
+                        "label": "t:g.patterns.settings.animation_options.left"
+                    },
+                    {
+                        "value": "top-left",
+                        "label": "t:g.patterns.settings.animation_options.top_left"
+                    }
+                ],
+                "default": "none",
+                "info": "t:g.patterns.settings.animation_info"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "spot_product",
+                "name": "Product",
+                "settings": [
+                    {
+                        "type": "product",
+                        "id": "product",
+                        "label": "Product"
+                    },
+                    {
+                        "type": "header",
+                        "content": "Dot position"
+                    },
+                    {
+                        "type": "range",
+                        "id": "coord_x",
+                        "label": "Horizontal position",
+                        "min": 0,
+                        "max": 100,
+                        "step": 1,
+                        "unit": "%",
+                        "default": 50
+                    },
+                    {
+                        "type": "range",
+                        "id": "coord_y",
+                        "label": "Vertical position",
+                        "min": 0,
+                        "max": 100,
+                        "step": 1,
+                        "unit": "%",
+                        "default": 50
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Shoppable image",
+                "blocks": [
+                    {
+                        "type": "spot_product"
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "templates": ["password"],
+            "groups": ["header", "footer", "custom.overlay"]
+        }
+    }
+{% endschema %}

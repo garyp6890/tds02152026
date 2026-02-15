@@ -1,0 +1,34 @@
+{%- render 'load-css', file: 'customer-address' -%}
+
+
+{%- render 'page-header',
+    t_heading: 'customer.addresses.title',
+    container: 'narrow'
+-%}
+
+{%- capture Content -%}
+    {%- render 'customer-nav',
+        active: 'addresses'
+    -%}
+    <div class="#grid @type:columns" style="--columns:4; --gap: 1.5rem;"> {% # TODO: refactor to flex? %}
+        {%- render 'customer-address', is_new: true -%}
+        {%- for address in customer.addresses -%}
+            {%- render 'customer-address', address: address -%}
+        {%- endfor -%}
+    </div>
+{%- endcapture -%}
+
+
+{% render 'section-body',
+    content: Content,
+    spaced: true,
+    container: 'narrow'
+%}
+
+<script type="module" src="{{ 'customer-address.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Addresses"
+}
+{% endschema %}

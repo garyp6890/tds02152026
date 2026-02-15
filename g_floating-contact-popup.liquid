@@ -1,0 +1,304 @@
+{% liquid
+    assign NS = 'floating-contact-popup'
+    assign cn = '#' | append: NS
+    assign popup_id = NS | append: section.id
+
+    assign overlay = 0
+    if section.settings.image_position == 'bg'
+      assign overlay = section.settings.image_overlay
+    endif
+
+    if section.settings.image_position == 'bg' or section.settings.image_position == 'top'
+      assign image_res = 800
+    else
+      assign image_res = 560
+    endif
+
+    assign email_input_id = NS | append: section.id | append: '-email'
+    assign question_input_id = NS | append: section.id | append: '-question'
+%}
+{% render 'load-css', file: NS %}
+
+{% capture Form %}
+    {%- form 'contact' -%}
+        {%- if form.posted_successfully? -%}
+            <noscript>
+                {% render 'alert', type: 'success', t_heading: 'templates.contact.form.post_success' %}
+            </noscript>
+        {%- elsif form.errors -%}
+            {%- capture Error_text -%}
+                <ul role="list">
+                    <li>
+                        <p>{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}</p>
+                    </li>
+                </ul>
+            {%- endcapture -%}
+            {% render 'alert',
+                type: 'danger',
+                t_heading: 'templates.contact.form.error_heading',
+                text: Error_text
+            %}
+        {%- endif -%}
+        {%- capture Email_input_atts -%}
+            type="email"
+            name="contact[email]"
+            value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}"
+            autocomplete="email"
+            placeholder="{{ 'newsletter.long_label' | t }}"
+        {%- endcapture -%}
+        {%- render 'form-field',
+            id: email_input_id,
+            as: 'input',
+            input_atts: Email_input_atts,
+            t_label: 'newsletter.label'
+        -%}
+        {%- capture Message_input_atts -%}
+            name="contact[Message]"
+            placeholder="{{ 'products.product.question.placeholder' | t }}"
+            rows="3"
+        {%- endcapture -%}
+        {%- render 'form-field',
+            id: question_input_id,
+            as: 'textarea',
+            input_atts: Message_input_atts,
+            t_label: 'products.product.question.label'
+        -%}
+        {%- render 'button',
+            t_text: 'customer.login_page.submit',
+            block: true,
+            no_arrow: true
+        -%}
+    {%- endform -%}
+{% endcapture %}
+
+{% capture Form_content %}
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+        <div class="{{ cn }}-form-header">
+            {% render 'hero',
+                heading: section.settings.heading
+                subheading: section.settings.subheading
+                align: 'center'
+            %}
+        </div>
+    {% endif %}    
+    {{ Form }}
+    {% if section.settings.mail_address != blank or section.settings.phone_number != blank %}
+        <div class="{{ cn }}-form-footer">
+            {%- if section.settings.mail_address != blank -%}
+                <div class="{{ cn }}-form-footer-item">
+                    <div class="{{ cn }}-contact">
+                        <a class="{{ cn }}-contact-link" href="mailto:{{ section.settings.mail_address }}">
+                            <div class="{{ cn }}-contact-icon">
+                                {% render 'icon', 
+                                    name: 'mail',
+                                    load: true
+                                %}
+                            </div>
+                            {{  section.settings.mail_address }} 
+                        </a>
+                    </div>
+                </div>
+            {%- endif -%}
+            {%- if section.settings.phone_number != blank -%}
+                <div class="{{ cn }}-form-footer-item">
+                    <div class="{{ cn }}-contact">
+                        <a class="{{ cn }}-contact-link" href="tel:{{ section.settings.phone_number }}">
+                            <div class="{{ cn }}-contact-icon">
+                                {% render 'icon', 
+                                    name: 'phone',
+                                    load: true
+                                %}
+                            </div>
+                            {{ section.settings.phone_number }}
+                        </a>
+                    </div>
+                </div>
+            {%- endif -%}
+        </div>
+    {% endif %}
+{% endcapture %}
+
+{% capture Popup_content %}
+    <div class="{{ cn }}-modal {% if section.settings.image != blank %}@with-image @image-position:{{ section.settings.image_position }}{% endif %}"">
+        <modal-close class="{{ cn }}-modal-close" section-id="{{ section.id }}">
+            {% render 'icon', name: 'x' %}
+        </modal-close>
+        {%- if section.settings.image != blank -%}
+            <div class="{{ cn }}-image mobile-hidden">
+                {% render 'media',
+                    image: section.settings.image,
+                    overlay: overlay,
+                    image_res: image_res
+                %}
+            </div>
+        {%- endif -%}
+        <div class="{{ cn }}-form">
+            {{ Form_content }}
+        </div>
+    </div>
+{% endcapture %}
+
+<{{ NS }} class="{{ cn }} color-scheme-{{ section.settings.color_scheme }}" {% if settings.scroll_to_top_button %} observe {% endif %} section-id="{{ section.id }}">
+    {% render 'modal',
+        content: Popup_content,
+        id: popup_id,
+        show_close: false,
+        animation: 'zoom',
+    %}
+    <modal-open target="{{ popup_id }}" section-id="{{ section.id }}">
+        <div data-element="trigger" class="{{ cn }}-trigger"></div>
+        <div data-element="button" class="{{ cn }}-button">
+            {% render 'icon', name: 'chat' %}
+        </div>
+    </modal-open>
+</{{ NS }}>
+
+{%- if settings.scroll_to_top_button -%}
+    <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{%- endif -%}
+
+
+{%- if request.design_mode -%}
+    <script type="text/json" data-{{section.id}}-blocks-size-settings>
+        {{ section.blocks.size | json }}
+    </script>
+    <script type="module">
+        const { Utils, DOMEvents } = Global;
+        const { debounce } = Utils;
+
+        class EditorContactPopup extends window.Editor {
+            events = {
+                section: {
+                    select: this._onContactPopupSelect,
+                    deselect: this._onContactPopupDeselect
+                },
+                block: {
+                    select: this._onContactPopupBlockSelect
+                }
+            }
+
+            _onContactPopupSelect() {
+                // if (!this.blocksCount) return;
+                this._open();
+            }
+            
+            _onContactPopupDeselect() {
+                this._close();
+            }
+            
+            _onContactPopupBlockSelect() {
+                if (this.opened) return;
+                this._open();
+            }
+
+            _open() {
+                const dialog = this.$modal.querySelector('dialog') 
+                dialog.inert = true;
+                this.$modal.dispatchEvent(DOMEvents.MODAL_OPEN);
+                dialog.inert = false;
+                this.opened = true;
+            }
+            
+            _close() {
+                this.$modal.dispatchEvent(DOMEvents.MODAL_CLOSE);
+                this.opened = false;
+            }
+
+            get $modal () {
+                // return document.querySelector('floating-contact-popup').querySelector('modal-container');
+                return document.getElementById('{{ popup_id }}');
+            }
+        }
+        const contactPopupEditorUX = new EditorContactPopup('{{ section.id }}');
+        contactPopupEditorUX.blocksCountSelector = '[data-{{section.id}}-blocks-size-settings]';
+        contactPopupEditorUX.render();
+    </script>
+{%- endif -%}
+
+{% schema %}
+    {
+        "name": "Contact form popup",
+        "settings": [
+            {
+                "type": "color_scheme",
+                "id": "color_scheme",
+                "default": "main",
+                "label": "Color scheme"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.hero.heading.label",
+                "default": "Need help?",
+                "info": "t:g.info.heading_highlight"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "t:g.hero.subheading.label"
+            },
+            {
+                "type": "text",
+                "id": "mail_address",
+                "label": "Email address",
+                "info": "Optional"
+            },
+            {
+                "type": "text",
+                "id": "phone_number",
+                "label": "Phone number",
+                "info": "Optional"
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "Desktop image (Optional)",
+                "info": "t:g.media.resolution_recommendations.half_of_screen"
+            },
+            {
+                "type": "select",
+                "id": "image_position",
+                "label": "t:g.media.image_position",
+                "options": [
+                    {
+                        "value": "top",
+                        "label": "Top"
+                    },
+                    {
+                        "value": "left",
+                        "label": "Left"
+                    },
+                    {
+                        "value": "right",
+                        "label": "Right"
+                    },
+                    {
+                        "value": "bg",
+                        "label": "Background"
+                    }
+                ],
+                "default": "left"
+            },
+            {
+                "type": "range",
+                "id": "image_overlay",
+                "label": "Background overlay opacity",
+                "min": 0,
+                "step": 5,
+                "max": 90,
+                "unit": "%",
+                "default": 50,
+                "info": "Only for 'Background' image position"
+            }
+        ],
+        "limit": 1,
+        "presets": [
+            {
+                "name": "Contact form popup"
+            }
+        ],
+        "enabled_on": {
+            "groups": ["custom.overlay"]
+        }
+    }
+    {% endschema %}

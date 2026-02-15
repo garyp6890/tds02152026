@@ -1,0 +1,152 @@
+{%- liquid
+  assign NS = 'customer-form'
+  assign cn = '#' | append: NS  
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}">
+  <h1 class="{{ cn }}-heading heading-font" id="recover" tabindex="-1">
+    {{ 'customer.recover_password.title' | t }}
+  </h1>
+  <div>
+    <p class="fs-h4">
+      {{ 'customer.recover_password.subtext' | t }}
+    </p>
+    {%- form 'recover_customer_password' -%}
+    {%- assign recover_success = form.posted_successfully? -%}
+    {%- if form.errors -%}
+      <div class="{{ cn }}-alert">
+       {% render 'alert',
+        type: 'danger',
+        text: form.errors.messages['form']
+       %}
+      </div>
+     {%- endif -%}
+      <div class="{{ cn }}-field">
+        <input
+          class="{{ cn }}-input" 
+          type="email"
+          value=""
+          name="email"
+          id="RecoverEmail"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="email"
+          {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="RecoverEmail-email-error"
+            autofocus
+          {% endif %}
+          placeholder="{{ 'customer.login_page.email' | t }}"
+        >
+      </div>
+      <div class="{{ cn }}-footer">
+        {% render 'button',
+          t_text: 'customer.login_page.submit',
+          shadow: true,
+          block: true,
+          size: 'h4'
+        %}
+        <a class="{{ cn }}-switch-form" href="#login">
+          {{ 'customer.login_page.cancel' | t }}
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+
+  
+  <h1 class="{{ cn }}-heading heading-font" id="login" tabindex="-1">{{ 'customer.login_page.title' | t }}</h1>
+  <div>
+    {%- if recover_success == true -%}
+      <div class="{{ cn }}-alert">
+        {% render 'alert',
+          type: 'success',
+          t_heading: 'customer.recover_password.success'
+        %}
+      </div>
+    {%- endif -%}
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        {%- capture Error_heading -%}
+          <span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+          {{ 'templates.contact.form.error_heading' | t }}
+        {%- endcapture -%}
+        {%- capture Error_text -%}
+          {{ form.errors | default_errors }}
+        {%- endcapture -%}
+        <div class="{{ cn }}-alert">
+          {% render 'alert',
+            type: 'danger',
+            heading: Error_heading,
+            text: form.errors.messages['form']
+          %}
+        </div>
+      {%- endif -%}
+      <div class="{{ cn }}-field">
+        <input
+          class="{{ cn }}-input"
+          type="email"
+          name="customer[email]"
+          id="CustomerEmail"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          {% if form.errors contains 'form' %}
+            aria-invalid="true"
+          {% endif %}
+          placeholder="{{ 'customer.login_page.email' | t }}"
+        >
+      </div>
+      <div class="{{ cn }}-field">
+        <input
+          class="{{ cn }}-input"
+          type="password"
+          value=""
+          name="customer[password]"
+          id="CustomerPassword"
+          autocomplete="current-password"
+          {% if form.errors contains 'form' %}
+            aria-invalid="true"
+          {% endif %}
+          placeholder="{{ 'customer.login_page.password' | t }}"
+        >
+        <a class="{{ cn }}-field-link" href="#recover">
+          {{ 'customer.login_page.forgot_password' | t }}
+        </a>
+      </div>
+    
+      <div class="{{ cn }}-footer">
+        {% render 'button',
+          t_text: 'customer.login_page.sign_in',
+          shadow: true,
+          block: true,
+          size: 'h4'
+        %}
+        <a class="{{ cn }}-switch-form" href="{{ routes.account_register_url }}">
+          {{ 'customer.login_page.create_account' | t }}
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+
+
+  {%- if shop.checkout.guest_login -%}
+    <div class="{{ cn }}-guest-checkout">
+      {%- form 'guest_login' -%}
+        {% render 'button',
+          t_text: 'customer.login_page.guest_title',
+          shadow: true,
+          block: true,
+          size: 'h4'
+        %}
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Login"
+}
+{% endschema %}

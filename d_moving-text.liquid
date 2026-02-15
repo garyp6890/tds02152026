@@ -1,0 +1,417 @@
+{%- liquid
+    assign NS = 'moving-content'
+    assign cn = '#' | append: NS
+-%}
+
+{%- if section.blocks.size > 0 -%}
+    {%- capture Content -%}
+        {%- for block in section.blocks -%}
+            {%- capture Items -%}
+                {{ Items }}
+                {%- if block.settings.text != blank or block.settings.icon != 'none' -%}
+                    <div class="{{ cn }}-item" {{ block.shopify_attributes }}>
+                        {% capture Item_content %}
+                            <span class="{{ cn }}-item-content">
+                                {% if block.settings.icon != 'none' %}
+                                    <div class="{{ cn }}-item-icon">
+                                        {% render 'icon', name: block.settings.icon, load: true %}
+                                    </div>   
+                                {% endif %}
+                                {{ block.settings.text }}
+                            </span>
+                        {% endcapture %}
+                        {% if block.settings.link != blank %}
+                            <a href="{{ block.settings.link }}" class="unstyled-link">
+                                {{ Item_content }}   
+                            </a>    
+                        {% else %}
+                            {{ Item_content }}
+                        {% endif %}
+                    </div>
+                {%- endif -%}
+            {%- endcapture -%}
+        {%- endfor -%}
+        {% render 'moving-content',
+            content: Items,
+            stop_on_hover: section.settings.stop_on_hover,
+            text_scale: section.settings.text_scale,
+            direction: section.settings.moving_direction,
+            speed_mult: section.settings.speed_mult
+        %}
+    {%- endcapture -%}
+
+    {% render 'section-body',
+        content: Content,
+        color_scheme: section.settings.color_scheme,
+        bg_pattern: section.settings.pattern,
+        bg_pattern_scale: section.settings.pattern_scale,
+        bg_pattern_animation: section.settings.pattern_animation
+    %}
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Text marquee",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "accent",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "range",
+            "id": "text_scale",
+            "label": "Text scale",
+            "min": 80,
+            "max": 250,
+            "step": 5,
+            "unit": "%",
+            "default": 120,
+            "info": "Based on 'Headings base font size' theme setting"
+        },
+        {
+            "type": "checkbox",
+            "id": "stop_on_hover",
+            "label": "Stop on mouse over",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "moving_direction",
+            "label": "Moving direction",
+            "options": [
+                {
+                    "value": "normal",
+                    "label": "Right to left"
+                },
+                {
+                    "value": "reverse",
+                    "label": "Left to right"
+                }
+            ],
+            "default": "normal"
+        },
+        {
+            "type": "select",
+            "id": "speed_mult",
+            "label": "Moving speed",
+            "options": [
+                {
+                    "value": "2",
+                    "label": "Slow"
+                },
+                {
+                    "value": "1",
+                    "label": "Normal"
+                },
+                {
+                    "value": "0.5",
+                    "label": "Fast"
+                }
+            ],
+            "default": "1"
+        },
+        {
+            "type": "header",
+            "content": "Patterns"
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.label",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        }
+    ],
+    "blocks": [
+        {
+            "name": "Text",
+            "type": "text",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "text",
+                    "label": "Text",
+                    "default": "Moving text example"
+                },
+                {
+                    "type": "select",
+                    "id": "icon",
+                    "label": "t:g.common.icon.label",
+                    "options": [
+                        {
+                            "value": "none",
+                            "label": "t:g.icons.none"
+                        },
+                        {
+                            "value": "bell",
+                            "label": "t:g.icons.bell"
+                        },
+                        {
+                            "value": "check",
+                            "label": "t:g.icons.check"
+                        },
+                        {
+                            "value": "clock",
+                            "label": "t:g.icons.clock"
+                        },
+                        {
+                            "value": "coins",
+                            "label": "t:g.icons.coins"
+                        },
+                        {
+                            "value": "credit-card",
+                            "label": "t:g.icons.credit_card"
+                        },
+                        {
+                            "value": "truck-delivery",
+                            "label": "t:g.icons.truck_delivery"
+                        },
+                        {
+                            "value": "discount",
+                            "label": "t:g.icons.discount"
+                        },
+                        {
+                            "value": "flag",
+                            "label": "t:g.icons.flag"
+                        },
+                        {
+                            "value": "mood-happy",
+                            "label": "t:g.icons.mood_happy"
+                        },
+                        {
+                            "value": "headphones",
+                            "label": "t:g.icons.headphones"
+                        },
+                        {
+                            "value": "heart",
+                            "label": "t:g.icons.heart"
+                        },
+                        {
+                            "value": "help",
+                            "label": "t:g.icons.help"
+                        },
+                        {
+                            "value": "info",
+                            "label": "t:g.icons.info"
+                        },
+                        {
+                            "value": "leaf",
+                            "label": "t:g.icons.leaf"
+                        },
+                        {
+                            "value": "lock",
+                            "label": "t:g.icons.lock"
+                        },
+                        {
+                            "value": "mail",
+                            "label": "t:g.icons.mail"
+                        },
+                        {
+                            "value": "map-marker",
+                            "label": "t:g.icons.map_marker"
+                        },
+                        {
+                            "value": "message",
+                            "label": "t:g.icons.message"
+                        },
+                        {
+                            "value": "pig-money",
+                            "label": "t:g.icons.pig_money"
+                        },
+                        {
+                            "value": "package",
+                            "label": "t:g.icons.package"
+                        },
+                        {
+                            "value": "phone",
+                            "label": "t:g.icons.phone"
+                        },
+                        {
+                            "value": "receipt",
+                            "label": "t:g.icons.receipt"
+                        },
+                        {
+                            "value": "recycle",
+                            "label": "t:g.icons.recycle"
+                        },
+                        {
+                            "value": "rocket",
+                            "label": "t:g.icons.rocket"
+                        },
+                        {
+                            "value": "shield-check",
+                            "label": "t:g.icons.shield_check"
+                        },
+                        {
+                            "value": "mood-smile",
+                            "label": "t:g.icons.mood_smile"
+                        },
+                        {
+                            "value": "star",
+                            "label": "t:g.icons.star"
+                        },
+                        {
+                            "value": "building-store",
+                            "label": "t:g.icons.building_store"
+                        },
+                        {
+                            "value": "tag",
+                            "label": "t:g.icons.tag"
+                        },
+                        {
+                            "value": "thumbs-up",
+                            "label": "t:g.icons.thumbs_up"
+                        },
+                        {
+                            "value": "users",
+                            "label": "t:g.icons.users"
+                        }
+                    ],
+                    "default": "none"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "t:g.common.label.link"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Text marquee",
+            "blocks": [
+                {
+                    "type": "text"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

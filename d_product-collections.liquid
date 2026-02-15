@@ -1,0 +1,65 @@
+{% if product.collections.size > 0 %}
+    {% render 'load-css', file: 'collection-card-min' %}
+    {% capture Slides %}
+        {% for collection in product.collections %}
+            {% render 'collection-card-min',
+                collection: collection
+            %}
+        {% endfor %}
+    {% endcapture %}
+    {% capture Content %}
+        <div class="#grid @type:columns {% if settings.design_center_layout %}@center{% endif %}" style="--columns: {{ section.settings.columns }}; --columns-mobile: 1;">
+            {% for collection in product.collections limit: 5 %}
+                {% render 'collection-card-min',
+                    collection: collection
+                %}
+            {% endfor %}
+        </div>
+    {% endcapture %}
+    {% render 'section-body',
+        heading: section.settings.heading,
+        subheading: section.settings.subheading,
+        spaced: true,
+        content: Content,
+        container: true
+    %}
+{% endif %}
+
+{% schema %}
+    {
+        "name": "Product collections",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "t:g.info.collection_thumbnail"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight",
+                "default": "Continue shopping"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            },
+            {
+                "type": "range",
+                "id": "columns",
+                "label": "Desktop columns",
+                "min": 3,
+                "max": 6,
+                "default": 5
+            }
+        ],
+        "presets": [
+            {
+                "name": "Product collections"
+            }
+        ],
+        "templates": ["product"]
+    }
+{% endschema %}

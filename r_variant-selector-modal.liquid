@@ -1,0 +1,61 @@
+{% liquid
+    assign NS = 'variant-selector-modal'
+    assign cn = '#' | append: NS
+%}
+
+<{{ NS }} class="{{ cn }}" id="productVariantSelector" product-url="{{ product.url }}" product-id="{{ product.id }}" section-id="{{ section.id }}">
+    <div class="{{ cn }}-header">
+        <div class="{{ cn }}-header-inner">
+            <a class="{{ cn }}-header-inner-link" href="{{ product.url }}">
+                <h2 class="{{ cn }}-header-inner-title heading-font">{{ product.title }}</h2>
+            </a>
+            <modal-close class="{{ cn }}-close" section-id="{{ section.id }}">
+                {% render 'icon', name: 'x' %}
+            </modal-close>
+        </div>
+    </div>
+    
+    
+    <div class="{{ cn }}-selector">
+        {% for variant in product.variants %}
+            {%- if variant.available -%}
+                <div class="{{ cn }}-selector-item">
+                    <input 
+                        class="{{ cn }}-selector-item-input" 
+                        id="{{ variant.id | append: '-variant-selector-modal-radio' }}"
+                        name="{{ 'variant-option-' | append: product.id }}"
+                        form=""
+                        type="radio"
+                        hidden
+                        value="{{ variant.id }}"
+                        data-price-value="{{ variant.price }}"
+                        {%- if product.selected_or_first_available_variant.id == variant.id -%}
+                            checked
+                        {%- endif -%}
+                    >
+                    <label class="{{ cn }}-selector-item-body" for="{{ variant.id | append: '-variant-selector-modal-radio' }}">
+                        <div class="{{ cn }}-selector-item-description">
+                            <div class="{{ cn }}-selector-item-media">
+                                {%- assign variant_image = variant.featured_image | default: product.featured_image -%}
+                                {%- render 'media',
+                                    image: variant_image,
+                                    image_res: 80,
+                                    border_radius: 'inner'
+                                -%}
+                            </div>
+                        
+                            <div class="{{ cn }}-selector-item-title">
+                                <p>{{ variant.title }}</p>
+                            </div>
+                        </div>
+                        <div class="{{ cn }}-selector-item-price">
+                            {% render 'price',
+                                variant: variant
+                            %}
+                        </div>
+                    </label>
+                </div>
+            {%- endif -%}
+        {% endfor %}
+    </div>
+</{{ NS }}>

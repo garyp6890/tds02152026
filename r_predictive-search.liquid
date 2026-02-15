@@ -1,0 +1,294 @@
+{%- if predictive_search.performed -%}
+    {%- liquid
+        assign NS = 'predictive-search-results'
+        assign cn = '#' | append: NS
+        assign has_results = false
+        for type in predictive_search.types
+            assign resource_type = type | append: 's'
+            if type == 'query'
+                assign resource_type = 'queries'
+            endif
+            if predictive_search.resources[resource_type].size > 0
+                assign has_results = true
+                break
+            endif
+        endfor
+
+        assign tabbed_results = false
+        if settings.predictive_search_results_view == 'tabs'
+            assign tabbed_results = true
+            assign tabbed_results_radio_group_name = 'predictiveSearchResultTabs-' | append: section.id
+            assign tabbed_results_input_prefix = 'predictiveSearchResultTab-'
+            assign tabs_counter = 0
+        endif
+    -%}
+    <template data-template {% unless has_results %}data-empty-results{% endunless %}>
+        {%- if has_results -%}
+            {%- liquid
+                assign queries = predictive_search.resources.queries
+                assign products = predictive_search.resources.products
+                assign articles = predictive_search.resources.articles
+                assign collections = predictive_search.resources.collections
+                assign pages = predictive_search.resources.pages
+            -%}
+
+            {% capture Results %}
+                <div class="{{ cn }}-types">
+                    {%- if queries.size > 0 -%}
+                        {% capture Query_suggestions %}
+                            <div class="{{ cn }}-type">
+                                <h3 class="{{ cn }}-type-title">
+                                    {{ 'general.search.predictive_search.suggestions' | t }}
+                                </h3>
+                                <div class="{{ cn }}-items">
+                                    {%- for query in queries -%}
+                                        <div class="{{ cn }}-item">
+                                            <a class="stretched-link" href="{{ query.url | append: '&type=product' }}" aria-label="{{ 'general.accessibility.search' | t }}"></a>
+                                            <div class="{{ cn }}-item-body">
+                                                <h4 class="{{ cn }}-item-title">{{ query.styled_text }}</h4>
+                                            </div>
+                                        </div>
+                                    {%- endfor -%}
+                                </div>
+                            </div>
+                        {% endcapture %}
+
+                        {% unless tabbed_results %}
+                            {{ Query_suggestions }}
+                        {% endunless %}
+                    {%- endif -%}
+
+                    {%- if collections.size > 0 -%}
+                        {%- if tabbed_results -%}
+                            {%- assign collections_list_input_id = tabbed_results_input_prefix | append: 'collections-' | append: section.id -%}
+                            <input
+                                class="{{ cn }}-tabs-radio"
+                                type="radio"
+                                name="{{ tabbed_results_radio_group_name }}"
+                                id="{{ collections_list_input_id }}"
+                                hidden
+                                {% if tabs_counter == 0 %}
+                                    checked
+                                {% endif %}
+                            >
+                            {%- assign tabs_counter = tabs_counter | plus: 1 -%}
+                        {%- endif -%}
+                        <div class="{{ cn }}-type">
+                            {%- if tabbed_results -%}
+                                {%- capture Tabs -%}
+                                    {{ Tabs }}
+                                    <label for="{{ collections_list_input_id }}" class="{{ cn }}-tabs-thumb" data-element="thumb">
+                                        {{ 'general.search.predictive_search.collections' | t }}
+                                        <span class="{{ cn }}-tabs-thumb-result-count">{{ collections.size }}</span>
+                                    </label>
+                                {%- endcapture -%}
+                            {%- else -%}
+                                <h3 class="{{ cn }}-type-title">
+                                    {{ 'general.search.predictive_search.collections' | t }}
+                                </h3>
+                            {%- endif -%}
+                            <div class="#grid @type:template" style="--template: repeat(auto-fill, minmax(11rem, 1fr));  --gap: 1rem;">
+                                {%- for collection in collections -%}
+                                    {% render 'collection-card-min'
+                                        collection: collection,
+                                        img_src: settings.predictive_search_collection_image_src
+                                    %}
+                                {%- endfor -%}
+                            </div>
+                        </div>    
+                    {%- endif -%}
+
+                    {% if products.size > 0 %}
+                        {%- if tabbed_results -%}
+                            {%- assign products_list_input_id = tabbed_results_input_prefix | append: 'products-' | append: section.id -%}
+                            <input
+                                class="{{ cn }}-tabs-radio"
+                                type="radio"
+                                name="{{ tabbed_results_radio_group_name }}"
+                                id="{{ products_list_input_id }}"
+                                hidden
+                                {% if tabs_counter == 0 %}
+                                    checked
+                                {% endif %}
+                            >
+                            {%- assign tabs_counter = tabs_counter | plus: 1 -%}
+                        {%- endif -%}
+                        <div class="{{ cn }}-type">
+                            {%- if tabbed_results -%}
+                                {%- capture Tabs -%}
+                                    {{ Tabs }}
+                                    <label for="{{ products_list_input_id }}" class="{{ cn }}-tabs-thumb" data-element="thumb">
+                                        {{ 'general.search.predictive_search.products' | t }}
+                                        <span class="{{ cn }}-tabs-thumb-result-count">{{ products.size }}</span>
+                                    </label>
+                                {%- endcapture -%}
+                            {%- else -%}
+                                <h3 class="{{ cn }}-type-title">
+                                    {{ 'general.search.predictive_search.products' | t }}
+                                </h3>
+                            {%- endif -%}
+                            <div class="{{ cn }}-items">
+                                {%- for product in products -%}
+                                    {% capture Badges %}
+                                        {%- if settings.predictive_search_show_custom_badges -%}
+                                            {%- assign custom_badges = product.metafields.theme.custom_badges.value -%}
+                                            {% if custom_badges != blank and custom_badges.size > 0 %}
+                                                {% for badge in custom_badges %}
+                                                    <span class="#badge @type:custom">{{ badge | strip }}</span>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
+                                        {%- if settings.predictive_search_show_low_stock_badge and product.selected_or_first_available_variant.inventory_quantity <= settings.stock_threshold and product.selected_or_first_available_variant.inventory_management and product.selected_or_first_available_variant.inventory_policy == 'deny' -%}
+                                            <span class="#badge @type:low-stock">{{ 'products.product.low_stock' | t }}</span> 
+                                        {%- endif -%}
+                                    {% endcapture %}
+
+                                    <div class="{{ cn }}-item">
+                                        <a class="stretched-link" href="{{ product.url }}" aria-label="{{ product.title }}"></a>
+                                        <div class="{{ cn }}-item-media">
+                                            {% render 'media',
+                                                image: product.featured_image,
+                                                image_res: 70,
+                                                border_radius: 'inner',
+                                                size: 'square'
+                                            %}
+                                        </div>
+                                        <div class="{{ cn }}-item-body">
+                                            {% if Badges != blank %}
+                                                <div class="{{ cn }}-badges">
+                                                    {{ Badges }}
+                                                </div>
+                                            {% endif %}
+                                            <h4 class="{{ cn }}-item-title">{{ product.title }}</h4>
+                                            <div class="{{ cn }}-item-price">
+                                                {% render 'price', product: product, display_units: false %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {%- endfor -%}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {%- if articles.size > 0 -%}
+                        {%- if tabbed_results -%}
+                            {%- assign articles_list_input_id = tabbed_results_input_prefix | append: 'articles-' | append: section.id -%}
+                            <input
+                                class="{{ cn }}-tabs-radio"
+                                type="radio"
+                                name="{{ tabbed_results_radio_group_name }}"
+                                id="{{ articles_list_input_id }}"
+                                hidden
+                                {% if tabs_counter == 0 %}
+                                    checked
+                                {% endif %}
+                            >
+                            {%- assign tabs_counter = tabs_counter | plus: 1 -%}
+                        {%- endif -%}
+                        <div class="{{ cn }}-type">
+                            {%- if tabbed_results -%}
+                                {%- capture Tabs -%}
+                                    {{ Tabs }}
+                                    <label for="{{ articles_list_input_id }}" class="{{ cn }}-tabs-thumb" data-element="thumb">
+                                        {{ 'general.search.predictive_search.posts' | t }}    
+                                        <span class="{{ cn }}-tabs-thumb-result-count">{{ articles.size }}</span>
+                                    </label>
+                                {%- endcapture -%}
+                            {%- else -%}
+                                <h3 class="{{ cn }}-type-title">
+                                    {{ 'general.search.predictive_search.posts' | t }}
+                                </h3>
+                            {%- endif -%}
+                            <div class="{{ cn }}-items">
+                                {%- for article in articles -%}
+                                    <div class="{{ cn }}-item">
+                                        <a class="stretched-link" href="{{ article.url }}" aria-label="{{ article.title }}"></a>
+                                        {%- if article.image != blank -%}
+                                            <div class="{{ cn }}-item-media">
+                                                {% render 'media',
+                                                    image: article.image,
+                                                    aspect_ratio: '1x1',
+                                                    image_res: 70,
+                                                    border_radius: 'base'
+                                                %}
+                                            </div>
+                                        {%- endif -%}
+                                        <div class="{{ cn }}-item-body">
+                                            <h4 class="{{ cn }}-item-title">{{ article.title }}</h4>
+                                            <div class="{{ cn }}-item-date">{{ article.published_at | date: "%B %e, %Y" }}</div>
+                                        </div>
+                                    </div> 
+                                {%- endfor -%}
+                            </div>
+                        </div>
+                    {%- endif -%}
+                    
+                    {%- if pages.size > 0 -%}
+                        {%- if tabbed_results -%}
+                            {%- assign pages_list_input_id = tabbed_results_input_prefix | append: 'pages-' | append: section.id -%}
+                            <input
+                                class="{{ cn }}-tabs-radio"
+                                type="radio"
+                                name="{{ tabbed_results_radio_group_name }}"
+                                id="{{ pages_list_input_id }}"
+                                hidden
+                                {% if tabs_counter == 0 %}
+                                    checked
+                                {% endif %}
+                            >
+                        {%- endif -%}
+                        <div class="{{ cn }}-type">
+                            {%- if tabbed_results -%}
+                                {%- capture Tabs -%}
+                                    {{ Tabs }}
+                                    <label for="{{ pages_list_input_id }}" class="{{ cn }}-tabs-thumb" data-element="thumb">
+                                        {{ 'general.search.predictive_search.pages' | t }}
+                                        <span class="{{ cn }}-tabs-thumb-result-count">{{ pages.size }}</span>
+                                    </label>
+                                {%- endcapture -%}
+                            {%- else -%}
+                                <h3 class="{{ cn }}-type-title">
+                                    {{ 'general.search.predictive_search.pages' | t }}
+                                </h3>
+                            {%- endif -%}
+                            {%- for page in pages -%}
+                                <div class="{{ cn }}-item">
+                                    <a class="stretched-link" href="{{ page.url }}" aria-label="{{ page.title }}"></a>
+                                    <div class="{{ cn }}-item-body">
+                                        <h4 class="{{ cn }}-item-title">{{ page.title }}</h4>
+                                        {%- if page.content != blank -%}
+                                            <div class="{{ cn }}-item-excerpt">
+                                                {{ page.content | strip_html | truncate: 200 }}
+                                            </div> 
+                                        {%- endif -%}
+                                    </div>
+                                </div>
+                            {%- endfor -%} 
+                        </div>
+                    {%- endif -%}
+                </div>
+            {% endcapture %}
+
+            {% if tabbed_results %}
+                {{ Query_suggestions }}
+            {% endif %}
+            {% if Tabs != blank %}
+                <predictive-search-tabs-nav class="{{ cn }}-tabs" section-id="{{ section.id }}">
+                    {{ Tabs }}
+                </predictive-search-tabs-nav>
+            {% endif %}
+            {{ Results }}
+        {%- else -%}
+            {%- assign only_search_input_terms = predictive_search.terms | split: 'AND' | last | strip -%}
+            <div class="{{ cn }}-no-results">
+                <div class="{{ cn }}-no-results-icon">
+                    {% render 'icon', name: 'magnifying-glass' %}
+                </div>
+                <div class="{{ cn }}-no-results-text">                    
+                    <h2 class="{{ cn }}-no-results-heading">{{ 'templates.search.no_results_title' | t: terms: only_search_input_terms }}</h2>
+                    <p class="{{ cn }}-no-results-subheading">{{ 'templates.search.no_results_subtitle' | t }}</p>
+                </div>
+            </div>
+        {%- endif -%}
+    </template>
+{%- endif -%}

@@ -1,0 +1,90 @@
+{% liquid
+    assign child_collections = collection.metafields.theme.subcollections.value
+%}
+
+{% render 'load-css', file: 'collection-card-min' %}
+
+{% if child_collections.count > 0 %}
+    {% capture Content %}
+        {% capture Slides %}
+            {% for child_collection in child_collections %}
+                {% render 'collection-card-min',
+                    collection: child_collection
+                %}   
+            {% endfor %}
+        {% endcapture %}
+
+        {% render 'slideshow-inline-blaze',
+            slides: Slides,
+            slides_per_view: section.settings.slides_per_view,
+            slide_by: section.settings.slide_every,
+            show_pagination: false
+        %}
+    {% endcapture %}
+
+    {% render 'section-body'
+        content: Content,
+        spaced: true,
+        heading: section.settings.heading,
+        subheading: section.settings.subheading
+    %}
+{% endif %}
+
+{% schema %}
+    {
+        "name": "Child collection list",
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "t:g.section.child_collections_info"
+            },
+            {
+                "type": "paragraph",
+                "content": "t:g.info.collection_thumbnail"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            },
+            {
+                "type": "select",
+                "id": "slide_every",
+                "label": "Slide per",
+                "options": [
+                    {
+                        "value": "row",
+                        "label": "Row"
+                    },
+                    {
+                        "value": "item",
+                        "label": "Item"
+                    }
+                ],
+                "default": "row"
+            },
+            {
+                "type": "range",
+                "id": "slides_per_view",
+                "label": "Products per row on desktop",
+                "min": 2,
+                "max": 6,
+                "step": 1,
+                "default": 5
+            }
+        ],
+        "presets": [
+            {
+                "name": "Child collection list"
+            }
+        ],
+        "templates": ["collection"]
+    }
+{% endschema %}

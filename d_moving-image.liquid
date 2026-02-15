@@ -1,0 +1,279 @@
+{%- liquid
+    assign NS = 'moving-content'
+    assign cn = '#' | append: NS
+-%}
+
+{%- if section.blocks.size > 0 -%}
+    {%- capture Content -%}
+        {%- for block in section.blocks -%}
+            {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+            {%- capture Items -%}
+                {{ Items }}
+                <div class="{{ cn }}-item" style="--height: {{ section.settings.image_height }}px" {{ block.shopify_attributes }}>
+                    {% render 'media',
+                        image: block.settings.image,
+                        link: block.settings.link,
+                        placeholder: 'collection-apparel',
+                        image_fit: 'contain',
+                        placeholder_index: placeholder_index
+                    %}
+                </div>
+            {%- endcapture -%}
+        {%- endfor -%}
+
+        {%- capture Body -%}
+            {% render 'moving-content',
+                content: Items,
+                stop_on_hover: section.settings.stop_on_hover,
+                stacked: section.settings.stacked_layout,
+                direction: section.settings.moving_direction,
+                speed_mult: section.settings.speed_mult
+            %}
+        {%- endcapture -%}
+
+    {%- endcapture -%}
+
+    {% render 'section-body',
+        content: Body,
+        color_scheme: section.settings.color_scheme,
+        bg_pattern: section.settings.pattern,
+        bg_pattern_scale: section.settings.pattern_scale,
+        bg_pattern_animation: section.settings.pattern_animation
+    %}
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Image marquee",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "accent",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "range",
+            "id": "image_height",
+            "label": "Image max height",
+            "min": 70,
+            "max": 300,
+            "step": 5,
+            "unit": "px",
+            "default": 120
+        },
+        {
+            "type": "checkbox",
+            "id": "stop_on_hover",
+            "label": "Stop on mouse over",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "moving_direction",
+            "label": "Moving direction",
+            "options": [
+                {
+                    "value": "normal",
+                    "label": "Right to left"
+                },
+                {
+                    "value": "reverse",
+                    "label": "Left to right"
+                }
+            ],
+            "default": "normal"
+        },
+        {
+            "type": "select",
+            "id": "speed_mult",
+            "label": "Moving speed",
+            "options": [
+                {
+                    "value": "2",
+                    "label": "Slow"
+                },
+                {
+                    "value": "1",
+                    "label": "Normal"
+                },
+                {
+                    "value": "0.5",
+                    "label": "Fast"
+                }
+            ],
+            "default": "1"
+        },
+        {
+            "type": "checkbox",
+            "id": "stacked_layout",
+            "label": "Stack items",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "Patterns"
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.label",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "image",
+            "name": "Image",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "t:g.media.image",
+                    "info": "t:g.media.resolution_recommendations.half_of_screen"
+                },
+                {
+                    "type": "url",
+                    "id": "link",
+                    "label": "t:g.common.label.link"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Image marquee",
+            "blocks": [
+                {
+                    "type": "image"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

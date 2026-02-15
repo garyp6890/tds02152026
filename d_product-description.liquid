@@ -1,0 +1,123 @@
+{%- if product.description != blank -%}
+    {%- liquid
+        assign size_unit = section.settings.font_scale | times: 1.0
+        assign size_unit = size_unit | divided_by: 100 
+    -%}
+
+    {% if section.settings.show_specs %}
+        {% capture Specs %}
+            {% render 'product-specs', specs: section.settings.specs %}
+        {% endcapture %}
+    {% endif %}
+
+    {% capture Description %}
+        <div class="#rte" style="--font-size: {{ size_unit }}rem;">
+            {{ product.description }}
+        </div>
+    {% endcapture %}
+
+
+    {%- capture Content -%}
+        {% if Specs != blank %}
+            <div class="#grid @type:template" style="--template: 1fr 1fr; --template-mobile: none;">
+                {% if section.settings.specs_position == 'right' %}
+                    {{ Description }}
+                    {{ Specs }}
+                {% else %}
+                    {{ Specs }}
+                    {{ Description }}
+                {% endif %}
+            </div>
+        {% else %}
+            {{ Description }}
+        {% endif %}
+    {%- endcapture -%}
+
+    {% render 'section-body',
+        content: Content,
+        heading: section.settings.heading,
+        subheading: section.settings.subheading,
+        content_width: section.settings.content_width,
+        spaced: true,
+        container: true
+    %}
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Product description",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Product information"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "range",
+            "id": "content_width",
+            "label": "Desktop content width",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "default": 80,
+            "unit": "%"
+        },
+        {
+            "type": "range",
+            "id": "font_scale",
+            "label": "Font scale",
+            "min": 100,
+            "step": 5,
+            "max": 150,
+            "unit": "%",
+            "default": 100
+        },
+        {
+            "type": "header",
+            "content": "Specifications"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_specs",
+            "label": "Show specifications"
+        },
+        {
+            "type": "richtext",
+            "id": "specs",
+            "label": "Specifications",
+            "default": "<p>Brand: {{ product.vendor }}<\/p><p>Title: {{ product.title }}<\/p>",
+            "info": "t:g.info.product.specs"
+        },
+        {
+            "type": "select",
+            "id": "specs_position",
+            "label": "Position",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Specifications first"
+                },
+                {
+                    "value": "right",
+                    "label": "Description first"
+                }
+            ],
+            "default": "left"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Product description"
+        }
+    ],
+    "templates": ["product"]
+}
+{% endschema %}

@@ -1,0 +1,54 @@
+{% liquid
+    assign NS = 'product-bundle'
+    assign cn = '#' | append: NS
+    assign modal_id = 'bundle-product-variants-' | append: product.id
+    assign variant = product.selected_variant
+    assign product_form_id = 'complementary-product-bundle-to-card-form'
+    assign input_id = "coplementary-product-" | append: product.id
+%}
+
+<template data-card-template>
+    {% capture Checkbox %}
+        <div class="{{ cn }}-item-check">
+            <input
+                data-item-checkbox
+                value="{{ variant.id }}"
+                type="checkbox"
+                id="{{ input_id }}"
+                data-price-value="{{ variant.price }}"
+                hidden
+                name="buy_with_{{ product.id }}"
+                form="{{ product_form_id }}"
+            >
+            <label class="{{ cn }}-item-check-label" for="{{ input_id }}">
+                {% render 'icon', name: 'check' %}
+            </label>
+        </div>
+    {% endcapture %}     
+
+    {% capture Variant_selector_trigger %}
+        <modal-open 
+            class="{{ cn }}-variant-title" 
+            target="{{ modal_id }}" 
+            section-id="{{ section.id }}"
+        >
+            {{ variant.title }}
+        </modal-open>
+    {% endcapture %}
+
+    {% assign remote_url = product.url | append: '?section_id=r_variant-selector-modal' |  append: '&variant=' | append: variant.id %}
+
+    {%- render 'modal',
+        remote_url: remote_url,
+        remote_target: '#productVariantSelector',
+        id: modal_id,
+        animation: 'zoom',
+        show_close: false
+    -%}
+    {% render 'product-card-min',
+        product: product,
+        variant: variant,
+        before: Checkbox,
+        variant_title: Variant_selector_trigger
+    %}
+</template>

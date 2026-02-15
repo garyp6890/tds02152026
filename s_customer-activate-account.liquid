@@ -1,0 +1,85 @@
+{%- liquid
+  assign NS = 'customer-form'
+  assign cn = '#' | append: NS  
+-%}
+
+{% render 'load-css', file: NS %}
+
+
+<div class="{{ cn }}">
+  <h1 class="{{ cn }}-heading heading-font">
+    {{ 'customer.activate_account.title' | t }}
+  </h1>
+  <p class="fs-h4">
+    {{ 'customer.activate_account.subtext' | t }}
+  </p>
+  {%- form 'activate_customer_password' -%}
+    {%- if form.errors -%}
+      <div class="{{ cn }}-alert">
+        {%- capture Alert_text -%}
+          <ul>
+            {%- for field in form.errors -%}
+              <li>
+                {%- if field == 'form' -%}
+                  {{ form.errors.messages[field] }}
+                {%- else -%}
+                  <a href="#{{ field }}">
+                    {{ form.errors.translated_fields[field] | capitalize }}
+                    {{ form.errors.messages[field] }}
+                  </a>
+                {%- endif-%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endcapture -%}
+        {% render 'alert',
+          type: 'danger',
+          t_heading: 'templates.contact.form.error_heading',
+          text: Alert_text
+        %}
+      </div>
+    {%- endif -%}
+    <div class="{{ cn }}-field">
+      <input
+        class="{{ cn }}-input"
+        type="password"
+        name="customer[password]"
+        id="password"
+        autocomplete="new-password"
+        placeholder="{{ 'customer.activate_account.password' | t }}"
+        {% if form.errors contains 'password' %}
+          aria-invalid="true"
+          aria-describedby="password-error"
+        {% endif %}
+      >
+    </div>
+    <div class="{{ cn }}-field">
+      <input
+        class="{{ cn }}-input"
+        type="password"
+        name="customer[password_confirmation]"
+        id="password_confirmation"
+        autocomplete="new-password"
+        placeholder="{{ 'customer.activate_account.password_confirm' | t }}"
+        {% if form.errors contains 'password' %}
+          aria-invalid="true"
+          aria-describedby="password_confirmation-error"
+        {% endif %}
+      >
+    </div>
+    <div class="{{ cn }}-footer">
+      <button class="{{ cn }}-submit">
+        {{ 'customer.activate_account.submit' | t }}
+      </button>
+      <button class="{{ cn }}-switch-form" href="{{ routes.account_register_url }}">
+        {{ 'customer.activate_account.cancel' | t }}
+      </button>
+    </div>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Activate account"
+}
+{% endschema %}

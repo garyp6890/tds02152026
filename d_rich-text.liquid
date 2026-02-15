@@ -1,0 +1,402 @@
+{%- liquid
+    assign section_bg_color = section.settings.bg_color
+    if section.settings.pattern == 'none' and section.settings.color_scheme.id == settings.color_scheme.id
+        assign spaced = true
+    else
+        assign padded = true
+    endif
+-%}
+
+{%- capture Content -%}
+    {% render 'hero',
+        blocks: section.blocks,
+        align: section.settings.text_align,
+        full_width_text: true
+    %}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    container: true,
+    content_width: section.settings.content_width,
+    padded: padded,
+    spaced: spaced,
+    color_scheme: section.settings.color_scheme,
+    bg_pattern: section.settings.pattern,
+    bg_pattern_scale: section.settings.pattern_scale,
+    bg_pattern_animation: section.settings.pattern_animation
+%}
+
+{% schema %}
+{
+    "name": "Rich text",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "accent",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "range",
+            "id": "content_width",
+            "label": "Desktop content width",
+            "min": 50,
+            "max": 100,
+            "step": 5,
+            "default": 100,
+            "unit": "%"
+        },
+        {
+            "type": "select",
+            "id": "text_align",
+            "label": "t:g.common.text_align.label",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "t:g.common.text_align.left"
+                },
+                {
+                    "value": "center",
+                    "label": "t:g.common.text_align.center"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.common.text_align.right"
+                }
+            ],
+            "default": "center"
+        },
+        {
+            "type": "select",
+            "id": "pattern",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.none"
+                },
+                {
+                    "value": "pattern-bubbles_100",
+                    "label": "t:g.patterns.bubbles"
+                },
+                {
+                    "value": "pattern-endless-clouds_56",
+                    "label": "t:g.patterns.endless_clouds"
+                },
+                {
+                    "value": "pattern-hideout_40",
+                    "label": "t:g.patterns.hideout"
+                },
+                {
+                    "value": "pattern-diagonal-lines_6",
+                    "label": "t:g.patterns.diagonal_lines"
+                },
+                {
+                    "value": "pattern-polka-dots_20",
+                    "label": "t:g.patterns.polka_dots"
+                },
+                {
+                    "value": "pattern-graph-paper_100",
+                    "label": "t:g.patterns.graph_paper"
+                },
+                {
+                    "value": "pattern-leaf_80",
+                    "label": "t:g.patterns.leaf"
+                },
+                {
+                    "value": "pattern-topography_600",
+                    "label": "t:g.patterns.topography"
+                },
+                {
+                    "value": "pattern-jigsaw_192",
+                    "label": "t:g.patterns.jigsaw"
+                },
+                {
+                    "value": "pattern-tic-tac-toe_64",
+                    "label": "t:g.patterns.tic_tac_toe"
+                },
+                {
+                    "value": "pattern-bank-note_100",
+                    "label": "t:g.patterns.bank_note"
+                },
+                {
+                    "value": "pattern-formal-invitation_100",
+                    "label": "t:g.patterns.formal_invitation"
+                },
+                {
+                    "value": "pattern-wiggle_52",
+                    "label": "t:g.patterns.wiggle"
+                },
+                {
+                    "value": "pattern-charlie-brown_20",
+                    "label": "t:g.patterns.charlie_brown"
+                }
+            ],
+            "label": "t:g.patterns.settings.label",
+            "default": "none",
+            "info": "t:g.patterns.settings.info"
+        },
+        {
+            "type": "range",
+            "id": "pattern_scale",
+            "min": 50,
+            "max": 200,
+            "step": 10,
+            "unit": "%",
+            "label": "t:g.patterns.settings.label_scale",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "pattern_animation",
+            "label": "t:g.patterns.settings.label_animation",
+            "options": [
+                {
+                    "value": "none",
+                    "label": "t:g.patterns.settings.animation_options.no_animation"
+                },
+                {
+                    "value": "blink",
+                    "label": "t:g.patterns.settings.animation_options.blink"
+                },
+                {
+                    "value": "top",
+                    "label": "t:g.patterns.settings.animation_options.top"
+                },
+                {
+                    "value": "top-right",
+                    "label": "t:g.patterns.settings.animation_options.top_right"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.patterns.settings.animation_options.right"
+                },
+                {
+                    "value": "bottom-right",
+                    "label": "t:g.patterns.settings.animation_options.bottom_right"
+                },
+                {
+                    "value": "bottom",
+                    "label": "t:g.patterns.settings.animation_options.bottom"
+                },
+                {
+                    "value": "bottom-left",
+                    "label": "t:g.patterns.settings.animation_options.bottom_left"
+                },
+                {
+                    "value": "left",
+                    "label": "t:g.patterns.settings.animation_options.left"
+                },
+                {
+                    "value": "top-left",
+                    "label": "t:g.patterns.settings.animation_options.top_left"
+                }
+            ],
+            "default": "none",
+            "info": "t:g.patterns.settings.animation_info"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "heading",
+            "name": "t:g.hero.heading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "inline_richtext",
+                    "id": "heading",
+                    "label": "t:g.hero.heading.label",
+                    "default": "Rich text",
+                    "info": "t:g.info.heading_highlight"
+                },
+                {
+                    "type": "range",
+                    "id": "heading_scale",
+                    "label": "Heading scale",
+                    "min": 80,
+                    "max": 250,
+                    "default": 120,
+                    "step": 5,
+                    "unit": "%",
+                    "info": "Based on 'Headings base font size' theme setting"
+                }
+            ]
+        },
+        {
+            "type": "social_menu",
+            "name": "Social media icons",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "t:settings_schema.social-media.info"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "social_new_tab",
+                    "label": "Open social media profiles in a new tab",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "subheading",
+            "name": "t:g.hero.subheading.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "t:g.hero.subheading.label",
+                    "default": "Subheading"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "name": "t:g.hero.text.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "t:g.hero.text.label",
+                    "default": "<p>Text</p>"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "enlarge_text",
+                    "label": "Enlarge text"
+                }
+            ]
+        },
+        {
+            "type": "timer",
+            "name": "Countdown",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "date",
+                    "label": "End date",
+                    "info": "Format: mm-dd-yyyy",
+                    "default": "04-03-2024"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "hide_on_complete",
+                    "label": "Hide timer on complete"
+                }
+            ]
+        },
+        {
+            "type": "buttons",
+            "name": "t:g.hero.buttons.name",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "info",
+                    "label": "Buttons info block",
+                    "info": "Will be hidden if buttons are not set"
+                },
+                {
+                    "type": "header",
+                    "content": "t:g.hero.buttons.first.header" 
+                },
+                {
+                    "type": "text",
+                    "id": "f_button_label",
+                    "label": "t:g.hero.buttons.first.label"
+                },
+                {
+                    "type": "url",
+                    "id": "f_button_link",
+                    "label": "t:g.hero.buttons.first.link"
+                },
+                {
+                    "type": "select",
+                    "id": "f_button_tier",
+                    "label": "t:g.hero.buttons.second.style",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primary"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secondary"
+                        },
+                        {
+                            "value": "link",
+                            "label": "Link"
+                        }
+                    ],
+                    "default": "primary",
+                    "info": "t:g.info.button.style"
+                },
+                {
+                    "type": "header",
+                    "content": "t:g.hero.buttons.second.header" 
+                },
+                {
+                    "type": "text",
+                    "id": "s_button_label",
+                    "label": "t:g.hero.buttons.second.label"
+                },
+                {
+                    "type": "url",
+                    "id": "s_button_link",
+                    "label": "t:g.hero.buttons.second.link"
+                },
+                {
+                    "type": "select",
+                    "id": "s_button_tier",
+                    "label": "t:g.hero.buttons.second.style",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primary"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secondary"
+                        },
+                        {
+                            "value": "link",
+                            "label": "Link"
+                        }
+                    ],
+                    "default": "secondary",
+                    "info": "t:g.info.button.style"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Rich text",
+            "blocks": [
+                {
+                    "type": "heading",
+                    "settings": {
+                        "heading": "Rich text"
+                    }
+                },
+                {
+                    "type": "text",
+                    "settings": {
+                        "text": "<p>Use this text to share information about your brand with your customers.<br>Describe a product, share announcements or welcome customers to your store.</p>"
+                    }
+                },
+                {
+                    "type": "buttons"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

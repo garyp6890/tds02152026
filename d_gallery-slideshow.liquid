@@ -1,0 +1,300 @@
+{% render 'load-css', file: 'gallery-card' %}
+
+{%- capture Slides -%} 
+    {% for block in section.blocks %}
+        {%- capture image_srcsize_desktop -%}100vw{%- endcapture -%}
+        {%- capture image_srcsize_mobile -%}90vw{%- endcapture -%}
+        <div {{ block.shopify_attributes }}>
+            {%- liquid
+                assign position = block.settings.text_position | split: '-'
+                assign caption_y = position[0]
+                assign caption_x = position[1]
+            -%}
+            {% assign media_height = section.settings.item_height | append: "px" %}
+            {% assign mobile_media_height = section.settings.mobile_item_height | append: "px" %}
+            {% render 'gallery-card',
+                image: block.settings.image,
+                alt_image: block.settings.alt_image,
+                image_srcsize_desktop: image_srcsize_desktop,
+                image_srcsize_mobile: image_srcsize_mobile,
+                heading_scale: section.settings.heading_scale,
+                media_height: media_height,
+                mobile_media_height: mobile_media_height,
+                enlarge_text: section.settings.enlarge_text,
+                overlay: block.settings.image_overlay,
+                heading: block.settings.heading,
+                subheading: block.settings.subheading,
+                text: block.settings.text,
+                caption_x: caption_x,
+                caption_y: caption_y,
+                caption_size: block.settings.size,
+                caption_box: section.settings.use_box,
+                link: block.settings.link,
+                inner_caption: true,
+                button_label: block.settings.button_label,
+                button_color: block.settings.button_color,
+                button_tier: section.settings.button_tier,
+                color_scheme: block.settings.color_scheme
+            %}
+        </div>
+    {% endfor %}
+{%- endcapture -%}
+
+{%- capture Content -%}
+    {% render 'slideshow-inline-blaze',
+        slides: Slides,
+        slides_per_view: section.settings.slides_per_view,
+        slide_by: section.settings.slide_every
+    %}          
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    force_layout: true,
+    spaced: true
+%}
+
+{% schema %}
+{
+    "name": "Gallery slideshow",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Gallery"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "t:g.hero.subheading.label"
+        },
+        {
+            "type": "select",
+            "id": "slide_every",
+            "label": "Slide per",
+            "options": [
+                {
+                    "value": "row",
+                    "label": "Row"
+                },
+                {
+                    "value": "item",
+                    "label": "Item"
+                }
+            ],
+            "default": "row"
+        },
+        {
+            "type": "range",
+            "id": "slides_per_view",
+            "label": "Cards per row on desktop",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "range",
+            "id": "item_height",
+            "label": "Desktop item height",
+            "min": 300,
+            "max": 800,
+            "step": 10,
+            "default": 450,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "mobile_item_height",
+            "label": "Mobile item height",
+            "min": 200,
+            "max": 600,
+            "step": 10,
+            "default": 450,
+            "unit": "px"
+        },
+        {
+            "type": "checkbox",
+            "id": "use_box",
+            "label": "t:g.hero.use_box"
+        },
+        {
+            "type": "range",
+            "id": "heading_scale",
+            "label": "Heading scale",
+            "min": 50,
+            "max": 150,
+            "default": 80,
+            "step": 5,
+            "unit": "%",
+            "info": "Based on 'Headings base font size' theme setting"
+        },
+        {
+            "type": "checkbox",
+            "id": "enlarge_text",
+            "label": "Enlarge text"
+        },
+        {
+            "type": "header",
+            "content": "Button"
+        },
+        {
+            "type": "select",
+            "id": "button_tier",
+            "label": "t:g.hero.buttons.second.style",
+            "options": [
+                {
+                    "value": "primary",
+                    "label": "Primary"
+                },
+                {
+                    "value": "secondary",
+                    "label": "Secondary"
+                },
+                {
+                    "value": "link",
+                    "label": "Link"
+                }
+            ],
+            "default": "primary",
+            "info": "t:g.info.button.style"
+        }
+    ],
+    "blocks": [
+        {
+            "name": "Gallery item",
+            "type": "gallery_item",
+            "settings": [
+                {
+                    "type": "color_scheme",
+                    "id": "color_scheme",
+                    "default": "invert",
+                    "label": "Color Scheme"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "t:g.media.image",
+                    "info": "t:g.media.resolution_recommendations.half_of_screen"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "alt_image",
+                    "label": "t:g.media.alt_optional_image",
+                    "info": "t:g.media.alt_optional_image_info"
+                },
+                {
+                    "type": "range",
+                    "id": "image_overlay",
+                    "label": "t:g.media.overlay",
+                    "min": 0,
+                    "max": 80,
+                    "step": 1,
+                    "unit": "%",
+                    "default": 0
+                },
+                {
+                    "type": "select",
+                    "id": "text_position",
+                    "label": "t:g.hero.caption.position.label",
+                    "options": [
+                        {
+                            "value": "top-left",
+                            "label": "t:g.hero.caption.position.options.x0y0"
+                        },
+                        {
+                            "value": "top-center",
+                            "label": "t:g.hero.caption.position.options.x0y1"
+                        },
+                        {
+                            "value": "top-right",
+                            "label": "t:g.hero.caption.position.options.x0y2"
+                        },
+                        {
+                            "value": "center-left",
+                            "label": "t:g.hero.caption.position.options.x1y0"
+                        },
+                        {
+                            "value": "center-center",
+                            "label": "t:g.hero.caption.position.options.x1y1"
+                        },
+                        {
+                            "value": "center-right",
+                            "label": "t:g.hero.caption.position.options.x1y2"
+                        },
+                        {
+                            "value": "bottom-left",
+                            "label": "t:g.hero.caption.position.options.x2y0"
+                        },
+                        {
+                            "value": "bottom-center",
+                            "label": "t:g.hero.caption.position.options.x2y1"
+                        },
+                        {
+                            "value": "bottom-right",
+                            "label": "t:g.hero.caption.position.options.x2y2"
+                        }
+                    ],
+                    "default": "center-center"
+                },
+                {
+                   "type": "url",
+                   "id": "link",
+                   "label": "t:g.common.label.link"
+                },
+                {
+                    "type": "text",
+                    "id": "heading",
+                    "label": "t:g.common.label.heading",
+                    "default": "Gallery heading"
+                },
+                {
+                    "type": "text",
+                    "id": "subheading",
+                    "label": "Subheading",
+                    "info": "t:g.hero.subheading_position.info"
+                },
+                {
+                    "type": "textarea",
+                    "id": "text",
+                    "label": "Text",
+                    "default": "Give customers details about the banner image(s) or content on the template."
+                },
+                {
+                    "type": "text",
+                    "id": "button_label",
+                    "label": "Button label",
+                    "default": "Find more"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Gallery slideshow",
+            "blocks": [
+                {
+                    "type": "gallery_item"
+                },
+                {
+                    "type": "gallery_item"
+                },
+                {
+                    "type": "gallery_item"
+                },
+                {
+                    "type": "gallery_item"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

@@ -1,0 +1,246 @@
+{%- liquid
+    assign address_link = 'https://maps.google.com?daddr=' | append: section.settings.map_address | escape
+    if section.settings.show_directions
+        assign f_button_label = 'products.product.pickup_availability.directions' | t
+    endif
+-%}
+
+{%- capture Hero_text -%}
+    {% render 'hero',
+        heading: section.settings.heading,
+        text: section.settings.address_text,
+        f_button_link: address_link,
+        f_button_label: f_button_label,
+        f_button_new_tab: true,
+        align: 'center',
+        auto_colors: true,
+        box: true
+    %}
+{%- endcapture -%}
+
+{% capture Caption %}
+    {% render 'floating-content',
+        content: Hero_text,
+        absolute: true,
+        x: 'left',
+        y: 'center',
+        container: true,
+        padded: true
+    %}
+    {% render 'load-css', file: 'map' %}
+    {%- if section.settings.google_api_key != blank and section.settings.map_address != blank -%}        
+        {% render 'map',
+            api_key: section.settings.google_api_key,
+            address: section.settings.map_address,
+            marker_color: section.settings.map_marker_color,
+            map_style: section.settings.map_style,
+            enable_interactions: section.settings.enable_interactions,
+            zoom_level: section.settings.zoom_level
+        %}
+    {%- endif -%}
+{% endcapture %}
+
+{%- capture Media -%}
+    {% render 'media',
+        image: section.settings.image,
+        height: section.settings.image_size,
+        height_mobile: section.settings.mobile_image_size,
+        content: Caption,
+        placeholder: 'hero-apparel'
+    %}
+{%- endcapture -%}
+
+{%- capture Content -%}
+    <div class="#map-section">
+        {%- if section.settings.enable_interactions -%}
+            <div class="#map-interactions-wrapper">
+                {{ Media }}
+            </div>        
+        {%- else -%}
+            {{ Media }}
+        {%- endif -%}
+    </div>
+{%- endcapture -%}
+
+
+{% render 'section-body',
+    content: Content
+    color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+    "name": "Map",
+    "settings": [
+        {
+            "type": "color_scheme",
+            "id": "color_scheme",
+            "default": "main",
+            "label": "Color Scheme"
+        },
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "default": "Visit us",
+            "info": "t:g.info.heading_highlight"
+        },
+        {
+            "type": "richtext",
+            "id": "address_text",
+            "label": "Address",
+            "default": "<p>Monday - Friday: 10AM - 9PM</p><p>Saturday: 11AM - 9PM</p><p>Sunday: Closed</p>"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_directions",
+            "label": "Show directions button",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Google map settings"
+        },
+        {
+            "type": "text",
+            "id": "map_address",
+            "label": "Map address",
+            "default": "301 Front St W, Toronto, ON M5V 2T6",
+            "info": "Google maps will find the exact location"
+        },
+        {
+            "type": "text",
+            "id": "google_api_key",
+            "label": "Google map API key",
+            "info": "You'll need to register a [Google Maps API Key](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) to display the map."
+        },
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "Desktop map height",
+            "options": [
+                {
+                    "value": "100vh",
+                    "label": "Full height"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                },
+                {
+                    "value": "650px",
+                    "label": "650px"
+                },
+                {
+                    "value": "750px",
+                    "label": "750px"
+                }
+            ],
+            "default": "100vh"
+        },
+        {
+            "type": "select",
+            "id": "mobile_image_size",
+            "label": "Mobile map height",
+            "options": [
+                {
+                    "value": "100vh",
+                    "label": "Full height"
+                },
+                {
+                    "value": "350px",
+                    "label": "350px"
+                },
+                {
+                    "value": "450px",
+                    "label": "450px"
+                },
+                {
+                    "value": "550px",
+                    "label": "550px"
+                },
+                {
+                    "value": "650px",
+                    "label": "650px"
+                }
+            ],
+            "default": "100vh"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_interactions",
+            "label": "Drag and zoom interactions"
+        },
+        {
+            "type": "range",
+            "id": "zoom_level",
+            "min": 12,
+            "max": 20,
+            "step": 1,
+            "label": "Map zoom level",
+            "default": 12
+        },
+        {
+            "type": "select",
+            "id": "map_style",
+            "label": "Style",
+            "options": [
+                {
+                    "value": "light",
+                    "label": "Light"
+                },
+                {
+                    "value": "dark",
+                    "label": "Dark"
+                },
+                {
+                    "value": "retro",
+                    "label": "Retro"
+                },
+                {
+                    "value": "night",
+                    "label": "Night"
+                },
+                {
+                    "value": "monochrome",
+                    "label": "Monochrome"
+                },
+                {
+                    "value": "modest",
+                    "label": "Modest"
+                },
+                {
+                    "value": "default",
+                    "label": "Default"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "color",
+            "id": "map_marker_color",
+            "label": "Marker color",
+            "default": "#FF0000"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:g.media.image",
+            "info": "Will be displayed while map is loading or if it's failed to load."
+        }
+    ],
+    "presets": [
+        {
+            "name": "Map"
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

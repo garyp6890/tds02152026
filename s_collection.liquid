@@ -1,0 +1,348 @@
+{%- liquid
+    assign NS = 'collection'
+    assign cn = '#' | append: NS
+    assign form_id = 'collectionFiltersForm' | append: section.id
+    assign sidebar_form_id = 'collectionFiltersFormSidebar' | append: section.id
+    assign product_columns = section.settings.columns
+    assign product_columns_mobile = 2
+    assign product_per_page = product_columns | times: section.settings.rows
+    
+    assign filters_enabled = false 
+    assign filters_block = section.blocks | where: 'type', 'filters' | first
+    if filters_block
+        assign filters_enabled = true 
+        assign show_sidebar = true
+        if section.settings.sidebar_as_drawer
+            assign show_sidebar = false
+        endif
+        assign drawer_id = 'collectionFiltersModal-' | append: section.id
+        assign sidebar_width = filters_block.settings.sidebar_width
+        assign collapse_filters = filters_block.settings.collapse_filters
+    endif
+    
+    assign clear_url = collection.url
+    if collection.sort_by != blank
+        assign clear_url = clear_url | append: '?sort_by=' | append: collection.sort_by
+    endif
+
+    if collection.all_products_count > 0
+        assign empty_collection = false
+        assign splash_msg_heading = 'sections.collection_template.empty'
+        assign splash_msg_subheading = 'sections.collection_template.use_fewer_filters'
+        assign splash_msg_button_lable = 'products.facets.clear_all'
+        assign splash_msg_button_link = clear_url
+    else
+        assign empty_collection = true
+        assign splash_msg_heading = 'sections.collection_template.empty_collection_message'
+        assign splash_msg_subheading = 'general.search.info'
+        assign splash_msg_button_lable = 'sections.collection_list.view_all'
+        assign splash_msg_button_link = routes.collections_url
+    endif
+
+    assign toolbar_cards_view_switch = false
+    if section.settings.cards_view == 'switchable'
+        assign toolbar_cards_view_switch = true
+    endif
+    if section.settings.show_sort_dropdown
+        assign show_sort = true 
+        assign sort_by = collection.sort_by | default: collection.default_sort_by
+    endif
+-%}
+
+{% if filters_enabled %}
+    {% capture Drawer_sidebar %}
+        <div class="{{ cn }}-drawer">
+            {% render 'collection-sidebar',
+                form_id: form_id,
+                collection: collection,
+                collapse_filters: collapse_filters,
+                show_sort: show_sort,
+                drawer: true
+            %}
+        </div>
+    {% endcapture %}
+    
+    <div class="{{ cn }}-drawer-wrapper">
+        {% render 'modal',
+            id: drawer_id,
+            content: Drawer_sidebar,
+            animation: 'left',
+            height: '100%',
+            width: 'min(350px, 80%)'
+        %}
+    </div>
+{% endif %}
+
+
+{%- if show_sidebar -%}
+    {%- capture product_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) * {{ 100 | minus: sidebar_width | divided_by: 100.0 }})/{{ product_columns }}{%- endcapture -%}
+{%- else -%}    
+    {%- capture product_image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px)/{{ product_columns }}{%- endcapture -%}
+{%- endif -%}
+
+{%- capture product_image_srcsize_mobile -%}90vw/{{ product_columns_mobile }}{%- endcapture -%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture No_products_msg -%}
+    {% render 'splash-msg',
+        t_heading: splash_msg_heading,
+        t_subheading: splash_msg_subheading,
+        button_t_label: splash_msg_button_lable, 
+        button_link: splash_msg_button_link,
+    %}
+{%- endcapture -%}
+
+{%- capture Toolbar_status -%}
+    {{ 'products.facets.product_count_simple' | t: count: collection.all_products_count }}
+{%- endcapture -%}
+
+{%- capture Toolbar -%}
+    {% render 'collection-toolbar',
+        status: Toolbar_status,
+        src: collection,
+        filters_enabled: filters_enabled,
+        drawer_id: drawer_id,
+        desktop_filters: show_sidebar,
+        sort_form_id: form_id,
+        show_sort: show_sort,
+        show_view_switch: toolbar_cards_view_switch
+    %}
+{%- endcapture -%}
+
+{% if filters_enabled and section.settings.show_active_filters %}
+    {%- capture Active_filters -%}
+        {% render 'collection-active-filters', 
+            src: collection, 
+            clear_url: clear_url 
+        %}
+    {%- endcapture -%}
+{% endif %}
+
+{% capture Product_grid %}
+    {%- paginate collection.products by product_per_page -%}
+        {% render 'collection-products',
+            product_image_srcsize_desktop: product_image_srcsize_desktop,
+            product_image_srcsize_mobile: product_image_srcsize_mobile,
+            products: collection.products,
+            fallback_msg: No_products_msg,
+            columns: product_columns,
+            mobile_columns: product_columns_mobile,
+            cards_view: section.settings.cards_view
+        %}
+        {% if section.settings.pagination_type == 'default' %}
+            {% render 'collection-pagination', paginate: paginate, anchor: '' %}
+        {% else %}
+            {% render 'collection-dynamic-pagination',
+                paginate: paginate,
+                type: section.settings.pagination_type,
+                form_id: form_id
+            %}
+        {% endif %}
+    {%- endpaginate -%}
+{% endcapture %}
+
+
+{%- capture Main -%}
+    {{ Active_filters }}
+    {{ Product_grid }}
+{%- endcapture -%}
+
+{%- capture Content -%}
+    <collection-provider
+        section-id="{{ section.id }}" 
+        collection-url="{{ collection.url }}" 
+        {% if show_sort %}
+            sort-by="{{ sort_by }}"
+        {% endif %}
+    >
+        <form id="{{ form_id }}" data-element="collection-form"></form>
+        {% if filters_enabled and show_sidebar %}
+            <form id="{{ sidebar_form_id }}" data-element="collection-form"></form>
+        {% endif %}
+        <div class="{{ cn }}-loader" data-element="loader">
+            <div class="{{ cn }}-loader-msg">
+                <div class="{{ cn }}-loader-msg-inner">
+                    {% render 'spinner', size: 'xs' %}
+                    <h5 class="{{ cn }}-loader-msg-title">{{ 'sections.collection_template.loading_products' | t }}</h5>
+                </div>
+            </div>
+            <div class="{{ cn }}-inner">
+                {%- unless empty_collection -%}
+                    {{ Toolbar }}
+                {%- endunless -%}
+                <div class="#container">
+                    {%- if filters_enabled and show_sidebar and empty_collection == false -%}
+                        <div class="#grid @type:template" style="--template: {{ section.settings.sidebar_width }}% 1fr; --template-mobile: none; --gap: calc(var(--glob-gutter) * 2); --gap-mobile: 0;">
+                            <div class="mobile-hidden">
+                                {% render 'collection-sidebar',
+                                    form_id: sidebar_form_id,
+                                    collection: collection,
+                                    collapse_filters: collapse_filters,
+                                    show_sort: false
+                                %}
+                            </div>
+                            <div>
+                                {{ Main }}
+                            </div>
+                        </div>
+                    {%- else -%}
+                        {{ Main }}
+                    {%- endif -%}
+                </div>
+            </div>
+        </div>
+    </collection-provider>
+    <script type="module" src="{{ 'collection-provider.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+
+{% render 'section-body',
+    content: Content
+%}
+
+
+{% schema %}
+{
+    "name": "Collection grid",
+    "tag": "section",
+    "settings": [
+        {
+            "type": "select",
+            "id": "cards_view",
+            "label": "Products view on desktop",
+            "options": [
+                {
+                    "label": "Cards",
+                    "value": "grid"
+                },
+                {
+                    "label": "Horizontal",
+                    "value": "list"
+                },
+                {
+                    "label": "User-switchable",
+                    "value": "switchable"
+                }
+            ],
+            "default": "grid"
+        },
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Desktop columns",
+            "min": 2,
+            "step": 1,
+            "max": 6,
+            "default": 4,
+            "info": "Does not affect the layout if the 'Horizontal' option is chosen above"
+        },
+        {
+            "type": "range",
+            "id": "rows",
+            "label": "Maximum rows",
+            "min": 2,
+            "step": 1,
+            "max": 6,
+            "default": 3,
+            "info": "Does not affect the layout if the 'Horizontal' option is chosen above"
+        },
+        {
+            "type": "select",
+            "id": "pagination_type",
+            "label": "Pagination type",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "Default"
+                },
+                {
+                    "value": "scroll",
+                    "label": "Infinite scroll"
+                },
+                {
+                    "value": "button",
+                    "label": "'View more' button"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_sort_dropdown",
+            "label": "Show sort dropdown",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_active_filters",
+            "label": "Show active filters",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Sidebar"
+        },
+        {
+            "type": "checkbox",
+            "id": "sidebar_as_drawer",
+            "label": "Display sidebar within drawer on desktop",
+            "info": "Is always displayed within drawer on mobile"
+        },
+        {
+            "type": "range",
+            "id": "sidebar_width",
+            "label": "Desktop sidebar width",
+            "min": 20,
+            "step": 1,
+            "max": 30,
+            "unit": "%",
+            "default": 20,
+            "info": "Will be ignored if you selected the option above"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "filters",
+            "name": "Filters",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "checkbox",
+                    "id": "hide_out_of_stock_filter",
+                    "label": "Hide 'Out of stock' filter",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "color_swatches",
+                    "label": "Enable theme built-in color swatches as filters [Learn more](https://support.milehighthemes.com/article/43-setting-up-color-swatches-as-product-variations)",
+                    "info": "Shopify visual filters will work by default independently of this option [Learn more](https://help.shopify.com/en/manual/online-store/search-and-discovery/filters#visual-filters)"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "collapse_filters",
+                    "label": "Collapse filters",
+                    "default": false
+                },
+                {
+                    "type": "checkbox",
+                    "id": "show_view_all",
+                    "label": "Limit visible filters",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "@app"
+        }
+    ],
+    "default": {
+        "blocks": [
+            {
+                "type": "filters"
+            }
+        ]
+    }
+}
+{% endschema %}

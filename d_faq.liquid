@@ -1,0 +1,255 @@
+{% liquid
+    assign NS = 'faq'
+    assign cn = '#' | append: NS  
+%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Content -%}
+    <div class="{{ cn }}">
+        {% for block in section.blocks %}
+            <div class="{{ cn }}-item" {{ block.shopify_attributes }}>
+                <details class="{{ cn }}-item-trigger">
+                    <summary class="{{ cn }}-item-header">
+                        <h5 class="{{ cn }}-item-heading">
+                            {% if block.settings.icon != 'none' %}
+                                <span class="{{ cn }}-item-icon">
+                                    {% render 'icon', name: block.settings.icon, load: true %}
+                                </span>
+                            {% endif %}
+                            {{ block.settings.heading }}
+                        </h5>
+                        <span class="{{ cn }}-item-indicator">
+                            {% render 'icon', name: 'angle-down' %}
+                        </span>
+                    </summary>
+                </details>
+                <div class="{{ cn }}-item-body">
+                    <div class="{{ cn }}-item-body-inner">
+                        <div class="{{ cn }}-item-body-content">
+                            <div class="#rte-block">
+                                {{ block.settings.text }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    spaced: true,
+    container: true,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    content_width: section.settings.content_width
+%}
+
+{% schema %}
+    {
+        "name": "FAQ",
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight",
+                "default": "FAQ"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "t:g.common.label.subheading"
+            },
+            {
+                "type": "range",
+                "id": "content_width",
+                "label": "Desktop content width",
+                "min": 50,
+                "max": 100,
+                "step": 5,
+                "default": 80,
+                "unit": "%"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "question",
+                "name": "Question",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "heading",
+                        "label": "t:g.common.label.heading",
+                        "default": "Frequently asked question"
+                    },
+                    {
+                        "type": "select",
+                        "id": "icon",
+                        "label": "t:g.common.icon.label",
+                        "options": [
+                            {
+                                "value": "none",
+                                "label": "t:g.icons.none"
+                            },
+                            {
+                                "value": "bell",
+                                "label": "t:g.icons.bell"
+                            },
+                            {
+                                "value": "check",
+                                "label": "t:g.icons.check"
+                            },
+                            {
+                                "value": "clock",
+                                "label": "t:g.icons.clock"
+                            },
+                            {
+                                "value": "coins",
+                                "label": "t:g.icons.coins"
+                            },
+                            {
+                                "value": "credit-card",
+                                "label": "t:g.icons.credit_card"
+                            },
+                            {
+                                "value": "truck-delivery",
+                                "label": "t:g.icons.truck_delivery"
+                            },
+                            {
+                                "value": "discount",
+                                "label": "t:g.icons.discount"
+                            },
+                            {
+                                "value": "flag",
+                                "label": "t:g.icons.flag"
+                            },
+                            {
+                                "value": "mood-happy",
+                                "label": "t:g.icons.mood_happy"
+                            },
+                            {
+                                "value": "headphones",
+                                "label": "t:g.icons.headphones"
+                            },
+                            {
+                                "value": "heart",
+                                "label": "t:g.icons.heart"
+                            },
+                            {
+                                "value": "help",
+                                "label": "t:g.icons.help"
+                            },
+                            {
+                                "value": "info",
+                                "label": "t:g.icons.info"
+                            },
+                            {
+                                "value": "leaf",
+                                "label": "t:g.icons.leaf"
+                            },
+                            {
+                                "value": "lock",
+                                "label": "t:g.icons.lock"
+                            },
+                            {
+                                "value": "mail",
+                                "label": "t:g.icons.mail"
+                            },
+                            {
+                                "value": "map-marker",
+                                "label": "t:g.icons.map_marker"
+                            },
+                            {
+                                "value": "message",
+                                "label": "t:g.icons.message"
+                            },
+                            {
+                                "value": "pig-money",
+                                "label": "t:g.icons.pig_money"
+                            },
+                            {
+                                "value": "package",
+                                "label": "t:g.icons.package"
+                            },
+                            {
+                                "value": "phone",
+                                "label": "t:g.icons.phone"
+                            },
+                            {
+                                "value": "receipt",
+                                "label": "t:g.icons.receipt"
+                            },
+                            {
+                                "value": "recycle",
+                                "label": "t:g.icons.recycle"
+                            },
+                            {
+                                "value": "rocket",
+                                "label": "t:g.icons.rocket"
+                            },
+                            {
+                                "value": "shield-check",
+                                "label": "t:g.icons.shield_check"
+                            },
+                            {
+                                "value": "mood-smile",
+                                "label": "t:g.icons.mood_smile"
+                            },
+                            {
+                                "value": "star",
+                                "label": "t:g.icons.star"
+                            },
+                            {
+                                "value": "building-store",
+                                "label": "t:g.icons.building_store"
+                            },
+                            {
+                                "value": "tag",
+                                "label": "t:g.icons.tag"
+                            },
+                            {
+                                "value": "thumbs-up",
+                                "label": "t:g.icons.thumbs_up"
+                            },
+                            {
+                                "value": "users",
+                                "label": "t:g.icons.users"
+                            }
+                        ],
+                        "default": "none"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "t:g.common.label.text",
+                        "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "FAQ",
+                "category": "Text",
+                "blocks": [
+                    {
+                        "type": "question"
+                    },
+                    {
+                        "type": "question"
+                    },
+                    {
+                        "type": "question"
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "templates": ["password"],
+            "groups": ["header", "custom.overlay"]
+        }
+    }
+{% endschema %}

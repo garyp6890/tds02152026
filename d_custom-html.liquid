@@ -1,0 +1,116 @@
+{%- capture Content -%}
+    <div class="#rte @text-align:{{ section.settings.text_align }}" style="--font-size: {{ section.settings.font_scale | divided_by: 100.0 }}rem;">
+        {{ section.settings.html }}
+    </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    container: section.settings.section_layout,
+    spaced: true,
+    button_label: section.settings.section_button_label,
+    button_link: section.settings.section_button_url
+%}
+
+{% schema %}
+{
+    "name": "Custom HTML",
+    "tag": "section",
+    "class": "spaced-section",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Custom HTML"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "select",
+            "id": "section_layout",
+            "label": "t:g.section.layout.label",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "t:g.section.layout.options.default"
+                },
+                {
+                    "value": "narrow",
+                    "label": "t:g.section.layout.options.narrow"
+                },
+                {
+                    "value": "x-narrow",
+                    "label": "t:g.section.layout.options.x-narrow"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "html",
+            "id": "html",
+            "label": "Custom HTML",
+            "default": "<p>Custom HTML content.</p>"
+        },
+        {
+            "type": "range",
+            "id": "font_scale",
+            "label": "Text scale",
+            "min": 100,
+            "step": 5,
+            "max": 150,
+            "unit": "%",
+            "default": 100
+        },
+        {
+            "type": "select",
+            "id": "text_align",
+            "label": "t:g.common.text_align.label",
+             "options": [
+                {
+                    "value": "left",
+                    "label": "t:g.common.text_align.left"
+                },
+                {
+                    "value": "center",
+                    "label": "t:g.common.text_align.center"
+                },
+                {
+                    "value": "right",
+                    "label": "t:g.common.text_align.right"
+                }
+            ],
+            "default": "center"
+        },
+        {
+            "type": "header",
+            "content": "t:g.section.button.header"
+        },
+        {
+            "type": "text",
+            "id": "section_button_label",
+            "label": "t:g.section.button.label"
+        },
+        {
+            "type": "url",
+            "id": "section_button_url",
+            "label": "t:g.section.button.link"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Custom HTML"
+        }
+    ],
+    "disabled_on": {
+        "groups": ["custom.overlay"]
+    }
+}
+{% endschema %}

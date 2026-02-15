@@ -1,0 +1,10 @@
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <template data-req-content>
+        {%- for product in recommendations.products -%}
+            {% render 'product-card-min',
+                product: product,
+                add_to_cart: true
+            %}
+        {%- endfor -%}
+    </template>
+{%- endif -%}

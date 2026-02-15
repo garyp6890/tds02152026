@@ -1,0 +1,140 @@
+{%- liquid
+    assign columns = section.settings.columns
+    assign mobile_columns = 1
+    assign gap = '2rem'
+    assign mobile_gap = '1rem'
+    assign articles_per_page = columns | times: section.settings.max_rows
+-%}
+
+{% render 'load-css', file: 'article-card' %}
+{%- capture image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px)/{{ columns }} - {{ gap }}{%- endcapture -%}
+{%- capture image_srcsize_mobile -%}90vw/{{ mobile_columns }} - {{ mobile_gap }}{%- endcapture -%}
+
+{%- capture Content -%}
+    {%- paginate blog.articles by articles_per_page -%}
+        <div class="#grid @type:columns" style="--columns:{{ columns }}; --gap: 2rem; --gap-mobile: 1rem;">
+            {%- for article in blog.articles -%}
+                {% render 'article-card',
+                    article: article,
+                    show_date: section.settings.show_date,
+                    show_author: section.settings.show_author,
+                    hide_excerpt_mobile: section.settings.hide_excerpt_mobile,
+                    tags_display: section.settings.tags_display,
+                    size: section.settings.image_size,
+                    image_srcsize_desktop: image_srcsize_desktop,
+                    image_srcsize_mobile: image_srcsize_mobile,
+                    show_excerpt: true,
+                    mobile_cards_display: section.settings.mobile_cards_display
+                %}
+            {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+            {% render 'pagination', paginate: paginate, anchor: '' %}
+        {%- endif -%} 
+    {%- endpaginate -%}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,    
+    spaced: true,
+    container: 'default'
+%}
+
+{% schema %}
+{
+    "name": "Blog",
+    "settings": [
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Desktop columns",
+            "min": 2,
+            "step": 1,
+            "max": 5,
+            "default": 4
+        },
+        {
+            "type": "range",
+            "id": "max_rows",
+            "label": "Desktop max rows",
+            "min": 2,
+            "step": 1,
+            "max": 5,
+            "default": 3
+        },
+        {
+            "type": "select",
+            "id": "image_size",
+            "label": "t:g.media.image_size.label",
+            "options": [
+                {
+                    "value": "portrait",
+                    "label": "t:g.media.image_size.options.portrait"
+                },
+                {
+                    "value": "landscape",
+                    "label": "t:g.media.image_size.options.landscape"
+                },
+                {
+                    "value": "square",
+                    "label": "t:g.media.image_size.options.square"
+                }
+            ],
+            "default": "square" 
+        },
+        {
+            "type": "checkbox",
+            "id": "show_date",
+            "default": true,
+            "label": "t:sections.featured-blog.settings.show_date.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_author",
+            "default": false,
+            "label": "t:sections.featured-blog.settings.show_author.label"
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_excerpt_mobile",
+            "label": "t:g.blog.article.hide_excerpt_text",
+            "default": false
+        },
+        {
+            "type": "select",
+            "id": "tags_display",
+            "label": "t:g.blog.article.tags_display.label",
+            "options": [
+                {
+                    "value": "first",
+                    "label": "t:g.blog.article.tags_display.options.first"
+                },
+                {
+                    "value": "all",
+                    "label": "t:g.blog.article.tags_display.options.all"
+                },
+                {
+                    "value": "none",
+                    "label": "t:g.blog.article.tags_display.options.none"
+                }
+            ]
+        },
+        {
+            "type": "select",
+            "id": "mobile_cards_display",
+            "label": "Mobile cards display",
+            "options": [
+                {
+                    "value": "cards",
+                    "label": "Cards"
+                },
+                {
+                    "value": "list",
+                    "label": "List"
+                }
+            ],
+            "default": "cards"
+        }
+    ]
+}
+{% endschema %}

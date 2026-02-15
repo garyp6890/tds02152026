@@ -1,0 +1,361 @@
+{%- liquid
+    assign NS = 'compared-images'
+    assign cn = '#' | append: NS
+    assign section_layout = section.settings.section_layout
+
+    for block in section.blocks
+        case block.type
+            when 'before_image'
+                assign before_image_block = block
+            when 'after_image'
+                assign after_image_block = block
+        endcase
+    endfor
+
+    assign section_blocks_requirements = true
+    if section.blocks.size != 2
+        assign section_blocks_requirements = false
+    endif
+
+    if section_blocks_requirements
+        assign color_scheme = section.settings.color_scheme
+    endif
+-%}
+
+{%- if section_layout == 'full' -%}
+    {%- capture image_srcsize_desktop -%}100vw{%- endcapture -%}
+    {%- capture image_srcsize_mobile -%}100vw{%- endcapture -%}
+{%- endif -%}
+
+{%- if section_layout == 'container' -%}
+    {%- capture image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px){%- endcapture -%}
+    {%- capture image_srcsize_mobile -%}90vw{%- endcapture -%}
+    {%- assign curved = true -%}
+    {%- assign spaced = true -%}
+{%- endif -%}
+
+{% capture Before_image %}
+    {%- capture Hero_before_text -%}
+        {% render 'hero', 
+            heading: before_image_block.settings.heading,
+            subheading: before_image_block.settings.subheading,
+            align: 'left',
+            auto_colors: true
+        %}
+    {%- endcapture -%}
+
+    {% capture Before_caption %}
+        {% render 'floating-content',
+            content: Hero_before_text,
+            absolute: true,
+            x: 'left',
+            y: section.settings.text_position,
+            container: true,
+            padded: true
+        %}
+    {% endcapture %}
+
+    <div class="{{ cn }}-before" {{ before_image_block.shopify_attributes }}>
+        {% render 'media', 
+            image: before_image_block.settings.image,
+            image_mobile: before_image_block.settings.mobile_image,
+            srcsize_desktop: image_srcsize_desktop,
+            srcsize_mobile: image_srcsize_mobile,
+            placeholder: 'hero-apparel',
+            height: section.settings.image_size,
+            height_mobile: section.settings.mobile_image_size
+        %}
+        {{ Before_caption }} 
+    </div>
+{% endcapture %}
+
+{% capture After_image %}
+    {%- capture Hero_after_text -%}
+        {% render 'hero', 
+            heading: after_image_block.settings.heading,
+            subheading: after_image_block.settings.subheading,
+            align: 'right',
+            auto_colors: true
+        %}
+    {%- endcapture -%}
+
+    {% capture After_caption %}
+        {% render 'floating-content',
+            content: Hero_after_text,
+            absolute: true,
+            x: 'right',
+            y: section.settings.text_position,
+            container: true,
+            padded: true
+        %}
+    {% endcapture %}
+
+    <div class="{{ cn }}-after" {{ after_image_block.shopify_attributes }}>
+        {% render 'media', 
+            image: after_image_block.settings.image,
+            image_mobile: after_image_block.settings.mobile_image,
+            srcsize_desktop: image_srcsize_desktop,
+            srcsize_mobile: image_srcsize_mobile,
+            placeholder: 'collection-apparel',
+            height: section.settings.image_size,
+            height_mobile: section.settings.mobile_image_size
+        %}
+        {{ After_caption }} 
+    </div>
+{% endcapture %}
+
+{% render 'load-css', file: NS %}
+
+{% capture Content %}
+    {% if section_blocks_requirements == false %}
+        {%- if request.design_mode -%}
+            {% render 'editor-notification',
+                t_heading: 'general.editor.compared_images_blocks_requirements'
+            %}
+        {%- endif -%}
+    {% else %}
+        <{{ NS }}
+            class="{{ cn }}"
+            style="
+                --{{ NS }}-height: {{ section.settings.image_size }};
+                --{{ NS }}-height-mobile: {{ section.settings.mobile_image_size }};
+            "
+            section-id="{{ section.id }}">
+            {{ After_image }}
+            {{ Before_image }}
+            <div class="{{ cn }}-cursor">
+                <input class="{{ cn }}-cursor-range" type="range" min="0" max="100" step="0.1" data-element="range">
+                <span class="{{ cn }}-cursor-separator">
+                    <span class="{{ cn }}-cursor-separator-thumb">
+                        {% render 'icon', name: 'code' %}
+                    </span>
+                </span>
+            </div>
+        </{{ NS }}>
+    {% endif %}
+{% endcapture %}
+
+{% if section_blocks_requirements or request.design_mode %}
+    {% render 'section-body',
+        heading: section.settings.heading,
+        subheading: section.settings.subheading,
+        content: Content,
+        paint: 'content',
+        color_scheme: color_scheme,
+        container: section_layout,
+        spaced: spaced,
+        curved: curved,
+    %}
+{% endif %}
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+
+{% schema %}
+    {
+        "name": "Before/after image",
+        "max_blocks": 2,
+        "settings": [
+            {
+                "type": "color_scheme",
+                "id": "color_scheme",
+                "default": "main",
+                "label": "Color Scheme",
+                "info": "Affects only the blocks text content"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "heading",
+                "label": "t:g.common.label.heading",
+                "info": "t:g.info.heading_highlight",
+                "default": "Before/after image"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Subheading",
+                "info": "t:g.hero.subheading_position.info"
+            },
+            {
+                "type": "select",
+                "id": "section_layout",
+                "label": "t:g.section.layout.label",
+                "options": [
+                    {
+                        "value": "container",
+                        "label": "Container"
+                    },
+                    {
+                        "value": "full",
+                        "label": "Full width"
+                    }
+                ],
+                "default": "full"
+            },
+            {
+                "type": "select",
+                "id": "image_size",
+                "label": "t:g.media.image_size.label",
+                "options": [
+                    {
+                        "value": "100vh",
+                        "label": "Full height"
+                    },
+                    {
+                        "value": "450px",
+                        "label": "450px"
+                    },
+                    {
+                        "value": "550px",
+                        "label": "550px"
+                    },
+                    {
+                        "value": "650px",
+                        "label": "650px"
+                    },
+                    {
+                        "value": "750px",
+                        "label": "750px"
+                    }
+                ],
+                "default": "100vh"
+            },
+            {
+                "type": "select",
+                "id": "mobile_image_size",
+                "label": "t:g.media.image_size.mobile_label",
+                "options": [
+                    {
+                        "value": "100vh",
+                        "label": "Full height"
+                    },
+                    {
+                        "value": "350px",
+                        "label": "350px"
+                    },
+                    {
+                        "value": "450px",
+                        "label": "450px"
+                    },
+                    {
+                        "value": "550px",
+                        "label": "550px"
+                    },
+                    {
+                        "value": "650px",
+                        "label": "650px"
+                    }
+                ],
+                "default": "100vh"
+            },
+            {
+                "type": "select",
+                "id": "text_position",
+                "label": "t:g.hero.caption.position.label",
+                "options": [
+                    {
+                        "value": "top",
+                        "label": "Top"
+                    },
+                    {
+                        "value": "center",
+                        "label": "Center"
+                    },
+                    {
+                        "value": "bottom",
+                        "label": "Bottom"
+                    }
+                ],
+                "default": "bottom"
+            }
+        ],
+        "blocks": [
+            {
+                "name": "Before image",
+                "type": "before_image",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Before image",
+                        "info": "t:g.media.resolution_recommendations.full_screen"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "mobile_image",
+                        "label": "Before mobile image (optional)",
+                        "info": "t:g.media.resolution_recommendations.mobile"
+                    },
+                    {
+                        "type": "inline_richtext",
+                        "id": "heading",
+                        "label": "Before image heading",
+                        "info": "t:g.info.heading_highlight",
+                        "default": "Before"
+                    },
+                    {
+                        "type": "text",
+                        "id": "subheading",
+                        "label": "Before image subheading",
+                        "info": "t:g.hero.subheading_position.info"
+                    }
+                ]
+            },
+            {
+                "name": "After image",
+                "type": "after_image",
+                "limit": 1,
+                "settings": [
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "After image",
+                        "info": "t:g.media.resolution_recommendations.full_screen"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "mobile_image",
+                        "label": "After mobile image (optional)",
+                        "info": "t:g.media.resolution_recommendations.mobile"
+                    },
+                    {
+                        "type": "inline_richtext",
+                        "id": "heading",
+                        "label": "After image heading",
+                        "info": "t:g.info.heading_highlight",
+                        "default": "After"
+                    },
+                    {
+                        "type": "text",
+                        "id": "subheading",
+                        "label": "After image subheading",
+                        "info": "t:g.hero.subheading_position.info"
+                    }
+                ]
+            }
+        ],
+        "presets": [
+            {
+                "name": "Before/after image",
+                "blocks": [
+                    {
+                        "type": "before_image",
+                        "settings": {
+                            "heading": "Before"
+                        }
+                    },
+                    {
+                        "type": "after_image",
+                        "settings": {
+                            "heading": "After"
+                        }
+                    }
+                ]
+            }
+        ],
+        "disabled_on": {
+            "templates": ["password"],
+            "groups": ["header", "footer", "custom.overlay"]
+        }
+    }
+{% endschema %}

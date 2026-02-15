@@ -1,0 +1,130 @@
+{%- liquid
+    assign mobile_columns = 2
+    assign columns = section.settings.columns    
+-%}
+{%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}{%- endcapture -%}
+{%- capture image_srcsize_mobile -%}90vw/{{ mobile_columns }}{%- endcapture -%}
+
+{% render 'load-css', file: 'collection-card' %}
+
+
+{%- capture Content -%}
+    <div class="#grid @type:columns" style="--columns: {{ columns }}; --columns-mobile: {{ mobile_columns }};">
+        {% for block in section.blocks %}
+            {% if block.settings.collection == blank and block.settings.image == blank  %}
+                {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+            {% endif %}
+            <div {{ block.shopify_attributes }}>
+                {% render 'collection-card',
+                    image: block.settings.image,
+                    custom_title: block.settings.custom_title,
+                    collection: block.settings.collection,
+                    placeholder_index: placeholder_index,
+                    image_srcsize_desktop: image_srcsize_desktop,
+                    image_srcsize_mobile: image_srcsize_mobile
+                %}
+            </div>            
+        {% endfor %}
+    </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+    heading: section.settings.heading,
+    subheading: section.settings.subheading,
+    content: Content,
+    spaced: true,
+    container: true,
+    button_label: section.settings.section_button_label,
+    button_link: routes.collections_url
+%}
+
+
+
+{% schema %}
+{
+    "name": "Collection list",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "heading",
+            "label": "t:g.common.label.heading",
+            "info": "t:g.info.heading_highlight",
+            "default": "Collection list"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading",
+            "info": "t:g.hero.subheading_position.info"
+        },
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Desktop columns",
+            "min": 3,
+            "step": 1,
+            "max": 6,
+            "default": 5              
+        },
+        {
+            "type": "header",
+            "content": "t:g.section.button.header"
+        },
+        {
+            "type": "text",
+            "id": "section_button_label",
+            "label": "t:g.section.button.label"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "collection",
+            "name": "Collection",
+            "settings": [
+                {
+                    "type": "collection",
+                    "id": "collection",
+                    "label": "Collection"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Custom image",
+                    "info": "t:g.media.resolution_recommendations.third_of_screen"
+                },
+                {
+                    "type": "text",
+                    "id": "custom_title",
+                    "label": "Custom title"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Collection list",
+            "blocks": [
+                {
+                  "type": "collection"
+                },
+                {
+                  "type": "collection"
+                },
+                {
+                  "type": "collection"
+                },
+                {
+                  "type": "collection"
+                },
+                {
+                  "type": "collection"
+                }
+            ]
+        }
+    ],
+    "disabled_on": {
+        "templates": ["password"],
+        "groups": ["header", "custom.overlay"]
+    }
+}
+{% endschema %}

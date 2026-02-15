@@ -1,0 +1,434 @@
+{% liquid
+    assign NS = 'products-comparison'
+    assign cn = '#' | append: NS
+    assign modal_id = 'products-comparison-modal'
+    assign maximum_rows = 51
+    assign meta_block_types = 'rating,product_option,metafield' | split: ','
+    assign meta_counter = 0
+    assign configuration_string = section.settings | json
+    assign column_width = '20rem'
+    if section.settings.headings_display == 'cell' 
+        assign cell_headings_display = true
+    endif
+%}
+
+{% render 'load-css', file: NS %}
+{% if settings.product_card_compare %}
+    {% render 'load-css', file: 'products-comparison-checkbox', lazy: true %}
+{% endif %}
+
+{% render 'load-css', file: 'product-stock-alert', lazy: true %}
+
+{% if section.settings.headings_display == 'column' %}
+    {% capture Headings %}
+        <div class="{{ cn }}-column @headings">
+            <div class="{{ cn }}-cell"></div>
+            {%- for block in section.blocks -%}
+                {% liquid
+                    assign block_settings_json = block.settings | json
+                    assign configuration_string = configuration_string | append: block.id | append: block_settings_json
+                %}
+                {%- capture Label -%}
+                    {%- case block.type -%}
+                        {%- when 'price' -%}
+                            {{ 'sections.compare_products.price' | t }}
+                        {%- when 'weight' -%}
+                            {{ 'sections.compare_products.weight' | t }}
+                        {%- when 'type' -%}
+                            {{ 'sections.compare_products.type' | t }}
+                        {%- when 'description' -%}
+                            {{ 'sections.compare_products.description' | t }}
+                        {%- when 'vendor' -%}
+                            {{ 'sections.compare_products.brand' | t }}
+                        {%- when 'rating' -%}
+                            {{ 'sections.compare_products.rating' | t }}
+                        {%- when 'stock_alert' -%}
+                            {% render 'load-css', file: 'product-stock-alert' %}
+                            {{ 'sections.compare_products.availability' | t }}
+                        {%- when 'product_option' -%}
+                            {{ block.settings.label | default: block.settings.option_name }}
+                        {%- when 'metafield' -%}
+                            {{ block.settings.label }}
+                    {%- endcase -%} 
+                {%- endcapture -%}
+                {% if Label != blank %}
+                    {% assign meta_block = false %}
+                    {% if meta_block_types contains block.type %}
+                        {% assign meta_block = true %}
+                        {%- assign meta_counter = meta_counter | plus: 1 -%}
+                    {% endif %}
+                    <div class="{{ cn }}-cell" {% if meta_block %}data-empty-meta="{{ meta_counter }}"{% endif %}>
+                        <div class="{{ cn }}-cell-inner">
+                            <p class="{{ cn }}-cell-heading">
+                                {{ Label }}
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+            {%- endfor -%}           
+        </div>
+    {% endcapture %}
+{% endif %}
+
+{%- capture Modal_content -%}
+    <div class="{{ cn }}-modal">
+        <button class="{{ cn }}-modal-close" data-element="modal-close-button">
+            {% render 'icon', name: 'x' %}
+        </button>
+        <div class="{{ cn }}-table" data-element="table">
+            {{ Headings }}
+        </div>
+    </div>
+{%- endcapture -%}
+
+
+<{{ NS }} 
+    class="
+        {{ cn }}
+        @headings-display:{{ section.settings.headings_display }}
+        {% if section.settings.cell_dividers %}
+            @cell-dividers
+        {% endif %}
+        {% if section.settings.column_dividers %}
+            @column-dividers
+        {% endif %}
+        {% if section.settings.products_limit %}
+            @products-limit
+        {% endif %}
+    "
+    style="--{{ NS }}-popup-rows: {{ maximum_rows }};" 
+    section-id="{{ section.id }}" 
+    checksum="{{ configuration_string | sha1 }}"
+    {% unless request.design_mode %}cached{% endunless %}
+    {% if section.settings.products_limit %}products-limit{% endif %}
+    {% if section.settings.show_bar %}show-bar{% endif %}
+    {% if section.settings.show_sidescroll_info %}
+        sidescroll-info-msg="{{ 'general.accessibility.sidescroll_msg' | t }}"
+        sidescroll-info-title="{{ 'general.accessibility.sidescroll_title' | t }}"
+    {% endif %}
+>
+    {% if section.settings.show_bar %}
+        <div class="{{ cn }}-bar">
+            <div class="{{ cn }}-bar-thumbs-wrapper">
+                <div class="{{ cn }}-bar-thumbs" data-element="thumbs">
+                </div>
+                {% unless section.settings.products_limit %}
+                    <div class="{{ cn }}-bar-thumbs-tail">
+                        +<span class="{{ cn }}-bar-thumbs-tail-value"></span>
+                    </div>
+                {% endunless %}
+            </div>
+            <div class="{{ cn }}-bar-buttons">
+                {%- capture Compare_button_text -%}
+                    <span>{{ 'sections.compare_products.compare' | t }}</span>
+                    <span data-element="button-counter"></span>
+                    <span class="desktop-hidden">{{ 'sections.compare_products.products' | t }}</span>
+                {%- endcapture -%}
+                {%- render 'button',
+                    text: Compare_button_text,
+                    no_arrow: true,
+                    element: 'compare-button',
+                    loading: true
+                -%}
+                <div class="{{ cn }}-bar-buttons-cancel mobile-hidden">
+                    {% render 'button',
+                        t_text: 'sections.compare_products.cancel',
+                        tier: 'link',
+                        no_arrow: true,
+                        element: 'cancel'
+                    %}
+                </div>
+
+                <div class="{{ cn }}-bar-buttons-cancel desktop-hidden" data-element="cancel">
+                    {% render 'icon', name: 'x' %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% render 'modal',
+        content: Modal_content,
+        height: '100vh',
+        width: '100vw',
+        id: modal_id,
+        show_close: false
+    %}
+</{{ NS }}>
+
+{% if request.page_type == 'product' %}
+    {% render 'products-comparison-item-template', 
+        meta_block_types: meta_block_types, 
+        modal_item_media_size: column_width,
+        headings_display: cell_headings_display
+    %} 
+{% endif %}
+
+{%- if request.design_mode and section.blocks.size > 1-%}
+    <script type="module">
+        const { Utils, DOMEvents, Store } = Global;
+        const { $toggleDisplay } = Utils;
+
+        const COMPARING_URLS_STORE_KEY = 'compare';
+
+        class EditorProductsComparison extends window.Editor {
+
+            events = {
+                section: {
+                    deselect: this._close,
+                    select: this._onSelect,
+                    unload: this._onSectionUnload
+                },
+                block: {
+                    select: this._open
+                }
+            }
+
+            init() {
+                const checkboxes = document.querySelectorAll('products-comparison-checkbox');
+                this.$component.destroy = () => {
+                    if (checkboxes.length > 0) {
+                        checkboxes.forEach(el => $toggleDisplay(el, false))
+                    }
+                }
+            }
+
+            _onSelect() {
+                this._open();
+            }
+            
+            _onCompareBlockSelect(e) {
+                this._open();
+            }
+
+            _onCompareDeselect() {
+                this._close();
+            }
+
+            _open() {
+                if (this.counter > 1) {
+                    this.$component._onCompareButtonClick();
+                }
+            }
+
+            _close() {
+                this.$modal.dispatchEvent(DOMEvents.MODAL_CLOSE);
+            }
+
+            get $modal() {
+                return document.querySelector('products-comparison').querySelector('modal-container');
+            }
+
+            get $component() {
+                return document.querySelector('products-comparison');
+            }
+
+            get counter() {
+                return Store.get(COMPARING_URLS_STORE_KEY).length;
+            }
+        }
+        const productsComparisonEditorUX = new EditorProductsComparison('{{ section.id }}');
+        productsComparisonEditorUX.render();
+    </script>
+{%- endif -%}
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+<script type="module" src="{{ 'products-comparison-checkbox.js' | asset_url }}"></script>
+
+{% schema %}
+{
+    "name": "Products comparison",
+    "settings": [
+        {
+            "type": "paragraph",
+            "content": "Some changes require saving before apply. Configure compare toggles to allow users to compare products. [Learn more](https:\/\/support.milehighthemes.com)"
+        },
+        {
+            "type": "checkbox",
+            "id": "products_limit",
+            "label": "Limit maximum products by 5",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "headings_display",
+            "label": "Compare headings display",
+            "options": [
+                {
+                    "value": "column",
+                    "label": "Separate column"
+                },
+                {
+                    "value": "cell",
+                    "label": "Each cell"
+                },
+                {
+                    "value": "none",
+                    "label": "Don't display"
+                }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "id": "cell_dividers",
+            "label": "Show horizontal dividers",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "column_dividers",
+            "label": "Show vertical dividers",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_product_title_truncation",
+            "label": "Enable product title truncation",
+            "default": true
+        },
+        {
+            "type": "range",
+            "id": "product_title_max_lines",
+            "label": "Maximum lines before truncation",
+            "min": 1,
+            "step": 1,
+            "max": 3,
+            "default": 2,
+            "info": "Is ignored if truncation is not enabled"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_bar",
+            "label": "Show thumbnails bar",
+            "default": true,
+            "info": "Tip: you can enable 'Products comparison' link in the 'Header' section"
+        },
+        {
+            "type": "checkbox",
+            "id": "show_sidescroll_info",
+            "label": "Show 'Horizontal scroll' tooltip",
+            "info": "Once per store visit. Desktop only",
+            "default": true
+        }
+    ],
+    "blocks": [
+        {
+            "type": "price",
+            "name": "Price",
+            "limit": 1
+        },
+        {
+            "type": "description",
+            "name": "Description",
+            "limit": 1
+        },
+        {
+            "type": "type",
+            "name": "Type",
+            "limit": 1
+        },
+        {
+            "type": "weight",
+            "name": "Weight",
+            "limit": 1
+        },
+        {
+            "type": "rating",
+            "name": "Rating",
+            "settings": [
+                {
+                    "type": "paragraph",
+                    "content": "t:g.info.product.reviews"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "hide_empty",
+                    "label": "Hide rating if none of compared products are rated",
+                    "default": true
+                }
+            ],
+            "limit": 1
+        },
+        {
+            "type": "vendor",
+            "name": "Vendor (brand)",
+            "limit": 1
+        },
+        {
+            "type": "stock_alert",
+            "name": "Availability",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "checkbox",
+                    "id": "actual_inventory",
+                    "default": false,
+                    "label": "Show inventory count"
+                }
+            ]
+        },
+        {
+            "type": "product_option",
+            "name": "Product option",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "label": "Heading",
+                    "info": "Optional. Option name will be used by default"
+                },
+                {
+                    "type": "text",
+                    "id": "option_name",
+                    "label": "Option name",
+                    "info": "Required",
+                    "default": "Color"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "use_color_swatches",
+                    "label": "Use swatches for color option",
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "metafield",
+            "name": "Metafield",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "label": "Heading",
+                    "info": "Required"
+                },
+                {
+                    "type": "text",
+                    "id": "key",
+                    "label": "Metafield namespace and key",
+                    "info": "Required"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Products comparison",
+            "blocks": [
+                {
+                    "type": "price"
+                },
+                {
+                    "type": "stock_alert"
+                },
+                {
+                    "type": "vendor"
+                }
+            ]
+        }
+    ],
+    "enabled_on": {
+        "groups": ["custom.overlay"]
+    },
+    "limit": 1
+}
+{% endschema %}
