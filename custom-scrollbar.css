@@ -1,0 +1,234 @@
+@media (min-width: 992px) {
+  .root--custom-scroll .\#header-searchbar-product-type-selector::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#header-searchbar-product-type-selector::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#header-searchbar-product-type-selector::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#header-searchbar-product-type-selector {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#main-nav-drawer-stage > *::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#main-nav-drawer-stage > *::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#main-nav-drawer-stage > *::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#main-nav-drawer-stage > * {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#main-nav-catalog-sub::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#main-nav-catalog-sub::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#main-nav-catalog-sub::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#main-nav-catalog-sub {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#cart-drawer::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#cart-drawer::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#cart-drawer::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#cart-drawer {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#collection-sidebar::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#collection-sidebar::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#collection-sidebar::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#collection-sidebar {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#collection-drawer::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#collection-drawer::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#collection-drawer::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#collection-drawer {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#products-comparison-modal::-webkit-scrollbar, .root--custom-scroll .\#products-comparison-table::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#products-comparison-modal::-webkit-scrollbar-track, .root--custom-scroll .\#products-comparison-table::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#products-comparison-modal::-webkit-scrollbar-thumb, .root--custom-scroll .\#products-comparison-table::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#products-comparison-modal, .root--custom-scroll .\#products-comparison-table {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#modal-container-content::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#modal-container-content::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#modal-container-content::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#modal-container-content {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#drop-down-menu > *::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#drop-down-menu > *::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#drop-down-menu > *::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#drop-down-menu > * {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#localization-dropdown-menu-inner::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#localization-dropdown-menu-inner::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#localization-dropdown-menu-inner::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#localization-dropdown-menu-inner {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#cart-variant-selector-modal-content::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#cart-variant-selector-modal-content::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#cart-variant-selector-modal-content::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#cart-variant-selector-modal-content {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#product-quick-view-info::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#product-quick-view-info::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#product-quick-view-info::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#product-quick-view-info {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}
+@media (min-width: 992px) {
+  .root--custom-scroll .\#product-options-list-table-wrapper::-webkit-scrollbar {
+    width: var(--glob-scroll-width);
+    height: var(--glob-scroll-width);
+  }
+  .root--custom-scroll .\#product-options-list-table-wrapper::-webkit-scrollbar-track {
+    background: var(--glob-scroll-track-bg);
+  }
+  .root--custom-scroll .\#product-options-list-table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--glob-scroll-thumb-bg);
+    border-radius: var(--glob-border-radius-base);
+  }
+  @supports (scrollbar-width: auto) and (not selector(::-webkit-scrollbar)) {
+    .root--custom-scroll .\#product-options-list-table-wrapper {
+      scrollbar-color: var(--glob-scroll-thumb-bg) var(--glob-scroll-track-bg);
+    }
+  }
+}

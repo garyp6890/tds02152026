@@ -1,0 +1,51 @@
+.\#footer-localization {
+  --footer-localization-border-width: min(0.15em, 2px);
+  --footer-localization-border-color: currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--glob-size-6);
+}
+.\#footer-localization-item-title {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: var(--glob-size-3);
+  text-align: center;
+  opacity: 0.8;
+}
+.\#footer-localization-item-button {
+  padding: var(--glob-size-3) var(--glob-size-5);
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-4);
+  position: relative;
+  z-index: 1;
+  height: 48px;
+}
+.\#footer-localization-item-button:after {
+  content: "";
+  border-radius: var(--glob-border-radius-base);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border: var(--footer-localization-border-width) solid var(--footer-localization-border-color);
+  opacity: 0.15;
+  z-index: -1;
+}
+.\#footer-localization-item-button-title {
+  font-size: 1.15rem;
+}
+.\#footer-localization-item-button-iso {
+  font-weight: var(--glob-body-bold-weight);
+  font-size: 1.3225rem;
+}
+.\#footer-localization-item-button-caret .\#icon {
+  --size: 1.2rem;
+  opacity: 0.46;
+}
+.\#footer-localization-item-button-flag {
+  border-radius: var(--glob-border-radius-sm);
+}

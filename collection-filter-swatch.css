@@ -1,0 +1,58 @@
+.\#collection-filter-swatch-item {
+  display: block;
+}
+.\#collection-filter-swatch-item-input:checked + .\#collection-filter-swatch-item-body {
+  border-color: var(--color-g-accent);
+}
+.\#collection-filter-swatch-item-input:disabled + .\#collection-filter-swatch-item-body {
+  opacity: 0.4;
+  position: relative;
+  overflow: hidden;
+  background: #e6e6e6;
+  cursor: not-allowed;
+}
+.\#collection-filter-swatch-item-input:disabled + .\#collection-filter-swatch-item-body:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #b3b3b3;
+  transform: rotate(-45deg);
+  top: calc(50% - 1px);
+  left: 0;
+  z-index: 1;
+}
+.\#collection-filter-swatch-item-body {
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  border: 0.15rem solid #b3b3b3;
+  transition: var(--transition-base);
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.25rem var(--color-g-fg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#collection-filter-swatch-item-body {
+    transition: 0s;
+  }
+}
+.\#collection-filter-swatch-item-body.\@visual-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.\#collection-filter-swatch-item-body.\@visual-filter .\#collection-filter-swatch-item-body-inner {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--collection-filter-swatch-bg, transparent);
+  background-image: var(--collection-filter-swatch-bg, none);
+}
+.\#collection-filter-swatch-item-body.\@visual-filter.\@empty {
+  border-style: dashed;
+}

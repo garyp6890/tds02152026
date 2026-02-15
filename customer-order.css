@@ -1,0 +1,47 @@
+.\#customer-order-properties {
+  display: flex;
+  flex-direction: column;
+}
+.\#customer-order-addresses {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.\#customer-order-back-link {
+  margin-top: 1rem;
+  margin-left: 2rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  font-weight: var(--glob-body-bold-weight);
+  gap: 0.5rem;
+  font-size: 1.15rem;
+}
+.\#customer-order-back-link .\#icon {
+  display: flex;
+  --size: 1.25rem;
+}
+.\#customer-order-discount-list {
+  list-style: none;
+  margin-top: 1rem;
+}
+.\#customer-order-discount-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+}
+.\#customer-order-discount-list li .\#icon {
+  --size: 0.8rem;
+}
+.\#customer-order-discount-price {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+  font-size: 0.8rem;
+  justify-content: end;
+}
+.\#customer-order-discount-price .\#icon {
+  --size: 0.8rem;
+}

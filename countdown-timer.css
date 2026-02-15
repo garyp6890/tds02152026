@@ -1,0 +1,77 @@
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.\#countdown-timer {
+  --countdown-timer-text-color: var(--color-scheme-text, var(--color-g-text));
+  --countdown-timer-digits-scale: 1;
+  --countdown-timer-digits-size: calc(1rem * var(--countdown-timer-digits-scale));
+  --countdown-timer-mobile-digits-size: min(var(--countdown-timer-digits-size), 2.5rem);
+  --countdown-timer-count-animation: none;
+  --countdown-timer-titles-size: 0.7rem;
+  --countdown-timer-gap: min(var(--glob-size-4) * var(--countdown-timer-digits-scale) * 0.8, 2rem);
+  display: block;
+  opacity: var(--countdown-timer-opacity);
+  color: var(--countdown-timer-text-color);
+}
+.\#countdown-timer.\!start {
+  --countdown-timer-count-animation: 1s infinite blink linear;
+}
+@media (max-width: 991px) {
+  .\#countdown-timer {
+    --countdown-timer-gap: 1.5rem;
+  }
+}
+.\#countdown-timer-items {
+  display: flex;
+  gap: var(--countdown-timer-gap);
+}
+.\#countdown-timer-item {
+  text-align: center;
+}
+.\#countdown-timer-item-time, .\#countdown-timer-item-title {
+  display: block;
+  line-height: 1;
+}
+.\#countdown-timer-item:first-child .\#countdown-timer-item-time::after {
+  display: none;
+}
+.\#countdown-timer-item:last-child .\#countdown-timer-item-time::after {
+  animation: var(--countdown-timer-count-animation);
+}
+.\#countdown-timer-item-time {
+  position: relative;
+  font-weight: var(--glob-body-bold-weight);
+  font-size: var(--countdown-timer-digits-size);
+  min-width: 2ch;
+}
+.\#countdown-timer-item-time::after {
+  content: ":";
+  line-height: 0.8;
+  position: absolute;
+  left: calc(var(--countdown-timer-gap) / 2 * -1);
+  transform: translate(-50%, 0);
+}
+@media (max-width: 991px) {
+  .\#countdown-timer-item-time {
+    font-size: var(--countdown-timer-mobile-digits-size);
+    text-align: center;
+  }
+}
+.\#countdown-timer-item-title {
+  margin-top: 0.2rem;
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  font-size: var(--countdown-timer-titles-size);
+}

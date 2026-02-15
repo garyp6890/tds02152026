@@ -1,0 +1,83 @@
+.\#article {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.\#article:not(.\@image-first) {
+  margin-top: 3rem;
+}
+body.glob--layout-align-center .\#article-header {
+  text-align: center;
+}
+body.glob--layout-align-center .\#article-header-meta, body.glob--layout-align-center .\#article-header-tags {
+  justify-content: center;
+}
+body.glob--layout-align-center .\#article-header .\#breadcrumbs {
+  justify-content: center;
+}
+
+.\#article-header.\@border {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #cccccc;
+}
+.\#article-header-tags {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.\#article-header-title {
+  margin-bottom: 0;
+}
+.\#article-header-meta {
+  margin-top: var(--glob-size-3);
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-5);
+}
+.\#article-header-meta-item .\#share {
+  --gap: var(--glob-size-3);
+}
+@media (max-width: 991px) {
+  .\#article-header-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+.\#article-comments {
+  width: min(100%, 600px);
+  margin-left: auto;
+  margin-right: auto;
+}
+.\#article-comments-wrap {
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--color-g-fg-d20);
+}
+.\#article-comments-msg {
+  margin-bottom: 1.5rem;
+}
+.\#article-comments-title {
+  margin-bottom: 1.5rem;
+}
+.\#article-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.\#article-comments-comment {
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-inner);
+  padding: 1.5rem;
+}
+.\#article-comments-comment-date {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.8695652174rem;
+  opacity: 0.85;
+}
+.\#article-comments-moderation {
+  margin-top: 1rem;
+}

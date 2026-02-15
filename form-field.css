@@ -1,0 +1,88 @@
+.\#form-field-label {
+  font-size: 0.9em;
+  opacity: 0.85;
+  margin-bottom: 0.3em;
+}
+
+.\#form-field-label {
+  display: block;
+}
+.\#form-field-input {
+  width: 100%;
+  font-size: inherit;
+  resize: none;
+  color: inherit;
+  font-family: inherit;
+  display: block;
+  padding: 0.75em;
+  border: 1px solid var(--color-g-border);
+  background-color: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#form-field-input:focus {
+  border-color: var(--color-g-accent);
+  outline: none;
+}
+.\#form-field-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+}
+.\#form-field-checkbox-input:checked + .\#form-field-checkbox-figure {
+  background: var(--color-g-accent);
+  border-color: var(--color-g-accent);
+}
+.\#form-field-checkbox-input:checked + .\#form-field-checkbox-figure .\#icon {
+  opacity: 1;
+}
+.\#form-field-checkbox-figure {
+  padding: 0.15rem;
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-inner);
+  border: 2px solid var(--color-g-text-alpha-70);
+}
+body.glob--border-radius-rounded .\#form-field-checkbox-figure {
+  border-radius: 0.35rem;
+}
+
+.\#form-field-checkbox-figure .\#icon {
+  --size: 0.7em;
+  opacity: 0;
+  color: var(--color-g-fg);
+}
+.\#form-field-radio-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--glob-size-6);
+}
+.\#form-field-radio-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+  opacity: 1;
+  flex-shrink: 0;
+}
+.\#form-field-radio-list-item-input:checked + .\#form-field-radio-list-item-figure {
+  border-color: var(--color-g-accent);
+}
+.\#form-field-radio-list-item-input:checked + .\#form-field-radio-list-item-figure .\#form-field-radio-list-item-figure-inner {
+  opacity: 1;
+}
+.\#form-field-radio-list-item-figure {
+  padding: 0.15rem;
+  border: 2px solid var(--color-g-text-alpha-70);
+  border-radius: var(--glob-border-radius-circle);
+  background: var(--color-g-fg);
+}
+.\#form-field-radio-list-item-figure-inner {
+  width: 0.7em;
+  height: 0.7em;
+  background: var(--color-g-accent);
+  border-radius: var(--glob-border-radius-circle);
+  opacity: 0;
+}
+.\#form-field-description {
+  font-size: 0.8em;
+  opacity: 0.7;
+  margin-bottom: 0.5em;
+}

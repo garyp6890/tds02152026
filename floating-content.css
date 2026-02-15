@@ -1,0 +1,65 @@
+.\#floating-content-wrapper.\@absolute {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.\#floating-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+}
+.\#floating-content.\@padded {
+  padding: var(--glob-size-8);
+}
+.\#floating-content.\@container {
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (max-width: 991px) {
+  .\#floating-content.\@mobile-bottom {
+    align-items: flex-end !important;
+    justify-content: center !important;
+  }
+}
+.\#floating-content.\@x\:center {
+  justify-content: center;
+}
+.\#floating-content.\@x\:right {
+  justify-content: flex-end;
+}
+.\#floating-content.\@x\:left {
+  justify-content: flex-start;
+}
+.\#floating-content.\@y\:center {
+  align-items: center;
+}
+.\#floating-content.\@y\:bottom {
+  align-items: flex-end;
+}
+.\#floating-content-wrapper {
+  z-index: 10;
+  position: relative;
+  height: 100%;
+}
+@media (max-width: 991px) {
+  .\#floating-content-wrapper.\@mobile-offset {
+    position: relative !important;
+  }
+  .\#floating-content-wrapper.\@mobile-offset .\#floating-content {
+    padding: 0;
+  }
+  .\#floating-content-wrapper.\@mobile-offset .\#container {
+    padding: 0;
+  }
+}
+.\#floating-content-wrapper.\@absolute {
+  z-index: 10;
+  overflow: hidden;
+}
+.\#floating-content-wrapper > .\#container {
+  height: 100%;
+}

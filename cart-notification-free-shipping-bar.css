@@ -1,0 +1,26 @@
+.\#cart-notification-free-shipping-bar {
+  position: relative;
+  background-color: var(--color-g-text);
+  display: block;
+}
+.\#cart-notification-free-shipping-bar-msg {
+  font-size: 1rem;
+  color: var(--color-g-fg);
+  padding-block: var(--glob-size-4);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--glob-size-2);
+}
+.\#cart-notification-free-shipping-bar-msg .\#icon {
+  --size: 1.25rem;
+}
+.\#cart-notification-free-shipping-bar-progress {
+  top: 0;
+  position: absolute;
+  width: calc(var(--progress) * 1%);
+  background-color: var(--color-g-accent);
+  height: 100%;
+}

@@ -1,0 +1,57 @@
+.\#customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+  border: 1px solid var(--color-g-border);
+}
+.\#customer-table-wrapper {
+  overflow-x: auto;
+  display: flex;
+}
+.\#customer-table th {
+  text-align: left;
+  padding-block: var(--glob-size-8);
+  opacity: 0.64;
+}
+.\#customer-table a {
+  color: inherit;
+}
+.\#customer-table thead {
+  border-bottom: 1px solid var(--color-g-border);
+}
+.\#customer-table th, .\#customer-table td {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.\#customer-table th:not(:first-child):not(:last-child), .\#customer-table td:not(:first-child):not(:last-child) {
+  text-align: center;
+}
+.\#customer-table th:last-child, .\#customer-table td:last-child {
+  text-align: right;
+}
+.\#customer-table tbody td {
+  padding-block: var(--glob-size-6);
+  font-size: 1.15rem;
+}
+.\#customer-table tbody tr:not(:last-child) {
+  border-bottom: 1px solid var(--color-g-border);
+}
+.\#customer-table tfoot {
+  border-top: 1px solid var(--color-g-border);
+}
+.\#customer-table tfoot tr:first-child td {
+  padding-top: var(--glob-size-8);
+}
+.\#customer-table tfoot tr:last-child td {
+  padding-bottom: var(--glob-size-8);
+}
+.\#customer-table tfoot td {
+  text-align: right !important;
+  padding-block: var(--glob-size-2);
+  font-size: 1.3225rem;
+}
+.\#customer-table tfoot td:last-child {
+  font-weight: var(--glob-body-bold-weight);
+}

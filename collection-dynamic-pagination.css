@@ -1,0 +1,24 @@
+.\#collection-dynamic-pagination {
+  --collection-dynamic-pagination-spinner-display: none;
+}
+.\#collection-dynamic-pagination.\!loading {
+  --collection-dynamic-pagination-spinner-display: flex;
+}
+.\#collection-dynamic-pagination-spinner {
+  display: var(--collection-dynamic-pagination-spinner-display);
+  justify-content: center;
+  align-items: center;
+  gap: var(--glob-size-2);
+  margin-top: var(--glob-size-8);
+}
+.\#collection-dynamic-pagination-spinner-title {
+  font-size: 1rem;
+}
+.\#collection-dynamic-pagination-button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.\#collection-dynamic-pagination-button-wrapper .\#button {
+  margin-top: var(--glob-size-10);
+}

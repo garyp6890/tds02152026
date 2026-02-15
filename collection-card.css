@@ -1,0 +1,52 @@
+.\#collection-card {
+  position: relative;
+}
+.\#collection-card.\@inner-caption {
+  border-radius: var(--glob-border-radius-base);
+}
+body:not(.glob--card-view-none) .\#collection-card {
+  background-color: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+}
+body:not(.glob--card-view-none) .\#collection-card-caption.\@outside {
+  padding: var(--glob-size-4);
+}
+
+body.glob--card-view-none .\#collection-card-image {
+  box-shadow: var(--color-scheme-box-shadow);
+  border-radius: var(--glob-border-radius-base);
+}
+body.glob--card-view-none .\#collection-card-caption.\@outside {
+  margin-top: var(--glob-size-4);
+}
+
+body.glob--card-view-all .\#collection-card-image {
+  padding: 0.5rem;
+  border-radius: var(--glob-border-radius-inner);
+}
+body.glob--card-view-all .\#collection-card-caption.\@outside {
+  padding-top: calc(var(--glob-size-4) - 0.5rem);
+}
+
+body.glob--layout-align-center .\#collection-card .\#collection-card-caption {
+  text-align: center;
+}
+
+.\#collection-card-title {
+  line-height: 1;
+  font-family: var(--glob-collection-card-title-family);
+  font-size: var(--glob-collection-card-title-size);
+  font-weight: var(--glob-collection-card-title-weight);
+  text-transform: var(--glob-collection-card-title-transform);
+  letter-spacing: var(--glob-collection-card-title-letter-spacing, normal);
+}
+.\#collection-card-caption:not(.\@outside) .\#collection-card-title {
+  margin: var(--glob-size-4);
+}
+.\#collection-card-caption:not(.\@outside) .\#collection-card-title.\@text-bg {
+  padding: 0.5em;
+  background: var(--color-g-fg);
+  color: var(--color-g-text);
+  border-radius: var(--glob-border-radius-inner);
+}

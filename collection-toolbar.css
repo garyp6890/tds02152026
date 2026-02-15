@@ -1,0 +1,138 @@
+.\#collection-toolbar {
+  --collection-toolbar-items-width: 30%;
+  margin-bottom: var(--glob-size-10);
+  padding-block: var(--glob-size-4);
+  background: var(--color-g-fg);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--color-g-border);
+  border-top: 1px solid var(--color-g-border);
+  z-index: 9;
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar {
+    --collection-toolbar-items-width: 40%;
+  }
+}
+.\#collection-toolbar:not(.\@desktop-filters) {
+  --sticky-offset: calc(var(--header-height, 0px) + var(--navbar-height, 0px));
+  position: sticky;
+  top: calc(0rem + var(--sticky-offset));
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar.\@desktop-filters {
+    --sticky-offset: calc(var(--header-height, 0px) + var(--navbar-height, 0px));
+    position: sticky;
+    top: calc(0rem + var(--sticky-offset));
+  }
+}
+@media (min-width: 992px) {
+  .\#collection-toolbar.\@desktop-filters .\#collection-toolbar-filters-button {
+    display: none;
+  }
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar.\@sort-only {
+    --collection-toolbar-items-width: 100%;
+  }
+  .\#collection-toolbar.\@sort-only .\#collection-toolbar-inner {
+    flex-direction: row-reverse;
+  }
+}
+.\#collection-toolbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.\#collection-toolbar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-8);
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  font-size: max(var(--glob-subheading-size, 1rem));
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar-header {
+    letter-spacing: normal;
+    font-weight: normal;
+    font-size: 1rem;
+  }
+}
+.\#collection-toolbar-filters-button {
+  width: var(--collection-toolbar-items-width);
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+  cursor: pointer;
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  font-size: max(var(--glob-subheading-size, 1rem));
+}
+.\#collection-toolbar-filters-button .\#icon {
+  --size: 1.2em;
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar-filters-button {
+    letter-spacing: normal;
+    font-weight: normal;
+    font-size: 1rem;
+  }
+}
+.\#collection-toolbar-sort {
+  display: flex;
+  align-items: center;
+  min-width: var(--collection-toolbar-items-width);
+  justify-content: end;
+}
+.\#collection-toolbar-sort > * {
+  flex-shrink: 0;
+}
+.\#collection-toolbar-view-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+}
+.\#collection-toolbar-view-switch:not(:only-child) {
+  margin-left: var(--glob-size-4);
+  padding-left: var(--glob-size-4);
+  border-left: 1px solid var(--color-g-border);
+}
+.\#collection-toolbar-view-switch-title {
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  font-size: max(var(--glob-subheading-size, 1rem));
+  opacity: 0.6;
+}
+.\#collection-toolbar-view-switch-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+}
+.\#collection-toolbar-view-switch-label {
+  cursor: pointer;
+  transition: var(--transition-base);
+  opacity: 0.6;
+}
+.\#collection-toolbar-view-switch-label .\#icon {
+  --size: 1.2em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#collection-toolbar-view-switch-label {
+    transition: 0s;
+  }
+}
+.\#collection-toolbar-view-switch-input:checked + .\#collection-toolbar-view-switch-label {
+  opacity: 1;
+}

@@ -1,0 +1,193 @@
+.\#customer-address {
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-base);
+  border: 1px solid var(--color-g-border);
+  padding: var(--glob-size-6) var(--glob-size-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.\#customer-address-new {
+  cursor: pointer;
+  margin: auto;
+}
+.\#customer-address-new-icon {
+  padding: 0.5rem;
+  background: var(--color-g-accent);
+  border-radius: 50%;
+  color: var(--color-g-fg);
+}
+.\#customer-address-new-icon .\#icon {
+  display: flex;
+}
+.\#customer-address-new-title {
+  font-weight: var(--glob-body-bold-weight);
+}
+.\#customer-address-new-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+.\#customer-address-default-badge {
+  display: flex;
+  align-items: center;
+  font-weight: var(--glob-body-bold-weight);
+  border-radius: var(--glob-border-radius-inner);
+  width: fit-content;
+  padding: 0.25em 0.85em 0.25em 0.7em;
+  background: var(--color-scheme-primary-button-bg);
+  color: var(--color-scheme-primary-button-text);
+  gap: 0.64rem;
+  font-size: 1.15rem;
+  margin-bottom: -0.5rem;
+}
+.\#customer-address-default-badge .\#icon {
+  display: flex;
+  --size: 1.1rem;
+}
+.\#customer-address-body {
+  font-size: 1.15rem;
+}
+.\#customer-address-body > p {
+  margin-bottom: 0;
+}
+.\#customer-address-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.\#customer-address-actions-item {
+  flex: 1 0 0px;
+  cursor: pointer;
+  font-weight: var(--glob-body-bold-weight);
+  border: 2px solid var(--color-g-border);
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#customer-address-actions-item-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-block: var(--glob-size-1);
+}
+.\#customer-address-actions-item-button .\#icon {
+  display: flex;
+  --size: 0.9rem;
+}
+.\#customer-address-modal {
+  padding: 2.5rem;
+  border-radius: var(--glob-border-radius-base);
+  background-color: var(--color-g-fg);
+  width: min(600px, 90vw);
+  position: relative;
+}
+.\#customer-address-modal-close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+}
+@media (max-width: 991px) {
+  .\#customer-address-modal-close {
+    top: var(--glob-size-4);
+    right: var(--glob-size-4);
+  }
+  .\#customer-address-modal-close::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.\#customer-address-modal.\@type\:edit {
+  margin-top: 3rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+.\#customer-address-modal-title {
+  margin-bottom: 2rem;
+}
+.\#customer-address-modal-field {
+  display: block;
+}
+.\#customer-address-modal-field label {
+  opacity: 0.64;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.\#customer-address-modal-field input, .\#customer-address-modal-field select {
+  display: block;
+  width: 100%;
+  font-weight: var(--glob-body-bold-weight);
+  border-radius: var(--glob-border-radius-inner);
+  font-size: 1.15rem;
+  padding: 0.7rem;
+  border: 2px solid #d9d9d9;
+}
+.\#customer-address-modal-select {
+  position: relative;
+  display: block;
+}
+.\#customer-address-modal-select select {
+  appearance: none;
+}
+.\#customer-address-modal-select .\#icon {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0.7rem;
+  user-select: none;
+  --size: 1rem;
+  opacity: 0.8;
+}
+.\#customer-address-modal-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.\#customer-address-modal-checkbox input {
+  width: auto;
+}
+.\#customer-address-modal-checkbox label {
+  margin-bottom: 0;
+  opacity: 1;
+}
+.\#customer-address-modal-submit {
+  background-color: var(--color-g-text);
+  color: var(--color-g-fg);
+  padding: 1em;
+  border-radius: 3rem;
+  cursor: pointer;
+  border: none;
+  font-weight: var(--glob-body-bold-weight);
+}
+.\#customer-address-modal-delete-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+.\#customer-address-modal-delete-buttons-ok {
+  cursor: pointer;
+  display: block;
+  border: none;
+  padding: 0.8em 1.5em;
+  font-size: 1.15rem;
+  font-weight: var(--glob-body-bold-weight);
+  color: white;
+  background: var(--color-g-danger);
+  border-radius: 3rem;
+}
+.\#customer-address-modal-delete-buttons-cancel {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-weight: var(--glob-body-bold-weight);
+  font-size: 1.15rem;
+}

@@ -1,0 +1,10 @@
+.\#browsing-history-nav {
+  --browsing-history-nav-fallback-display: none;
+}
+.\#browsing-history-nav.\!empty {
+  --browsing-history-nav-fallback-display: block;
+}
+.\#browsing-history-nav-fallback {
+  text-align: center;
+  display: var(--browsing-history-nav-fallback-display);
+}

@@ -1,0 +1,178 @@
+.\#floating-contact-popup-image {
+  flex-shrink: 0;
+  width: 40%;
+  position: relative;
+}
+.\#floating-contact-popup-image .\#media {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.\#floating-contact-popup-image .\#media-image {
+  height: 100%;
+}
+.\#floating-contact-popup-modal {
+  position: relative;
+  display: flex;
+  border-radius: var(--glob-border-radius-base);
+  background: var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--color-g-bg-gradient, var(--color-g-bg))));
+  color: var(--color-scheme-text, var(--color-g-text));
+  overflow: hidden;
+  margin: 1rem;
+  box-shadow: var(--color-scheme-box-shadow-drop);
+  width: min(90vw, 500px);
+}
+.\#floating-contact-popup-modal.\@with-image.\@image-position\:right, .\#floating-contact-popup-modal.\@with-image.\@image-position\:left {
+  width: min(90vw, 600px);
+}
+.\#floating-contact-popup-modal.\@image-position\:right {
+  flex-direction: row-reverse;
+}
+.\#floating-contact-popup-modal.\@image-position\:top {
+  flex-direction: column;
+}
+.\#floating-contact-popup-modal.\@image-position\:top .\#floating-contact-popup-image {
+  height: 30vh;
+  width: auto;
+}
+.\#floating-contact-popup-modal.\@image-position\:bg {
+  width: min(90vw, 500px);
+}
+@media (min-width: 992px) {
+  .\#floating-contact-popup-modal.\@image-position\:bg .\#floating-contact-popup-image {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+  .\#floating-contact-popup-modal.\@image-position\:bg .\#floating-contact-popup-form {
+    position: relative;
+  }
+}
+.\#floating-contact-popup-modal-close {
+  position: absolute;
+  top: var(--glob-size-2);
+  right: var(--glob-size-2);
+  cursor: pointer;
+  display: block;
+  opacity: 0.6;
+  transition: var(--transition-base);
+  z-index: 2;
+}
+.\#floating-contact-popup-modal-close:hover {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#floating-contact-popup-modal-close {
+    transition: 0s;
+  }
+}
+.\#floating-contact-popup-modal-close .\#icon {
+  --size: 1.5rem;
+}
+@media (max-width: 991px) {
+  .\#floating-contact-popup-modal-close {
+    top: var(--glob-size-4);
+    right: var(--glob-size-4);
+  }
+  .\#floating-contact-popup-modal-close::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.\#floating-contact-popup-form {
+  width: 100%;
+  padding: var(--glob-size-8);
+}
+.\#floating-contact-popup-form .\#form-field {
+  margin-block-end: var(--glob-size-4);
+}
+.\#floating-contact-popup-form .\#form-field-input {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.\#floating-contact-popup-form .\#form-field-input::placeholder {
+  color: inherit;
+}
+.\#floating-contact-popup-form-header {
+  margin-bottom: var(--glob-size-5);
+}
+.\#floating-contact-popup-form-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--glob-size-3);
+}
+.\#floating-contact-popup-form-footer-item {
+  padding-top: var(--glob-size-1);
+  font-size: 0.8rem;
+}
+.\#floating-contact-popup-contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  text-decoration: none;
+  color: inherit;
+}
+.\#floating-contact-popup-contact-icon .\#icon {
+  --size: 1rem;
+}
+.\#floating-contact-popup-title {
+  font-size: 1rem;
+}
+.\#floating-contact-popup-subtitle {
+  font-size: 0.8rem;
+}
+.\#floating-contact-popup-trigger {
+  width: 0;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+.\#floating-contact-popup-button {
+  transition: var(--transition-base);
+  width: 3.8rem;
+  height: 3.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.64;
+  color: var(--color-g-fg);
+  background-color: var(--color-g-text);
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  transform: translateY(0rem);
+  z-index: 99;
+  cursor: pointer;
+  border-radius: var(--glob-border-radius-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#floating-contact-popup-button {
+    transition: 0s;
+  }
+}
+.\#floating-contact-popup-button:hover {
+  opacity: 1;
+}
+.\#floating-contact-popup-button .\#icon {
+  --size: 2rem;
+}
+body.glob--border-radius-rounded .\#floating-contact-popup-button {
+  border-radius: var(--glob-border-radius-circle);
+}
+
+.\#floating-contact-popup-button.\@observe {
+  bottom: 6rem;
+}
+.\#floating-contact-popup-button.\!active {
+  transform: translateY(-4.5rem);
+}

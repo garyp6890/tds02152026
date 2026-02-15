@@ -1,0 +1,38 @@
+.\#free-shipping-progress-bar-icon {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+.\#free-shipping-progress-bar-icon.\@success {
+  background-color: var(--color-g-success);
+  color: var(--color-g-fg);
+  padding: 0.4rem;
+  border-radius: 50%;
+}
+.\#free-shipping-progress-bar-icon.\@success .\#icon {
+  --size: 1rem;
+}
+.\#free-shipping-progress-bar-heading {
+  margin: 0;
+}
+.\#free-shipping-progress-bar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+}
+.\#free-shipping-progress-bar-progress {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: var(--glob-border-radius-base);
+  position: relative;
+  height: 0.4rem;
+  background: var(--color-g-fg);
+}
+.\#free-shipping-progress-bar-progress-inner {
+  width: calc(var(--progress) * 1%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: var(--glob-border-radius-base);
+  background: var(--color-g-accent);
+}

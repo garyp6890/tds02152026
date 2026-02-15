@@ -1,0 +1,27 @@
+.\#customer-nav {
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+  gap: var(--glob-size-6);
+  margin-bottom: var(--glob-size-8);
+  overflow-x: auto;
+}
+.\#customer-nav-item {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-3);
+  flex-shrink: 0;
+}
+.\#customer-nav-item .\#icon {
+  display: flex;
+  --size: 1.4rem;
+  fill: currentColor;
+}
+.\#customer-nav-item.\!active {
+  font-weight: var(--glob-body-bold-weight);
+  padding: 0.5em 1em;
+  border-radius: 2em;
+  background: var(--color-g-fg);
+}

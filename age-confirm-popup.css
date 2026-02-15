@@ -1,0 +1,29 @@
+.\#age-confirm-popup-image {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.\#age-confirm-popup-modal {
+  background: var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--color-g-bg-gradient, var(--color-g-bg))));
+  color: var(--color-scheme-text, var(--color-g-text));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+}
+.\#age-confirm-popup-content {
+  width: min(90vw, 500px);
+  padding: 3rem;
+  background: var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--color-g-bg-gradient, var(--color-g-bg))));
+  z-index: 2;
+}
+@media (min-width: 992px) {
+  .\#age-confirm-popup-content.\@with-image {
+    border-radius: var(--glob-border-radius-base);
+    box-shadow: var(--color-scheme-box-shadow);
+  }
+}

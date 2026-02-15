@@ -1,0 +1,66 @@
+.\#accent-text {
+  --accent-text-color: var(--color-scheme-highlight, var(--color-g-highlight));
+  display: inline;
+}
+.\#accent-text strong {
+  font-weight: inherit;
+  text-decoration-color: var(--accent-text-color);
+  text-underline-offset: 0.15em;
+  text-decoration-line: underline;
+}
+.\#accent-text.\@style\:none strong {
+  text-decoration: none;
+}
+.\#accent-text.\@style\:text strong {
+  text-decoration: none;
+  color: var(--accent-text-color);
+}
+.\#accent-text.\@style\:background strong {
+  text-decoration: none;
+  background-color: var(--accent-text-color);
+  border-radius: var(--glob-border-radius-inner);
+  padding: 0 0.17em 0.05em 0.17em;
+}
+.\#accent-text.\@style\:highlight strong {
+  text-decoration: none;
+  padding: 0 0.25em;
+  margin: 0 -0.25em;
+  background: var(--accent-text-color);
+  background-position: 0 0.7em;
+  background-size: 100% 30%;
+  background-repeat: repeat-x;
+}
+.\#accent-text.\@style\:gradient strong {
+  text-decoration: none;
+}
+@supports (-webkit-background-clip: text) {
+  .\#accent-text.\@style\:gradient strong {
+    background: var(--accent-text-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+.\#accent-text.\@style\:solid strong {
+  text-decoration-thickness: 0.1em;
+  text-decoration-style: solid;
+  text-underline-offset: 0.1em;
+}
+.\#accent-text.\@style\:dotted strong {
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.15em;
+  text-decoration-skip-ink: none;
+  line-height: 1.1;
+}
+.\#accent-text.\@style\:dashed strong {
+  text-decoration-skip-ink: none;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.13em;
+  line-height: 1.1;
+}
+.\#accent-text.\@style\:wavy strong {
+  text-underline-offset: 0.2em;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 0.1em;
+  text-decoration-skip-ink: none;
+  line-height: 1.4;
+}

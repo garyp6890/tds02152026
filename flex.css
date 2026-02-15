@@ -1,0 +1,17 @@
+.\#flex {
+  --gap: 1rem;
+  --use-gap: var(--gap);
+  display: flex;
+  gap: var(--gap);
+}
+@media (max-width: 991px) {
+  .\#flex {
+    --use-gap: var(--gap-mobile, var(--gap));
+  }
+}
+.\#flex.\@wrap {
+  flex-wrap: wrap;
+}
+.\#flex.\@column {
+  flex-direction: column;
+}

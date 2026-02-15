@@ -1,0 +1,93 @@
+.\#customer-form {
+  margin: 7rem auto 9rem;
+  width: min(90vw, 500px);
+  background: var(--color-g-fg);
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+  padding: var(--glob-size-6);
+}
+.\#customer-form #recover,
+.\#customer-form #login {
+  scroll-margin-top: 20rem;
+}
+.\#customer-form #recover {
+  display: none;
+}
+.\#customer-form #recover + div {
+  display: none;
+}
+.\#customer-form #recover:target {
+  display: block;
+}
+.\#customer-form #recover:target + div {
+  display: block;
+}
+.\#customer-form #recover:target ~ #login {
+  display: none;
+}
+.\#customer-form #recover:target ~ #login + div {
+  display: none;
+}
+.\#customer-form-alert {
+  margin-bottom: 1.5rem;
+}
+.\#customer-form-heading {
+  line-height: 1;
+  font-size: 3.5178762919rem;
+  margin-bottom: var(--glob-size-6);
+}
+.\#customer-form-field + .\#customer-form-field {
+  margin-top: 1rem;
+}
+.\#customer-form-field-link {
+  color: inherit;
+  display: inline-block;
+  margin-top: 0.5rem;
+  opacity: 0.64;
+}
+.\#customer-form-field-link:hover {
+  opacity: 1;
+}
+.\#customer-form-input {
+  display: block;
+  width: 100%;
+  border-radius: var(--glob-border-radius-inner);
+  color: inherit;
+  padding: 1em 1.2em;
+  border: 1px solid var(--color-g-border);
+}
+.\#customer-form-input::placeholder {
+  color: inherit;
+  opacity: 0.6;
+}
+.\#customer-form-footer {
+  margin-top: var(--glob-size-8);
+  text-align: center;
+}
+.\#customer-form-switch-form {
+  font-family: var(--glob-button-family);
+  font-size: var(--glob-button-size);
+  font-weight: var(--glob-button-weight);
+  text-transform: var(--glob-button-transform);
+  letter-spacing: var(--glob-button-letter-spacing, normal);
+  display: inline-block;
+  margin-top: var(--glob-size-4);
+  color: inherit;
+}
+.\#customer-form-guest-checkout {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-g-border);
+}
+.\#customer-form-guest-checkout-button {
+  cursor: pointer;
+  display: block;
+  border: none;
+  padding: 0.8em 1.5em;
+  font-size: 1.5rem;
+  font-weight: var(--glob-body-bold-weight);
+  color: white;
+  background: var(--color-g-text);
+  border-radius: 3rem;
+  width: 100%;
+}

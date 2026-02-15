@@ -1,0 +1,64 @@
+.\#feature-card {
+  --feature-card-media-size: 20px;
+  --feature-card-icon-color: var(--color-scheme-icon, var(--color-g-icon));
+  --feature-card-_icon-color: var(--color-scheme-icon);
+  --feature-card-media-radius: 0;
+  --feature-card-heading-scale: 0.8;
+  --feature-card-text-align: left;
+  --feature-card-gap: var(--glob-size-6);
+  --feature-card-direction: row;
+  --feature-card-icon-padding: 0;
+  --feature-card-icon-bg-color: none;
+  --feature-card-icon-size: var(--feature-card-media-size);
+  --feature-card-text-color: inherit;
+  gap: var(--feature-card-gap);
+  flex-direction: var(--feature-card-direction);
+  text-align: var(--feature-card-text-align);
+  color: var(--feature-card-text-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.\#feature-card.\@center {
+  --feature-card-direction: column;
+  --feature-card-gap: var(--glob-size-4);
+  --feature-card-text-align: center;
+}
+@media (min-width: 992px) {
+  .\#feature-card {
+    padding-block: var(--glob-size-8);
+  }
+}
+.\#feature-card.\@round-media {
+  --feature-card-_icon-color: var(--color-scheme-bg, var(--color-g-bg));
+  --feature-card-icon-bg-color: var(--feature-card-icon-color);
+  --feature-card-icon-padding: var(--glob-size-3);
+  --feature-card-media-radius: 50%;
+  --feature-card-icon-size: calc(var(--feature-card-media-size) - min(50%, var(--glob-size-6)));
+}
+.\#feature-card-heading {
+  --heading-scale: var(--feature-card-heading-scale);
+}
+.\#feature-card-text {
+  margin-top: var(--glob-size-1);
+  opacity: 0.7;
+}
+.\#feature-card-icon, .\#feature-card-image {
+  border-radius: var(--feature-card-media-radius);
+  width: var(--feature-card-media-size);
+  height: var(--feature-card-media-size);
+  background-color: var(--feature-card-icon-bg-color);
+}
+.\#feature-card-image {
+  overflow: hidden;
+}
+.\#feature-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--feature-card-_icon-color);
+}
+.\#feature-card-icon .\#icon {
+  --size: var(--feature-card-icon-size);
+}

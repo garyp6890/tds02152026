@@ -1,0 +1,64 @@
+.\#cart-notification-recommended-product {
+  text-align: center;
+}
+.\#cart-notification-recommended-product-media {
+  margin-bottom: 2rem;
+  position: relative;
+}
+.\#cart-notification-recommended-product-submit {
+  position: absolute;
+  bottom: 0;
+  z-index: 7;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 100%;
+}
+.\#cart-notification-recommended-product-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.\#cart-notification-recommended-product-title {
+  font-weight: normal;
+  margin: 0 auto;
+  font-size: 1rem;
+  max-width: 10rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.\#cart-notification-recommended-product-title > a {
+  text-decoration: none;
+  color: inherit;
+}
+.\#cart-notification-recommended-product .\#price {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.\#cart-notification-recommended-product .\#price-item-value {
+  margin: 0;
+  line-height: 1;
+}
+.\#cart-notification-recommended-product .\#price-item.\@regular {
+  font-weight: var(--glob-body-bold-weight);
+}
+.\#cart-notification-recommended-product .\#price-item.\@compare {
+  opacity: 0.64;
+  text-decoration: line-through;
+}
+.\#cart-notification-recommended-product .\#price-item.\@on-sale {
+  color: var(--color-g-sale);
+}
+.\#cart-notification-recommended-product-variant-title {
+  font-size: 0.8695652174rem;
+  opacity: 0.8;
+}
+.\#cart-notification-recommended-product-variant-product-link {
+  font-weight: var(--glob-body-bold-weight);
+  text-decoration: none;
+  color: inherit;
+}

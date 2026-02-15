@@ -1,0 +1,8 @@
+.\#contact-form-wrapper .\#hero {
+  margin-bottom: var(--glob-size-4);
+}
+.\#contact-form-image {
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+  overflow: hidden;
+}

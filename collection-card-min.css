@@ -1,0 +1,51 @@
+.\#collection-card-min {
+  --collection-card-min-media-size: min(60px, 25%);
+  --collection-card-min-arrow-opacity: 0.4;
+  --collection-card-min-bg-color: var(--color-g-fg);
+  --collection-card-min-text-color: var(--color-g-text);
+  --collection-card-min-border-color: var(--color-g-border);
+  background-color: var(--collection-card-min-bg-color);
+  color: var(--collection-card-min-text-color);
+  display: flex;
+  align-items: center;
+  border-radius: var(--glob-border-radius-base);
+  position: relative;
+  gap: var(--glob-size-3);
+  padding: var(--glob-size-2);
+  border: 1px solid var(--collection-card-min-border-color);
+}
+.\#collection-card-min:hover {
+  --collection-card-min-arrow-opacity: 1;
+}
+.\#collection-card-min-media {
+  width: var(--collection-card-min-media-size);
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#collection-card-min-caption {
+  flex-grow: 1;
+}
+.\#collection-card-min-title {
+  font-family: var(--glob-collection-card-title-family);
+  font-size: var(--glob-collection-card-title-size);
+  font-weight: var(--glob-collection-card-title-weight);
+  text-transform: var(--glob-collection-card-title-transform);
+  letter-spacing: var(--glob-collection-card-title-letter-spacing, normal);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.\#collection-card-min-arrow {
+  margin-left: auto;
+  margin-right: calc(var(--glob-size-1) * -1);
+  opacity: var(--collection-card-min-arrow-opacity);
+  transition: var(--transition-base);
+}
+.\#collection-card-min-arrow .\#icon {
+  --size: 1.15rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#collection-card-min-arrow {
+    transition: 0s;
+  }
+}
