@@ -1,0 +1,87 @@
+.\#grid {
+  --gap-scale: 1;
+  --gap: var(--glob-gutter);
+  --gap-mobile: var(--glob-gutter);
+  --template: auto;
+  --columns: 3;
+  --columns-mobile: 1;
+  --span-def: 4;
+  --span-base: 12;
+  --use-gap-scale: var(--gap-scale);
+  --use-columns: var(--columns);
+  --use-template: var(--template);
+  --use-gap: calc(var(--gap) * var(--use-gap-scale));
+  gap: var(--use-gap);
+}
+@media (max-width: 991px) {
+  .\#grid {
+    --use-gap-scale: var(--gap-scale-mobile, var(--gap-scale));
+  }
+}
+@media (max-width: 991px) {
+  .\#grid {
+    --use-columns: var(--columns-mobile, var(--columns));
+    --use-template: var(--template-mobile, var(--template));
+    --use-gap: calc(var(--gap-mobile, var(--gap)) * var(--use-gap-scale));
+  }
+}
+.\#grid.\@outer-gap {
+  padding: var(--use-gap);
+}
+@media (max-width: 991px) {
+  .\#grid.\@outer-gap-mobile {
+    padding: var(--use-gap);
+  }
+}
+@media (max-width: 991px) {
+  .\#grid.\@outer-gap-mobile\:x {
+    padding-left: var(--use-gap);
+    padding-right: var(--use-gap);
+  }
+}
+@media (max-width: 991px) {
+  .\#grid.\@outer-gap-mobile\:y {
+    padding-top: var(--use-gap);
+    padding-bottom: var(--use-gap);
+  }
+}
+.\#grid.\@outer-gap\:x {
+  padding-left: var(--use-gap);
+  padding-right: var(--use-gap);
+}
+.\#grid.\@outer-gap\:y {
+  padding-top: var(--use-gap);
+  padding-bottom: var(--use-gap);
+}
+.\#grid.\@center {
+  justify-content: center;
+}
+.\#grid.\@type\:columns {
+  display: flex;
+  flex-wrap: wrap;
+}
+.\#grid.\@type\:columns > * {
+  flex: 0 1 calc(100% / var(--use-columns) - (var(--use-gap) - 1 / var(--use-columns) * var(--use-gap)));
+}
+.\#grid.\@type\:template {
+  display: grid;
+  grid-template: auto/var(--use-template);
+}
+.\#grid.\@type\:span {
+  display: grid;
+  grid-template-columns: repeat(var(--span-base), 1fr);
+}
+.\#grid.\@type\:span > * {
+  --use-span: var(--span);
+  grid-column: span var(--use-span, var(--span-def));
+}
+@media (max-width: 991px) {
+  .\#grid.\@type\:span > * {
+    --use-span: var(--span-mobile, var(--span));
+  }
+}
+@media (max-width: 991px) {
+  .\#grid-column.\@mobile-full {
+    flex-basis: 100%;
+  }
+}

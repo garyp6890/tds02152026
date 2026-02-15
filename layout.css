@@ -1,0 +1,49 @@
+.\#container {
+  --container-spacer: calc(var(--glob-gutter) * 1.25);
+  --width: var(--container-width);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--width);
+  width: 100%;
+  padding-left: var(--container-spacer);
+  padding-right: var(--container-spacer);
+}
+@media (max-width: 991px) {
+  .\#container {
+    --container-spacer: var(--forced-mobile-container-spacer, var(--glob-gutter));
+  }
+  body:has(popup-collection) {
+    --forced-mobile-container-spacer: calc(var(--glob-gutter) * 1.5);
+  }
+}
+.\#container.\@width\:wide {
+  max-width: none;
+}
+.\#container.\@width\:full {
+  max-width: none;
+  padding: 0;
+}
+.\#container.\@width\:narrow {
+  --width: calc(var(--container-width) * 0.8);
+}
+.\#container.\@width\:x-narrow {
+  --width: calc(var(--container-width) * 0.64);
+}
+@media (min-width: 992px) {
+  .\#container.\@width\:offset-left {
+    max-width: none;
+    width: auto;
+    margin-left: calc((100vw - min(var(--container-width), 100vw) + var(--container-spacer) * 2) / 2);
+    margin-right: 0;
+    padding: 0;
+  }
+}
+@media (min-width: 992px) {
+  .\#container.\@width\:offset-right {
+    max-width: none;
+    width: auto;
+    margin-right: calc((100vw - min(var(--container-width), 100vw) + var(--container-spacer) * 2) / 2);
+    margin-left: 0;
+    padding: 0;
+  }
+}

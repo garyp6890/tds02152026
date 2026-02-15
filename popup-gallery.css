@@ -1,0 +1,57 @@
+.\#popup-gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--color-g-fg);
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 99;
+}
+.\#popup-gallery-nav .\#icon {
+  display: flex;
+  --size: 1.15rem;
+}
+.\#popup-gallery-nav.\@direction\:next {
+  right: 1rem;
+}
+.\#popup-gallery-nav.\@direction\:prev {
+  left: 1rem;
+}
+.\#popup-gallery-slide-wrapper {
+  align-self: center;
+}
+.\#popup-gallery-hero {
+  display: flex;
+  justify-content: center;
+  height: 90vh;
+  max-width: 90vw;
+  margin: auto;
+  overflow: hidden;
+  border-radius: var(--glob-border-radius-base);
+}
+.\#popup-gallery-hero .\#media {
+  background-color: var(--color-g-fg);
+}
+@media (max-width: 991px) {
+  .\#popup-gallery-hero {
+    height: auto;
+    max-height: 80vh;
+  }
+}
+.\#popup-gallery-item {
+  overflow: hidden;
+  cursor: pointer;
+}
+.\#popup-gallery-item:not(.\@stacked) {
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+}
+body.glob--card-view-all .\#popup-gallery-item:not(.\@stacked) {
+  padding: var(--glob-frame-size);
+  background-color: var(--color-g-fg);
+}
+body.glob--card-view-all .\#popup-gallery-item:not(.\@stacked) .\#popup-gallery-item-media {
+  border-radius: var(--glob-border-radius-inner);
+  overflow: hidden;
+}

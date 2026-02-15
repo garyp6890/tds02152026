@@ -1,0 +1,145 @@
+.\#main-nav-mobile {
+  --main-nav-mobile-level: 0;
+  --main-nav-mobile-spacer-inline: var(--glob-size-6);
+  --main-nav-mobile-spacer-block: var(--glob-size-4);
+  width: min(450px, 95vw);
+  display: block;
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+}
+.\#main-nav-mobile .\#main-nav-mobile-level-footer, .\#main-nav-mobile .\#main-nav-mobile-level-body, .\#main-nav-mobile .\#main-nav-mobile-header, .\#main-nav-mobile .\#main-nav-mobile-link {
+  padding: var(--main-nav-mobile-spacer-block) var(--main-nav-mobile-spacer-inline);
+}
+.\#main-nav-mobile-close {
+  margin-top: 3px;
+  position: absolute;
+  top: var(--main-nav-mobile-spacer-block);
+  right: var(--main-nav-mobile-spacer-inline);
+  z-index: 3;
+  cursor: pointer;
+}
+@media (max-width: 991px) {
+  .\#main-nav-mobile-close::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.\#main-nav-mobile-inner {
+  transition: 0.3s;
+  display: flex;
+  transform: translateX(calc(var(--main-nav-mobile-level) * -100%));
+  position: absolute;
+  height: 100%;
+  z-index: 2;
+  width: 100%;
+}
+.\#main-nav-mobile-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--main-nav-mobile-spacer-inline);
+  cursor: pointer;
+  font-family: var(--glob-header-family);
+  font-size: var(--glob-header-size);
+  font-weight: var(--glob-header-weight);
+  text-transform: var(--glob-header-transform);
+  letter-spacing: var(--glob-header-letter-spacing, normal);
+  outline: none !important;
+}
+.\#main-nav-mobile-link .\#icon {
+  --size: 1.5rem;
+}
+.\#main-nav-mobile-link-badged .\#badge {
+  position: relative;
+  font-size: 0.6rem;
+  bottom: 0.6rem;
+  left: 0.1rem;
+}
+.\#main-nav-mobile-header {
+  border-bottom: 1px solid var(--color-g-border);
+  margin-bottom: var(--main-nav-mobile-spacer-block);
+  display: flex;
+  align-items: center;
+  gap: var(--main-nav-mobile-spacer-block);
+  position: sticky;
+  top: 0;
+  background-color: var(--color-g-fg);
+  z-index: 3;
+}
+.\#main-nav-mobile-heading {
+  font-family: var(--glob-heading-family);
+  font-size: var(--glob-heading-size);
+  font-weight: var(--glob-heading-weight);
+  text-transform: var(--glob-heading-transform);
+  letter-spacing: var(--glob-heading-letter-spacing, normal);
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: calc(100% - 70px);
+}
+.\#main-nav-mobile-level {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-basis: 100%;
+  flex-shrink: 0;
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+}
+.\#main-nav-mobile-level-trigger {
+  display: none;
+}
+.\#main-nav-mobile-level-trigger:checked + .\#main-nav-mobile-level-content {
+  display: block;
+}
+.\#main-nav-mobile-level-content {
+  display: none;
+}
+.\#main-nav-mobile-toolbar {
+  order: 2;
+  margin-top: auto;
+  padding: var(--main-nav-mobile-spacer-block) var(--main-nav-mobile-spacer-inline);
+  background-color: var(--color-g-fg);
+  border-top: 1px solid var(--color-g-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--glob-size-4);
+}
+.\#main-nav-mobile-toolbar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  text-decoration: none;
+  color: inherit;
+  font-family: var(--glob-header-family);
+  font-size: var(--glob-header-size);
+  font-weight: var(--glob-header-weight);
+  text-transform: var(--glob-header-transform);
+  letter-spacing: var(--glob-header-letter-spacing, normal);
+}
+.\#main-nav-mobile-toolbar-item[data-toolbar=currency] ~ [data-toolbar=currency] {
+  display: none;
+}
+.\#main-nav-mobile-toolbar-item[data-toolbar=language] ~ [data-toolbar=language] {
+  display: none;
+}
+.\#main-nav-mobile-toolbar-item-icon .\#icon {
+  --size: 1rem;
+}
+.\#main-nav-mobile-toolbar-compare-counter::before {
+  content: "(";
+}
+.\#main-nav-mobile-toolbar-compare-counter::after {
+  content: ")";
+}

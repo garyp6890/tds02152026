@@ -1,0 +1,220 @@
+.\#modal-container {
+  --modal-container-width: auto;
+  --modal-container-height: auto;
+  --modal-container-max-width: 100%;
+  --modal-container-max-height: 100%;
+  --modal-container-animate-in: fade-in;
+  --modal-container-animate-out: fade-out;
+  --modal-container-animation-name: none;
+  --modal-container-animation-duration: 0.3s;
+  --modal-container-close-opacity: 1;
+  --modal-container-justify: center;
+  --modal-container-align: center;
+  --modal-container-content-overflow: visible;
+  --modal-container-close-color: white;
+  --modal-container-close-offset: var(--glob-size-8);
+  --modal-container-close-size: 1.85rem;
+  --modal-container-content-background-color: transparent;
+}
+.\#modal-container:is([closing]) {
+  --modal-container-animation-name: var(--modal-container-animate-out);
+  --modal-container-close-opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#modal-container:is([closing]) {
+    --modal-container-animation-name: fade-out;
+  }
+}
+.\#modal-container:is([closing]) .\#modal-container-dialog::backdrop {
+  opacity: 0;
+}
+.\#modal-container:is([opening]) {
+  --modal-container-animation-name: var(--modal-container-animate-in);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#modal-container:is([opening]) {
+    --modal-container-animation-name: fade-in;
+  }
+}
+.\#modal-container:is([opening]) .\#modal-container-dialog::backdrop {
+  opacity: 1;
+}
+.\#modal-container-dialog {
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  padding: 0;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 9999;
+  align-items: var(--modal-container-align);
+  justify-content: var(--modal-container-justify);
+}
+.\#modal-container-dialog:is([open]) {
+  display: flex;
+}
+.\#modal-container-dialog::backdrop {
+  transition: 0.3s;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  transform: translateZ(0);
+}
+.\#modal-container-dialog-close {
+  cursor: pointer;
+  color: var(--modal-container-close-color);
+  position: fixed;
+  top: var(--modal-container-close-offset);
+  right: var(--modal-container-close-offset);
+  opacity: var(--modal-container-close-opacity);
+  transition: var(--modal-container-animation-duration);
+  z-index: 5;
+}
+.\#modal-container-dialog-close .\#icon {
+  --size: var(--modal-container-close-size);
+}
+@media (max-width: 991px) {
+  .\#modal-container-dialog-close::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.\#modal-container-content {
+  backface-visibility: hidden;
+  animation-fill-mode: forwards;
+  animation-duration: var(--modal-container-animation-duration);
+  animation-name: var(--modal-container-animation-name);
+  flex-shrink: 0;
+  width: var(--modal-container-width);
+  max-width: var(--modal-container-max-width);
+  height: var(--modal-container-height);
+  max-height: var(--modal-container-max-height);
+  overflow: var(--modal-container-content-overflow);
+  position: relative;
+  z-index: 2;
+  backface-visibility: hidden;
+  color: var(--color-g-text);
+  background-color: var(--modal-container-content-background-color);
+}
+.\#modal-container-spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+.\#modal-container-spinner .\#spinner {
+  --color: white;
+}
+.\#modal-container-spinner.\!active {
+  display: block;
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+@keyframes zoom-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8) translateZ(0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes slide-in-left {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slide-out-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slide-out-right {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+@keyframes slide-in-top {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slide-out-top {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes slide-in-bottom {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slide-out-bottom {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}

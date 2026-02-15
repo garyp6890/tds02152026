@@ -1,0 +1,89 @@
+.\#main-nav-grid {
+  --main-nav-grid-_columns: var(--main-nav-grid-columns, 4);
+  --main-nav-grid-gap: var(--glob-gutter);
+  --main-nav-grid-title-size: 1.25rem;
+  --main-nav-grid-title-weight: normal;
+  --main-nav-grid-title-font: var(--glob-body-font);
+  --main-nav-grid-title-transform: none;
+  --main-nav-grid-menu-top-margin: var(--glob-size-3);
+  --main-nav-grid-menu-gap: var(--glob-size-1);
+}
+.\#main-nav-grid.\@spaced {
+  --main-nav-grid-menu-top-margin: var(--glob-size-4);
+  --main-nav-grid-menu-gap: var(--glob-size-3);
+  --main-nav-grid-gap: calc(var(--glob-gutter) * 1.25);
+}
+@media (max-width: 991px) {
+  .\#main-nav-grid {
+    --main-nav-grid-_columns: 1;
+    --main-nav-grid-gap: calc(var(--glob-gutter) * 1.25);
+  }
+}
+.\#main-nav-grid.\@layout\:columns {
+  gap: var(--main-nav-grid-gap);
+  display: grid;
+  grid-template-columns: repeat(var(--main-nav-grid-_columns), 1fr);
+}
+.\#main-nav-grid.\@layout\:masonry {
+  column-count: var(--main-nav-grid-_columns);
+  column-gap: var(--main-nav-grid-gap);
+}
+.\#main-nav-grid.\@layout\:masonry .\#main-nav-grid-column {
+  overflow: hidden;
+  width: 100%;
+  break-inside: avoid-column;
+  margin-bottom: var(--main-nav-grid-gap);
+}
+.\#main-nav-grid-title {
+  font-size: var(--main-nav-grid-title-size);
+  font-weight: var(--main-nav-grid-title-weight);
+  font-family: var(--main-nav-grid-title-font);
+  text-transform: var(--main-nav-grid-title-transform);
+  line-height: 1;
+}
+.\#main-nav-grid-title > a {
+  text-decoration: none;
+  color: inherit;
+}
+.\#main-nav-grid-title + .\#main-nav-grid-featured-image {
+  margin-top: var(--glob-size-2);
+}
+.\#main-nav-grid-thumbnail {
+  width: 50px;
+  margin-bottom: var(--glob-size-3);
+  border-radius: var(--glob-border-radius-base);
+  overflow: hidden;
+}
+.\#main-nav-grid-featured-image {
+  border-radius: var(--glob-border-radius-base);
+  overflow: hidden;
+  margin-bottom: var(--glob-size-3);
+}
+.\#main-nav-grid-menu {
+  list-style: none;
+  margin-top: var(--main-nav-grid-menu-top-margin);
+  gap: var(--main-nav-grid-menu-gap);
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 991px) {
+  .\#main-nav-grid-menu {
+    font-size: 1.1rem;
+    gap: var(--glob-size-2);
+    margin-top: var(--glob-size-4);
+  }
+}
+.\#main-nav-grid-menu-link {
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.8;
+  display: block;
+}
+.\#main-nav-grid-menu-link:hover {
+  opacity: 1;
+}
+.\#main-nav-grid-menu-view-all {
+  margin-top: var(--glob-size-4);
+  width: fit-content;
+}

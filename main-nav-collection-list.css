@@ -1,0 +1,4 @@
+.\#main-nav-collection-list-item {
+  border-radius: var(--glob-border-radius-base);
+  overflow: hidden;
+}

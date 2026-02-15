@@ -1,0 +1,22 @@
+.\#map-stage {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 2;
+}
+.\#map-interactions-wrapper .\#floating-content-wrapper {
+  pointer-events: none;
+}
+.\#map-interactions-wrapper .\#hero {
+  pointer-events: auto;
+}
+@media (max-width: 991px) {
+  .\#map-section .\#floating-content {
+    justify-content: center;
+  }
+  .\#map-section .\#floating-content-wrapper {
+    position: relative !important;
+  }
+}

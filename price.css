@@ -1,0 +1,28 @@
+.\#price {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.\#price.\@center .\#price-inner {
+  justify-content: center;
+}
+.\#price-inner {
+  display: flex;
+  align-items: baseline;
+  gap: var(--glob-size-1);
+}
+body.glob--layout-align-center .\#price-inner {
+  justify-content: center;
+}
+
+.\#price-item-heading {
+  line-height: 1;
+}
+.\#price-item-value {
+  margin: 0;
+  line-height: 1;
+}
+.\#price-item.\@compare .\#price-value {
+  text-decoration: line-through;
+  opacity: 0.64;
+}

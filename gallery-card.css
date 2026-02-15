@@ -1,0 +1,101 @@
+.\#gallery-card {
+  --gallery-card-caption-padding: var(--glob-size-7);
+  --gallery-card-caption-margin: 0;
+  --gallery-card-caption-gap: var(--glob-size-4);
+  --gallery-card-height: fit-content;
+  --gallery-card-media-height: fit-content;
+  --gallery-card-alt-image-opacity: 0;
+  position: relative;
+  height: var(--gallery-card-height);
+}
+.\#gallery-card:hover {
+  --gallery-card-alt-image-opacity: 1;
+}
+body:not(.glob--card-view-none) .\#gallery-card {
+  background-color: var(--color-g-fg);
+}
+body:not(.glob--card-view-none) .\#gallery-card:not(.\@stacked) {
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+}
+
+body.glob--card-view-none .\#gallery-card:not(.\@stacked) .\#gallery-card-media-alt,
+body.glob--card-view-none .\#gallery-card:not(.\@stacked) .\#gallery-card-media {
+  box-shadow: var(--color-scheme-box-shadow);
+}
+
+body.glob--card-view-all .\#gallery-card:not(.\@stacked):not(.\@ignore-frame) {
+  padding: var(--glob-frame-size);
+}
+body.glob--card-view-all .\#gallery-card:not(.\@stacked) .\#gallery-card-media-alt,
+body.glob--card-view-all .\#gallery-card:not(.\@stacked) .\#gallery-card-media {
+  border-radius: var(--glob-border-radius-inner);
+}
+body.glob--card-view-all .\#gallery-card:not(.\@stacked) .\#gallery-card-media-alt {
+  padding: var(--glob-frame-size);
+}
+
+body:not(.glob--card-view-all) .\#gallery-card:not(.\@stacked) .\#gallery-card-media-alt,
+body:not(.glob--card-view-all) .\#gallery-card:not(.\@stacked) .\#gallery-card-media {
+  border-radius: var(--glob-border-radius-base);
+}
+
+.\#gallery-card.\@full-height {
+  --gallery-card-height: 100%;
+  --gallery-card-media-height: 100%;
+}
+.\#gallery-card.\@stretched-card {
+  --gallery-card-height: 100%;
+}
+.\#gallery-card-media-alt, .\#gallery-card-media {
+  overflow: hidden;
+  height: var(--gallery-card-media-height);
+}
+.\#gallery-card-caption {
+  padding: var(--gallery-card-caption-padding);
+  margin: var(--gallery-card-caption-margin);
+}
+.\#gallery-card-media-alt {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: var(--transition-base);
+  opacity: var(--gallery-card-alt-image-opacity);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#gallery-card-media-alt {
+    transition: 0s;
+  }
+}
+@media (max-width: 991px) {
+  .\#gallery-card-media-alt {
+    display: none;
+  }
+}
+.\#gallery-card .\#background-video {
+  z-index: 2;
+}
+.\#gallery-card .\#background-video-wrapper {
+  position: static;
+}
+body:not(.glob--card-view-none) .\#gallery-card.\@caption\:outer {
+  --gallery-card-caption-padding: calc(var(--glob-size-7) - var(--glob-frame-size));
+}
+
+body.glob--card-view-none .\#gallery-card.\@caption\:outer {
+  --gallery-card-caption-padding: calc(var(--gallery-card-caption-gap) * 1.25) var(--glob-frame-size) 0 var(--glob-frame-size);
+}
+
+.\#gallery-card.\@caption\:inner {
+  border-radius: var(--glob-border-radius-base);
+  --gallery-card-caption-margin: var(--glob-frame-size);
+}
+.\#gallery-card .\#button {
+  position: relative;
+  z-index: 23;
+}
+.\#gallery-card .\#hero {
+  --hero-gap: var(--gallery-card-caption-gap);
+}

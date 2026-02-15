@@ -1,0 +1,97 @@
+.\#pickup-availability {
+  background: var(--color-g-fg);
+  height: 100%;
+  overflow-y: auto;
+}
+@media (max-width: 991px) {
+  .\#pickup-availability {
+    height: var(--mobile-viewport-height, 100vh);
+  }
+}
+.\#pickup-availability-header {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  gap: 1.5rem;
+  border-bottom: 1px solid #e6e6e6;
+}
+.\#pickup-availability-header-image {
+  width: 75px;
+  flex-shrink: 0;
+}
+.\#pickup-availability-header-text {
+  flex-grow: 1;
+}
+.\#pickup-availability-header-close {
+  margin-top: 12px;
+  align-self: flex-start;
+  cursor: pointer;
+  opacity: 0.64;
+  transition: var(--transition-base);
+}
+.\#pickup-availability-header-close:hover {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#pickup-availability-header-close {
+    transition: 0s;
+  }
+}
+@media (max-width: 991px) {
+  .\#pickup-availability-header-close {
+    position: relative;
+  }
+  .\#pickup-availability-header-close::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.\#pickup-availability-product-title {
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.\#pickup-availability-variant-title {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+.\#pickup-availability-item {
+  padding: 1.5rem 2rem;
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid #e6e6e6;
+}
+.\#pickup-availability-item-icon {
+  margin-top: 2px;
+}
+.\#pickup-availability-item-icon .\#icon {
+  --size: 2rem;
+}
+.\#pickup-availability-item-title {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+.\#pickup-availability-item-location {
+  font-size: 1.15rem;
+  margin-bottom: 0.3rem;
+}
+.\#pickup-availability-item-status {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 0.3rem;
+  font-size: 1.1rem;
+}
+.\#pickup-availability-item-status-icon .\#icon {
+  --size: 1.3rem;
+}
+.\#pickup-availability-item-status-text {
+  opacity: 0.8;
+}

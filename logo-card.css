@@ -1,0 +1,26 @@
+.\#logo-card {
+  --height: 120px;
+  border-radius: var(--glob-border-radius-base);
+  height: var(--height);
+  position: relative;
+}
+body.glob--card-view-all .\#logo-card {
+  padding: var(--glob-size-4);
+  background: var(--color-g-fg);
+  box-shadow: var(--color-scheme-box-shadow);
+}
+
+.\#logo-card .\#media-image, .\#logo-card .\#media-placeholder {
+  height: 100%;
+}
+@media (min-width: 992px) {
+  .\#logo-card.\@grayscale-hover {
+    filter: grayscale(1);
+  }
+  .\#logo-card.\@grayscale-hover:hover {
+    filter: grayscale(0);
+  }
+}
+.\#logo-card .\#media-placeholder {
+  background: none;
+}

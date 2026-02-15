@@ -1,0 +1,105 @@
+.\#media-overlay {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.\#media-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.\#media {
+  --image-fit: cover;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+.\#media.\@rounded {
+  border-radius: 50%;
+}
+.\#media.\@border-radius\:base {
+  border-radius: var(--glob-border-radius-base);
+}
+.\#media.\@border-radius\:inner {
+  border-radius: var(--glob-border-radius-inner);
+}
+.\#media.\@border-radius\:sm {
+  border-radius: var(--glob-border-radius-sm);
+}
+html.js .\#media.\@animate-loading .\#media-image {
+  opacity: 0;
+  transition: var(--transition-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .\#media.\@animate-loading .\#media-image {
+    transition: 0s;
+  }
+}
+html.js .\#media.\@animate-loading .\#media-image[loaded] {
+  opacity: 1;
+}
+html.js .\#media.\@animate-loading .\#media-image[loaded] ~ .\#media-image-loading-placeholder {
+  display: none;
+  animation: none;
+}
+
+.\#media-image {
+  --image-height: auto;
+  --image-mobile-height: auto;
+  width: 100%;
+  display: block;
+  object-fit: var(--image-fit);
+  object-position: var(--image-position);
+}
+@media (min-width: 992px) {
+  .\#media-placeholder, .\#media-image {
+    height: var(--image-height);
+    aspect-ratio: var(--image-ar-width)/var(--image-ar-height);
+  }
+}
+@media (max-width: 991px) {
+  .\#media-placeholder, .\#media-image {
+    height: var(--image-mobile-height);
+    aspect-ratio: var(--image-mobile-ar-width)/var(--image-mobile-ar-height);
+  }
+}
+.\#media-image-loading-placeholder {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  z-index: -1;
+  will-change: transform;
+  left: -100%;
+  width: 200%;
+  background: linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(199, 199, 199) 50%, rgb(255, 255, 255) 100%);
+  background-repeat: no-repeat;
+  animation: placeHolderShimmer 1.5s infinite linear forwards;
+}
+@keyframes placeHolderShimmer {
+  50% {
+    transform: translateX(50%);
+  }
+}
+.\#media-placeholder {
+  width: 100%;
+}
+.\#media-placeholder > svg {
+  height: 100%;
+  width: 100%;
+}
+.\#media-overlay {
+  --value: 0;
+  opacity: var(--value);
+  background: var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--color-g-bg-gradient, var(--color-g-bg, black))));
+  z-index: 3;
+}
+@media (max-width: 991px) {
+  .\#media-overlay {
+    opacity: var(--mobile-value, var(--value));
+  }
+}

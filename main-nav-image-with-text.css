@@ -1,0 +1,10 @@
+.\#main-nav-image-with-text {
+  background: var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--color-g-bg-gradient, var(--color-g-bg))));
+  color: var(--color-scheme-text, var(--color-g-text));
+}
+@media (max-width: 991px) {
+  .\#main-nav-image-with-text {
+    overflow: hidden;
+    border-radius: var(--glob-border-radius-base);
+  }
+}

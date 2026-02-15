@@ -1,0 +1,58 @@
+.\#hero-video-popup {
+  --width: 50%;
+  --icon-color: #ffffff;
+  width: fit-content;
+  position: relative;
+  z-index: 23;
+}
+@media (min-width: 992px) {
+  .\#hero-video-popup.\@cover-image {
+    width: var(--width);
+  }
+}
+.\#hero-video-popup-icon {
+  color: var(--icon-color);
+}
+@media (min-width: 992px) {
+  .\#hero-video-popup-icon {
+    opacity: 0.8;
+    transition: var(--transition-base);
+  }
+  .\#hero-video-popup-icon:hover {
+    opacity: 1;
+  }
+}
+@media (min-width: 992px) and (prefers-reduced-motion: reduce) {
+  .\#hero-video-popup-icon {
+    transition: 0s;
+  }
+}
+.\#hero-video-popup-icon .\#icon {
+  --size: min(5rem, 15vw);
+}
+.\#hero-video-popup-image {
+  position: relative;
+}
+.\#hero-video-popup-image .\#media {
+  opacity: 0.64;
+  transition: var(--transition-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#hero-video-popup-image .\#media {
+    transition: 0s;
+  }
+}
+.\#hero-video-popup-image:hover .\#media {
+  opacity: 1;
+}
+.\#hero-video-popup-image-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  color: var(--icon-color);
+}
+.\#hero-video-popup-image-icon .\#icon {
+  --size: 3rem;
+}

@@ -1,0 +1,20 @@
+.\#product-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-3);
+}
+.\#product-feature-heading {
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+}
+.\#product-feature-subheading {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+.\#product-feature-icon .\#icon {
+  --size: 1.5rem;
+}

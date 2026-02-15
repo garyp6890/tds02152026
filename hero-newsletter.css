@@ -1,0 +1,90 @@
+.\#hero-newsletter {
+  position: relative;
+  width: min(350px, 100%);
+  display: block;
+}
+.\#hero-newsletter-inner {
+  display: flex;
+  align-items: center;
+  border-radius: var(--glob-border-radius-base);
+  border: 1px solid var(--color-scheme-text, var(--color-g-text));
+  overflow: hidden;
+}
+body.glob--border-radius-rounded .\#hero-newsletter-inner {
+  border-radius: var(--glob-border-radius-pill);
+}
+
+.\#hero-newsletter-inner:focus-within {
+  box-shadow: 0 0 0 3px var(--color-g-accent-a20);
+  border-color: var(--color-g-accent);
+}
+.\#hero-newsletter-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--glob-size-2);
+  font-weight: var(--glob-body-bold-weight);
+  margin-bottom: var(--glob-size-3);
+}
+.\#hero-newsletter-msg.\@type\:error {
+  --icon-color: var(--color-g-danger);
+}
+.\#hero-newsletter-msg.\@type\:success {
+  --icon-color: var(--color-g-success);
+}
+.\#hero-newsletter-msg-icon {
+  color: white;
+  background: var(--icon-color);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  border-radius: 50%;
+  padding: 2px;
+}
+.\#hero-newsletter-msg-icon .\#icon {
+  --size: 0.9rem;
+}
+.\#hero-newsletter-input {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  font-size: inherit;
+  flex-shrink: 0;
+  flex-grow: 1;
+  border: none;
+  flex-shrink: 0;
+  flex-grow: 1;
+  display: block;
+  line-height: 1;
+  padding: 1em 1.5em;
+  outline: none !important;
+  font-weight: var(--glob-body-bold-weight);
+}
+.\#hero-newsletter-input::placeholder {
+  color: inherit;
+}
+.\#hero-newsletter-submit {
+  position: absolute;
+  right: 0;
+  width: 2.3em;
+  height: 2.3em;
+  font-size: inherit;
+  margin-right: 0.5em;
+  font-size: inherit;
+  background: none;
+  padding: 0;
+  border: none;
+  outline: none !important;
+  color: inherit;
+  color: var(--color-scheme-primary-button-text);
+  background: var(--color-scheme-primary-button-bg);
+  border-radius: var(--glob-border-radius-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+body.glob--border-radius-rounded .\#hero-newsletter-submit {
+  border-radius: var(--glob-border-radius-circle);
+}
+
+.\#hero-newsletter-submit .\#icon {
+  --size: 1.1em;
+}

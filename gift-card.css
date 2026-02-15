@@ -1,0 +1,62 @@
+.\#gift-card-container {
+  width: min(500px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding: 2rem;
+}
+.\#gift-card-logo {
+  max-width: 100%;
+  margin-bottom: 1rem;
+}
+.\#gift-card-shop-name, .\#gift-card-title {
+  margin-bottom: 1.25rem;
+}
+.\#gift-card-title {
+  text-transform: uppercase;
+}
+.\#gift-card-price {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+.\#gift-card-recipient-message {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+.\#gift-card-img-wrapper {
+  position: relative;
+}
+.\#gift-card-img-wrapper > img {
+  width: 100%;
+  height: auto;
+}
+.\#gift-card-img-caption {
+  position: absolute;
+  width: 100%;
+  padding: 2rem;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.\#gift-card-code-number {
+  padding: 0.7rem 1rem;
+  background: white;
+  border-radius: 5px;
+  font-weight: var(--font-body-weight-bold);
+}
+.\#gift-card-qr-code-wrapper {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.\#gift-card-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+}

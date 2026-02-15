@@ -1,0 +1,62 @@
+.\#newsletter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  gap: 2rem;
+}
+@media (max-width: 991px) {
+  .\#newsletter {
+    flex-direction: column;
+  }
+}
+.\#newsletter-notification {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+.\#newsletter-notification .\#icon {
+  --size: 1.15rem;
+}
+@media (max-width: 991px) {
+  .\#newsletter-notification {
+    justify-content: center;
+  }
+}
+.\#newsletter-header {
+  text-align: right;
+}
+@media (max-width: 991px) {
+  .\#newsletter-header {
+    text-align: center;
+  }
+}
+.\#newsletter-form {
+  position: relative;
+}
+.\#newsletter-input {
+  color: inherit;
+  width: min(25rem, 100vw - 4rem);
+  height: 3.5rem;
+  border-radius: var(--glob-border-radius-base);
+  border: 2px solid currentColor;
+  background: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 1.1rem;
+  outline: none !important;
+}
+body.glob--border-radius-rounded .\#newsletter-input {
+  border-radius: var(--glob-border-radius-pill);
+}
+
+.\#newsletter-input::placeholder {
+  color: inherit;
+}
+.\#newsletter-submit {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+}

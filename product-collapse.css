@@ -1,0 +1,77 @@
+.\#product-collapse {
+  --accordion-with-images-collapsing-part-fr: 0fr;
+  --accordion-with-images-indicator-rotate: 0deg;
+  --accordion-with-images-text-opacity: 0;
+  border-block: 1px solid var(--color-g-border);
+}
+.\#product-collapse-trigger > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.\#product-collapse-trigger > summary::marker, .\#product-collapse-trigger > summary::-webkit-details-marker {
+  display: none;
+}
+.\#product-collapse-trigger[open] .\#product-collapse-indicator {
+  --accordion-with-images-indicator-rotate: 180deg;
+}
+.\#product-collapse-trigger[open] + .\#product-collapse-body {
+  --accordion-with-images-collapsing-part-fr: 1fr;
+  --accordion-with-images-text-opacity: 1;
+}
+.\#product-collapse-header {
+  display: flex;
+  align-items: center;
+  padding-block: var(--glob-size-4);
+  justify-content: space-between;
+  cursor: pointer;
+}
+.\#product-collapse-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-5);
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+}
+.\#product-collapse-heading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.\#product-collapse-heading-icon .\#icon {
+  --size: 1.3rem;
+  opacity: 0.8;
+}
+.\#product-collapse-indicator {
+  transition: var(--transition-base);
+  rotate: var(--accordion-with-images-indicator-rotate);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#product-collapse-indicator {
+    transition: 0s;
+  }
+}
+.\#product-collapse-indicator .\#icon {
+  --size: 1.3rem;
+  opacity: 0.6;
+}
+.\#product-collapse-body {
+  display: grid;
+  grid-template-rows: var(--accordion-with-images-collapsing-part-fr);
+  transition: var(--transition-base);
+  opacity: var(--accordion-with-images-text-opacity);
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#product-collapse-body {
+    transition: 0s;
+  }
+}
+.\#product-collapse-body-inner {
+  overflow: hidden;
+}
+.\#product-collapse-body-content {
+  padding-bottom: var(--glob-size-4);
+}

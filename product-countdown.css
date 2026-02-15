@@ -1,0 +1,3 @@
+.\#product-countdown.\@sale-color .\#countdown-timer {
+  --countdown-timer-text-color: var(--color-g-sale);
+}

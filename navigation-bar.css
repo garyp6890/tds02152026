@@ -1,0 +1,26 @@
+.\#navigation-bar {
+  --navigation-bar-text-color: var(--color-g-text);
+  --navigation-bar-bg-color: var(--color-g-bg);
+  --navigation-bar-nav-item-gap: var(--glob-size-4);
+  background-color: var(--navigation-bar-bg-color);
+}
+@media (min-width: 992px) {
+  .\#navigation-bar.\@sticky {
+    position: sticky;
+    top: var(--navbar-offset, var(--header-height, 0px));
+  }
+}
+body.glob--theme-dark-mode .\#navigation-bar.\@invert-colors {
+  --navigation-bar-text-color: var(--navigation-bar-inverted-text-color)!important;
+  --navigation-bar-bg-color: var(--navigation-bar-inverted-bg-color)!important;
+}
+
+.\#navigation-bar .\#main-nav {
+  --main-nav-font: var(--glob-header-family);
+  --main-nav-font-weight: var(--glob-header-weight, normal);
+  --main-nav-text-transform: var(--glob-header-transform);
+  --main-nav-gap: var(--navigation-bar-nav-item-gap);
+  --main-nav-text-color: var(--navigation-bar-text-color);
+  --main-nav-font-size: var(--glob-header-size);
+  --main-nav-alignment: var(--navigation-bar-alignment);
+}

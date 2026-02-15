@@ -1,0 +1,23 @@
+.\#media-with-text.\@media-shadow .\#media {
+  border-radius: var(--glob-border-radius-base);
+  box-shadow: var(--color-scheme-box-shadow);
+}
+@media (min-width: 992px) {
+  .\#media-with-text.\@image-auto-size .\#media-with-text-media {
+    overflow: hidden;
+    position: relative;
+  }
+  .\#media-with-text.\@image-auto-size .\#media-with-text-media .\#media {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+}
+.\#media-with-text .\#video-popup {
+  height: 100%;
+}
+.\#media-with-text .\#video-popup-content {
+  height: 100%;
+}

@@ -1,0 +1,98 @@
+.\#popup-collection > .\#modal-container > .\#modal-container-dialog > .\#modal-container-content {
+  pointer-events: none;
+}
+.\#popup-collection-header {
+  margin-top: 2rem;
+  padding-inline: 2rem;
+}
+.\#popup-collection-modal {
+  pointer-events: auto;
+  position: relative;
+  border-radius: var(--glob-border-radius-base);
+  background: var(--color-g-bg-gradient, var(--color-g-bg));
+  color: var(--color-g-text);
+  overflow: hidden;
+  box-shadow: var(--color-scheme-box-shadow-drop);
+}
+.\#popup-collection-modal-close {
+  position: absolute;
+  z-index: 4;
+  top: var(--glob-size-3);
+  right: var(--glob-size-3);
+  cursor: pointer;
+  transition: var(--transition-base);
+  opacity: 0.64;
+}
+@media (prefers-reduced-motion: reduce) {
+  .\#popup-collection-modal-close {
+    transition: 0s;
+  }
+}
+.\#popup-collection-modal-close:hover {
+  opacity: 1;
+}
+.\#popup-collection-modal-close .\#icon {
+  --size: 1.3rem;
+}
+@media (max-width: 991px) {
+  .\#popup-collection-modal-close {
+    top: var(--glob-size-4);
+    right: var(--glob-size-4);
+  }
+  .\#popup-collection-modal-close::before {
+    content: "";
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.\#popup-collection-slider {
+  margin-block: 2rem;
+}
+@media (max-width: 991px) {
+  .\#popup-collection-slider .\#editor-notification {
+    margin-inline: 2rem;
+  }
+}
+.\#popup-collection-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--glob-size-2);
+  font-family: var(--glob-button-family);
+  font-size: var(--glob-button-size);
+  font-weight: var(--glob-button-weight);
+  text-transform: var(--glob-button-transform);
+  letter-spacing: var(--glob-button-letter-spacing, normal);
+  background: var(--color-scheme-primary-button-bg);
+  color: var(--color-scheme-primary-button-text);
+  position: fixed;
+  writing-mode: vertical-rl;
+  border-radius: var(--glob-border-radius-base) 0 0 var(--glob-border-radius-base);
+  bottom: 50%;
+  z-index: 25;
+  padding-block: var(--glob-size-1);
+  padding-inline: var(--glob-size-3);
+  cursor: pointer;
+}
+.\#popup-collection-button .\#icon {
+  --size: 2rem;
+}
+.\#popup-collection-button.\@position_x\:left {
+  flex-direction: row-reverse;
+  left: 0;
+  transform: translateY(50%) rotate(180deg);
+}
+.\#popup-collection-button.\@position_x\:left .\#icon {
+  transform: rotate(180deg);
+}
+.\#popup-collection-button.\@position_x\:right {
+  transform: translateY(50%);
+  right: 0;
+}
+.\#popup-collection-button .\#icon {
+  --size: 1.2rem;
+}

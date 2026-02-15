@@ -1,0 +1,21 @@
+.\#icon {
+  --size: 1.85rem;
+  display: flex;
+  color: inherit;
+  stroke: currentColor;
+  width: var(--size);
+  height: var(--size);
+  fill: transparent;
+  vertical-align: top;
+  stroke-width: var(--glob-icon-stroke-width);
+  stroke-linecap: var(--glob-icon-linecap);
+  stroke-linejoin: var(--glob-icon-linejoin);
+}
+.\#icon.\@round-stroke {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+load-icon {
+  display: contents;
+}
